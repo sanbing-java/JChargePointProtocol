@@ -59,7 +59,7 @@ public class Order implements Serializable {
 
     private String plateNo;
 
-    private Long settlementAmount;
+    private BigDecimal settlementAmount;
 
     private JsonNode settlementDetails;
 

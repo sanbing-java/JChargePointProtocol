@@ -63,7 +63,7 @@ public class YunKuaiChongV150TransactionRecordULCmd extends YunKuaiChongUplinkCm
         Instant endTime = CP56Time2aUtil.decode(endTimeBytes);
 
         // 6.尖单价
-        BigDecimal topPrice = reduceMagnification(byteBuf.readUnsignedIntLE(), 1000);
+        BigDecimal topPrice = reduceMagnification(byteBuf.readUnsignedIntLE(), 100000);
         additionalInfo.put("尖单价", topPrice);
         // 7. 尖电量
         BigDecimal topEnergy = reduceMagnification(byteBuf.readUnsignedIntLE(), 10000);
@@ -71,10 +71,10 @@ public class YunKuaiChongV150TransactionRecordULCmd extends YunKuaiChongUplinkCm
         BigDecimal topLoseEnergy = reduceMagnification(byteBuf.readUnsignedIntLE(), 10000);
         additionalInfo.put("计损尖电量", topLoseEnergy);
         // 9.尖金额
-        BigDecimal topAmount = reduceMagnification(byteBuf.readUnsignedIntLE(), 100);
+        BigDecimal topAmount = reduceMagnification(byteBuf.readUnsignedIntLE(), 10000);
 
         // 10.峰单价
-        BigDecimal peakPrice = reduceMagnification(byteBuf.readUnsignedIntLE(), 1000);
+        BigDecimal peakPrice = reduceMagnification(byteBuf.readUnsignedIntLE(), 100000);
         additionalInfo.put("峰单价", peakPrice);
         // 11. 峰电量
         BigDecimal peakEnergy = reduceMagnification(byteBuf.readUnsignedIntLE(), 10000);
@@ -82,10 +82,10 @@ public class YunKuaiChongV150TransactionRecordULCmd extends YunKuaiChongUplinkCm
         BigDecimal peakLoseEnergy = reduceMagnification(byteBuf.readUnsignedIntLE(), 10000);
         additionalInfo.put("计损峰电量", peakLoseEnergy);
         // 13.峰金额
-        BigDecimal peakAmount = reduceMagnification(byteBuf.readUnsignedIntLE(), 100);
+        BigDecimal peakAmount = reduceMagnification(byteBuf.readUnsignedIntLE(), 10000);
 
         // 14.平单价
-        BigDecimal flatPrice = reduceMagnification(byteBuf.readUnsignedIntLE(), 1000);
+        BigDecimal flatPrice = reduceMagnification(byteBuf.readUnsignedIntLE(), 100000);
         additionalInfo.put("平单价", flatPrice);
         // 15. 平电量
         BigDecimal flatEnergy = reduceMagnification(byteBuf.readUnsignedIntLE(), 10000);
@@ -93,10 +93,10 @@ public class YunKuaiChongV150TransactionRecordULCmd extends YunKuaiChongUplinkCm
         BigDecimal flatLoseEnergy = reduceMagnification(byteBuf.readUnsignedIntLE(), 10000);
         additionalInfo.put("计损平电量", flatLoseEnergy);
         // 17.平金额
-        BigDecimal flatAmount = reduceMagnification(byteBuf.readUnsignedIntLE(), 100);
+        BigDecimal flatAmount = reduceMagnification(byteBuf.readUnsignedIntLE(), 10000);
 
         // 18.谷单价
-        BigDecimal valleyPrice = reduceMagnification(byteBuf.readUnsignedIntLE(), 1000);
+        BigDecimal valleyPrice = reduceMagnification(byteBuf.readUnsignedIntLE(), 100000);
         additionalInfo.put("谷单价", valleyPrice);
         // 19. 谷电量
         BigDecimal valleyEnergy = reduceMagnification(byteBuf.readUnsignedIntLE(), 10000);
@@ -104,7 +104,7 @@ public class YunKuaiChongV150TransactionRecordULCmd extends YunKuaiChongUplinkCm
         BigDecimal valleyLoseEnergy = reduceMagnification(byteBuf.readUnsignedIntLE(), 10000);
         additionalInfo.put("计损谷电量", valleyLoseEnergy);
         // 21.谷金额
-        BigDecimal valleyAmount = reduceMagnification(byteBuf.readUnsignedIntLE(), 100);
+        BigDecimal valleyAmount = reduceMagnification(byteBuf.readUnsignedIntLE(), 10000);
 
         // 22.电表总起值
         byte[] meterStartValueBytes = new byte[5];
@@ -124,7 +124,7 @@ public class YunKuaiChongV150TransactionRecordULCmd extends YunKuaiChongUplinkCm
         BigDecimal totalLoseEnergy = reduceMagnification(byteBuf.readUnsignedIntLE(), 10000, 4);
         additionalInfo.put("计损总电量", totalLoseEnergy);
         // 26 .消费金额
-        BigDecimal totalAmount = reduceMagnification(byteBuf.readUnsignedIntLE(), 100);
+        BigDecimal totalAmount = reduceMagnification(byteBuf.readUnsignedIntLE(), 10000);
 
         // 27.电动汽车唯一标识
         byte[] carVINBytes = new byte[17];
@@ -157,16 +157,16 @@ public class YunKuaiChongV150TransactionRecordULCmd extends YunKuaiChongUplinkCm
                 .setTradeNo(tradeNo)
                 .setStartTs(startTime.toEpochMilli())
                 .setEndTs(endTime.toEpochMilli())
-                .setTopEnergyKWh(topEnergy.floatValue())
-                .setTopAmountCent(topAmount.longValue())
-                .setPeakEnergyKWh(peakEnergy.floatValue())
-                .setPeakAmountCent(peakAmount.longValue())
-                .setFlatEnergyKWh(flatEnergy.floatValue())
-                .setFlatAmountCent(flatAmount.longValue())
-                .setValleyEnergyKWh(valleyEnergy.floatValue())
-                .setValleyAmountCent(valleyAmount.longValue())
-                .setTotalEnergyKWh(totalEnergy.floatValue())
-                .setTotalAmountCent(totalAmount.longValue())
+                .setTopEnergyKWh(topEnergy.toPlainString())
+                .setTopAmountYuan(topAmount.toPlainString())
+                .setPeakEnergyKWh(peakEnergy.toPlainString())
+                .setPeakAmountYuan(peakAmount.toPlainString())
+                .setFlatEnergyKWh(flatEnergy.toPlainString())
+                .setFlatAmountYuan(flatAmount.toPlainString())
+                .setValleyEnergyKWh(valleyEnergy.toPlainString())
+                .setValleyAmountYuan(valleyAmount.toPlainString())
+                .setTotalEnergyKWh(totalEnergy.toPlainString())
+                .setTotalAmountYuan(totalAmount.toPlainString())
                 .setTradeTs(tradeTime.toEpochMilli())
                 .setStopReason(stopReason)
                 .setAdditionalInfo(additionalInfo.toString())

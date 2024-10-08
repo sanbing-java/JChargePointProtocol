@@ -108,9 +108,9 @@ CREATE TABLE IF NOT EXISTS jcpp_order
     pile_id              uuid                                     not null,
     gun_id               uuid                                     not null,
     plate_no             varchar(64),
-    settlement_amount    bigint         default 0                 not null,
+    settlement_amount    numeric(16, 8)  default 0                not null,
     settlement_details   jsonb,
-    electricity_quantity numeric(16, 9) default 0                 not null
+    electricity_quantity numeric(16, 8) default 0                 not null
 );
 
 CREATE UNIQUE INDEX IF NOT EXISTS uni_internal_order_no

@@ -96,8 +96,8 @@ message QueryPricingResponse {
 message PricingModelProto {
   PricingModelType type = 3;
   PricingModelRule rule = 4;
-  int32 standardElec = 5;
-  int32 standardServ = 6;
+  string standardElec = 5;
+  string standardServ = 6;
   map<int32, FlagPriceProto> flagPrice = 8;
   repeated PeriodProto period = 9;
 }
@@ -111,8 +111,8 @@ message PeriodProto {
 
 message FlagPriceProto {
   PricingModelFlag flag = 1;
-  int32 elec = 2;
-  int32 serv = 3;
+  string elec = 2;
+  string serv = 3;
 }
 
 enum PricingModelType {
@@ -160,12 +160,12 @@ message ChargingProgressProto {
   string pileCode = 4;
   string gunCode = 5;
   string tradeNo = 6;
-  float outputVoltage = 7;
-  float outputCurrent = 8;
-  float soc = 9;
+  string outputVoltage = 7;
+  string outputCurrent = 8;
+  int32 soc = 9;
   int32 totalChargingDurationMin = 10;
-  float totalChargingEnergyKWh = 11;
-  int64 totalChargingCostCent = 12;
+  string totalChargingEnergyKWh = 11;
+  string totalChargingCostYuan = 12;
   optional string additionalInfo = 20;
 }
 
@@ -185,7 +185,7 @@ message RemoteStartChargingRequest {
   string pileCode = 4;
   string gunCode = 5;
   string tradeNo = 6;
-  int32 limitCent = 7;
+  int32 limitYuan = 7;
   optional string additionalInfo = 20;
 }
 
@@ -219,18 +219,18 @@ message TransactionRecord {
   string tradeNo = 6;
   int64 startTs = 51;
   int64 endTs = 52;
-  float topEnergyKWh = 53;
-  int64 topAmountCent = 54;
-  float peakEnergyKWh = 55;
-  int64 peakAmountCent = 56;
-  float flatEnergyKWh = 57;
-  int64 flatAmountCent = 58;
-  float valleyEnergyKWh = 59;
-  int64 valleyAmountCent = 60;
-  float deepEnergyKWh = 61;
-  int64 deepAmountCent = 62;
-  float totalEnergyKWh = 63;
-  int64 totalAmountCent = 64;
+  string topEnergyKWh = 53;
+  string topAmountYuan = 54;
+  string peakEnergyKWh = 55;
+  string peakAmountYuan = 56;
+  string flatEnergyKWh = 57;
+  string flatAmountYuan = 58;
+  string valleyEnergyKWh = 59;
+  string valleyAmountYuan = 60;
+  string deepEnergyKWh = 61;
+  string deepAmountYuan = 62;
+  string totalEnergyKWh = 63;
+  string totalAmountYuan = 64;
   int64 tradeTs = 65;
   string stopReason = 66;
   optional string additionalInfo = 20;

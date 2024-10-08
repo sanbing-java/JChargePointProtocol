@@ -34,7 +34,6 @@ public class DownlinkController {
     @Value("${api.timeout.onDownlink:3000}")
     public long onDownlinkTimeout;
 
-
     @Resource
     ProtocolSessionRegistryProvider protocolSessionRegistryProvider;
 

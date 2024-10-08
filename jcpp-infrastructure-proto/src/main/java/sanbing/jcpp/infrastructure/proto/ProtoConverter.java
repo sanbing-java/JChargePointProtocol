@@ -24,8 +24,8 @@ public class ProtoConverter {
         // 设置字段
         builder.setType(PricingModelType.valueOf(pricingModel.getType().name()));
         builder.setRule(PricingModelRule.valueOf(pricingModel.getRule().name()));
-        builder.setStandardElec(pricingModel.getStandardElec());
-        builder.setStandardServ(pricingModel.getStandardServ());
+        builder.setStandardElec(pricingModel.getStandardElec().toPlainString());
+        builder.setStandardServ(pricingModel.getStandardServ().toPlainString());
 
         // 转换 flagPriceList
         for (Map.Entry<PricingModelFlag, FlagPrice> entry : pricingModel.getFlagPriceList().entrySet()) {
@@ -34,8 +34,8 @@ public class ProtoConverter {
 
             FlagPriceProto flagPriceProto = FlagPriceProto.newBuilder()
                     .setFlag(PricingModelFlag.valueOf(flag.name())) // 枚举转换
-                    .setElec(flagPrice.getElec())
-                    .setServ(flagPrice.getServ())
+                    .setElec(flagPrice.getElec().toPlainString())
+                    .setServ(flagPrice.getServ().toPlainString())
                     .build();
 
             builder.putFlagPrice(flag.ordinal(), flagPriceProto); // 按 ordinal 值作为 key 存入

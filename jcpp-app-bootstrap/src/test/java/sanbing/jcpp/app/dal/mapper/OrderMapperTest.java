@@ -4,7 +4,6 @@
  */
 package sanbing.jcpp.app.dal.mapper;
 
-import cn.hutool.core.math.Money;
 import cn.hutool.core.util.IdUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import jakarta.annotation.Resource;
@@ -53,7 +52,7 @@ public class OrderMapperTest extends AbstractTestBase {
                 .pileId(NORMAL_PILE_ID[0])
                 .gunId(NORMAL_GUN_ID[0])
                 .plateNo("浙A88888")
-                .settlementAmount(new Money(100D).getCent())
+                .settlementAmount(new BigDecimal(100))
                 .settlementDetails(JacksonUtil.newObjectNode())
                 .electricityQuantity(new BigDecimal("100"))
                 .build();

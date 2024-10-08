@@ -9,6 +9,7 @@ import sanbing.jcpp.proto.gen.ProtocolProto.PricingModelFlag;
 import sanbing.jcpp.proto.gen.ProtocolProto.PricingModelRule;
 import sanbing.jcpp.proto.gen.ProtocolProto.PricingModelType;
 
+import java.math.BigDecimal;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
@@ -29,14 +30,14 @@ public class PricingModel {
     private PricingModelRule rule;
 
     /**
-     * 标准电价（单位分）
+     * 标准电价（单位元）
      */
-    private int standardElec;
+    private BigDecimal standardElec;
 
     /**
-     * 标准服务费（单位分）
+     * 标准服务费（单位元）
      */
-    private int standardServ;
+    private BigDecimal standardServ;
 
     /**
      * 分时电价
@@ -68,11 +69,11 @@ public class PricingModel {
     @NoArgsConstructor
     public static class FlagPrice {
 
-        // 分时电价，单位分
-        private int elec;
+        // 分时电价，单位元
+        private BigDecimal elec;
 
-        // 分时服务费，单位分
-        private int serv;
+        // 分时服务费，单位元
+        private BigDecimal serv;
     }
 
 }
