@@ -120,6 +120,7 @@ public class YunKuaiChongV150RealTimeDataULCmd extends YunKuaiChongUplinkCmdExe 
 
         //16.计损充电度数（kWh)
         BigDecimal loseEnergy = reduceMagnification(byteBuf.readUnsignedIntLE(), 10000, 4);
+        additionalInfo.put("计损充电度数", loseEnergy);
 
         // 17.已充金额 （电费+服务费）*计损充电度数
         BigDecimal chargeAmount = reduceMagnification(byteBuf.readUnsignedIntLE(), 10000);
