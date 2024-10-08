@@ -59,7 +59,7 @@ public class YunKuaiChongV150SetPricingModelDLCmd extends YunKuaiChongDownlinkCm
         setPricingAckMsgBody.writeBytes(encodePricingId(pricingId));
 
         // 4字节电价+4字节服务费
-        BigDecimal accurate = new BigDecimal(1000);
+        BigDecimal accurate = new BigDecimal(100000);
         setPricingAckMsgBody.writeIntLE(new BigDecimal(flagPriceMap.get(TOP.ordinal()).getElec()).multiply(accurate).intValue());
         setPricingAckMsgBody.writeIntLE(new BigDecimal(flagPriceMap.get(TOP.ordinal()).getServ()).multiply(accurate).intValue());
         setPricingAckMsgBody.writeIntLE(new BigDecimal(flagPriceMap.get(PEAK.ordinal()).getElec()).multiply(accurate).intValue());

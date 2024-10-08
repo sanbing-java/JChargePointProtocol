@@ -122,7 +122,7 @@ public class YunKuaiChongV150RealTimeDataULCmd extends YunKuaiChongUplinkCmdExe 
         BigDecimal loseEnergy = reduceMagnification(byteBuf.readUnsignedIntLE(), 10000, 4);
 
         // 17.已充金额 （电费+服务费）*计损充电度数
-        BigDecimal chargeAmount = reduceMagnification(byteBuf.readUnsignedIntLE(), 100);
+        BigDecimal chargeAmount = reduceMagnification(byteBuf.readUnsignedIntLE(), 10000);
 
         // 18.硬件故障 测试发现需要使用小端计算bit, 然后对照故障表查询故障码
         byte[] warnCodeBytes = new byte[2];
@@ -155,12 +155,12 @@ public class YunKuaiChongV150RealTimeDataULCmd extends YunKuaiChongUplinkCmdExe 
                     .setPileCode(pileCode)
                     .setGunCode(gunCode)
                     .setTradeNo(tradeNo)
-                    .setOutputVoltage(outputVoltage.floatValue())
-                    .setOutputCurrent(outputCurrent.floatValue())
+                    .setOutputVoltage(outputVoltage.toPlainString())
+                    .setOutputCurrent(outputCurrent.toPlainString())
                     .setSoc(soc)
                     .setTotalChargingDurationMin(totalChargeTime)
-                    .setTotalChargingEnergyKWh(loseEnergy.floatValue())
-                    .setTotalChargingCostCent(chargeAmount.longValue())
+                    .setTotalChargingEnergyKWh(loseEnergy.toPlainString())
+                    .setTotalChargingCostYuan(chargeAmount.toPlainString())
                     .setAdditionalInfo(additionalInfo.toString());
 
             UplinkQueueMessage chargingProgressMessage = uplinkMessageBuilder(pileCode, tcpSession, yunKuaiChongUplinkMessage)
@@ -169,7 +169,6 @@ public class YunKuaiChongV150RealTimeDataULCmd extends YunKuaiChongUplinkCmdExe 
 
             tcpSession.getForwarder().sendMessage(chargingProgressMessage);
         }
-
     }
 
     /**

@@ -39,7 +39,7 @@ public class YunKuaiChongV150RemoteStartDLCmd extends YunKuaiChongDownlinkCmdExe
         String pileCode = remoteStartChargingRequest.getPileCode();
         String gunCode = remoteStartChargingRequest.getGunCode();
         String tradeNo = remoteStartChargingRequest.getTradeNo();
-        int limitCent = remoteStartChargingRequest.getLimitCent();
+        int limitYuan = remoteStartChargingRequest.getLimitYuan();
 
         byte[] cardNo = encodeCardNo(tradeNo);
 
@@ -55,7 +55,7 @@ public class YunKuaiChongV150RemoteStartDLCmd extends YunKuaiChongDownlinkCmdExe
         // 物理卡号
         msgBody.writeBytes(cardNo);
         // 账户余额
-        msgBody.writeIntLE(limitCent);
+        msgBody.writeIntLE(limitYuan);
 
         encodeAndWriteFlush(REMOTE_START_CHARGING,
                 msgBody,

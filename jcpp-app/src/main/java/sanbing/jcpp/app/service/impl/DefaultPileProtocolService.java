@@ -22,6 +22,7 @@ import sanbing.jcpp.infrastructure.queue.Callback;
 import sanbing.jcpp.proto.gen.ProtocolProto.*;
 import sanbing.jcpp.protocol.domain.DownlinkCmdEnum;
 
+import java.math.BigDecimal;
 import java.time.LocalTime;
 import java.util.*;
 
@@ -150,10 +151,10 @@ public class DefaultPileProtocolService implements PileProtocolService {
         periods.add(createPeriod(4, LocalTime.parse("18:00"), LocalTime.parse("00:00"), VALLEY));
 
         Map<PricingModelFlag, FlagPrice> flagPriceMap = new HashMap<>();
-        flagPriceMap.put(TOP, new FlagPrice(75, 45));
-        flagPriceMap.put(PEAK, new FlagPrice(75, 45));
-        flagPriceMap.put(FLAT, new FlagPrice(75, 45));
-        flagPriceMap.put(VALLEY, new FlagPrice(75, 45));
+        flagPriceMap.put(TOP, new FlagPrice(new BigDecimal("0.75"), new BigDecimal("0.45")));
+        flagPriceMap.put(PEAK, new FlagPrice(new BigDecimal("0.75"), new BigDecimal("0.45")));
+        flagPriceMap.put(FLAT, new FlagPrice(new BigDecimal("0.75"), new BigDecimal("0.45")));
+        flagPriceMap.put(VALLEY, new FlagPrice(new BigDecimal("0.75"), new BigDecimal("0.45")));
 
         PricingModel model = new PricingModel();
         model.setId(UUID.randomUUID());
@@ -161,8 +162,8 @@ public class DefaultPileProtocolService implements PileProtocolService {
         model.setPileCode(pileCode);
         model.setType(CHARGE);
         model.setRule(SPLIT_TIME);
-        model.setStandardElec(75);
-        model.setStandardServ(45);
+        model.setStandardElec(new BigDecimal("0.75"));
+        model.setStandardServ(new BigDecimal("0.45"));
         model.setFlagPriceList(flagPriceMap);
         model.setPeriodsList(periods);
 
