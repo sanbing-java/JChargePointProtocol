@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="INFO" monitorInterval="30">
+
+    <properties>
+        <Property name="LOG_DIR">/var/log/sanbing/jcpp</Property>
+        <Property name="LOG_PATTERN">%d{yyyy-MM-dd HH:mm:ss:SSS} [%X{TRACE_ID}] [%t] %p %c{1} %m%n%throwable</Property>
+    </properties>
+
+    <Appenders>
+
+        <Console name="CONSOLE" target="SYSTEM_OUT" follow="true">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </Console>
+
+        <RollingFile name="ROLLING_FILE" fileName="${LOG_DIR}/jcpp-app.log"
+                     filePattern="${LOG_DIR}/jcpp-app.%d{yyyy-MM-dd}-%i.log"
+                     immediateFlush="false">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+            </Policies>
+
+            <DefaultRolloverStrategy>
+                <Delete basePath="${LOG_DIR}" maxDepth="1">
+                    <IfFileName glob="*.log"/>
+                    <IfAccumulatedFileSize exceeds="10GB"/>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+
+    </Appenders>
+
+    <Loggers>
+
+        <logger name="org.springframework" level="INFO" />
+
+        <AsyncRoot level="INFO" includeLocation="true">
+            <AppenderRef ref="CONSOLE"/>
+            <AppenderRef ref="ROLLING_FILE"/>
+        </AsyncRoot>
+
+        <AsyncLogger name="sanbing.jcpp" level="INFO" additivity="false" includeLocation="false">
+            <AppenderRef ref="CONSOLE"/>
+            <AppenderRef ref="ROLLING_FILE"/>
+        </AsyncLogger>
+
+        <AsyncLogger name="sanbing.jcpp.protocol" level="${env:PROTOCOLS_LOG_LEVEL:-TRACE}"
+                     additivity="false" includeLocation="false">
+            <AppenderRef ref="CONSOLE"/>
+            <AppenderRef ref="ROLLING_FILE"/>
+        </AsyncLogger>
+
+    </Loggers>
+
+</configuration>

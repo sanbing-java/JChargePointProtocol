@@ -1,0 +1,40 @@
+#
+# 抖音关注：程序员三丙
+# 知识星球：https://t.zsxq.com/j9b21
+#
+
+FROM registry.cn-hangzhou.aliyuncs.com/sanbing/jcpp-base:latest AS base
+WORKDIR /app
+COPY . .
+RUN mvn -U -B -T 0.8C clean install -DskipTests
+
+#分层
+FROM registry.cn-hangzhou.aliyuncs.com/sanbing/openjdk:21-jdk-slim-bullseye AS builder
+WORKDIR /app
+COPY --from=base /app/jcpp-protocol-bootstrap/target/application.jar application.jar
+RUN java -Djarmode=tools -jar application.jar extract --layers --destination extracted
+
+# 执行
+FROM registry.cn-hangzhou.aliyuncs.com/sanbing/openjdk:21-jdk-slim-bullseye
+WORKDIR /app
+COPY --from=builder /app/extracted/dependencies/ ./
+COPY --from=builder /app/extracted/spring-boot-loader/ ./
+COPY --from=builder /app/extracted/snapshot-dependencies/ ./
+COPY --from=builder /app/extracted/application/ ./
+COPY --from=base /app/jcpp-protocol-bootstrap/target/conf ./config
+COPY --from=base /app/docker/start.sh .
+
+RUN mkdir -p /var/log/sanbing &&  \
+    mkdir -p /var/log/sanbing/jcpp &&  \
+    mkdir -p /var/log/sanbing/accesslog &&  \
+    mkdir -p /var/log/sanbing/gc &&  \
+    mkdir -p /var/log/sanbing/heapdump &&  \
+    chmod 700 -R /var/log/*
+
+RUN chmod a+x *.sh && mv start.sh /usr/bin
+
+EXPOSE 8081 8081
+
+CMD ["start.sh"]
+
+

@@ -1,0 +1,242 @@
+/**
+ * 抖音关注：程序员三丙
+ * 知识星球：https://t.zsxq.com/j9b21
+ */
+syntax = "proto3";
+
+package infrastructureProto;
+
+option java_package = "sanbing.jcpp.proto.gen";
+option java_outer_classname = "ProtocolProto";
+
+message UplinkQueueMessage {
+  int64 messageIdMSB = 1;
+  int64 messageIdLSB = 2;
+  int64 sessionIdMSB = 3;
+  int64 sessionIdLSB = 4;
+  string messageKey = 5;
+  string protocolName = 6;
+  bytes requestData = 10;
+  LoginRequest loginRequest = 21;
+  HeartBeatRequest heartBeatRequest = 22;
+  VerifyPricingRequest verifyPricingRequest = 23;
+  QueryPricingRequest queryPricingRequest = 24;
+  GunRunStatusProto gunRunStatusProto = 25;
+  ChargingProgressProto chargingProgressProto = 26;
+  SetPricingResponse setPricingResponse = 27;
+  RemoteStartChargingResponse remoteStartChargingResponse = 28;
+  RemoteStopChargingResponse remoteStopChargingResponse = 29;
+  TransactionRecord transactionRecord = 30;
+}
+
+message DownlinkRestMessage {
+  int64 messageIdMSB = 1;
+  int64 messageIdLSB = 2;
+  int64 sessionIdMSB = 3;
+  int64 sessionIdLSB = 4;
+  string protocolName = 6;
+  string pileCode = 7;
+  optional int64 requestIdMSB = 8;
+  optional int64 requestIdLSB = 9;
+  optional bytes requestData = 10;
+  string downlinkCmd = 11;
+  LoginResponse loginResponse = 20;
+  VerifyPricingResponse verifyPricingResponse = 21;
+  QueryPricingResponse queryPricingResponse = 22;
+  SetPricingRequest setPricingRequest = 23;
+  RemoteStartChargingRequest remoteStartChargingRequest = 24;
+  RemoteStopChargingRequest remoteStopChargingRequest = 25;
+  TransactionRecordAck transactionRecordAck = 26;
+}
+
+message LoginRequest {
+  string pileCode = 3;
+  string remoteAddress = 4;
+  string nodeId = 10;
+  string nodeWebapiIpPort = 11;
+  optional string additionalInfo = 20;
+}
+
+message LoginResponse {
+  bool success = 1;
+  string pileCode = 2;
+}
+
+message HeartBeatRequest {
+  string pileCode = 3;
+  string remoteAddress = 4;
+  string nodeId = 10;
+  string nodeWebapiIpPort = 11;
+  optional string additionalInfo = 20;
+}
+
+message VerifyPricingRequest {
+  string pileCode = 4;
+  int64 pricingId = 30;
+  optional string pricingModel = 31;
+  optional string additionalInfo = 20;
+}
+
+message VerifyPricingResponse {
+  bool success = 1;
+  int64 pricingId = 30;
+}
+
+message QueryPricingRequest {
+  string pileCode = 4;
+  optional string additionalInfo = 20;
+}
+
+message QueryPricingResponse {
+  string pileCode = 4;
+  int64 pricingId = 30;
+  PricingModelProto pricingModel = 1;
+}
+
+message PricingModelProto {
+  PricingModelType type = 3;
+  PricingModelRule rule = 4;
+  int32 standardElec = 5;
+  int32 standardServ = 6;
+  map<int32, FlagPriceProto> flagPrice = 8;
+  repeated PeriodProto period = 9;
+}
+
+message PeriodProto {
+  int32 sn = 1;
+  string begin = 2;
+  string end = 3;
+  PricingModelFlag flag = 4;
+}
+
+message FlagPriceProto {
+  PricingModelFlag flag = 1;
+  int32 elec = 2;
+  int32 serv = 3;
+}
+
+enum PricingModelType {
+  CHARGE = 0; // 充电费率模型
+  DISCHARGE = 1; // 放电费率模型
+}
+
+enum PricingModelRule {
+  STANDARD = 0;
+  SPLIT_TIME = 1;
+}
+
+enum PricingModelFlag {
+  TOP = 0; // 尖峰
+  PEAK = 1; // 峰
+  FLAT = 2; // 平
+  VALLEY = 3; // 谷
+  DEEP = 4; // 深谷
+}
+
+enum GunRunStatus {
+  IDLE = 0;              // 空闲
+  INSERTED = 1;       // 已插枪
+  CHARGING = 2;         // 充电中
+  CHARGE_COMPLETE = 3;   // 充电完成
+  DISCHARGE_READY = 4;   // 放电准备
+  DISCHARGING = 5;      // 放电中
+  DISCHARGE_COMPLETE = 6; // 放电完成
+  RESERVED = 7;         // 预约
+  FAULT = 8;            // 故障
+  UNKNOWN = 9;           // 未知
+}
+
+message GunRunStatusProto {
+  int64 ts = 1;
+  string pileCode = 4;
+  string gunCode = 5;
+  GunRunStatus GunRunStatus = 41;
+  repeated string faultMessages = 6;
+  optional string additionalInfo = 20;
+}
+
+message ChargingProgressProto {
+  int64 ts = 1;
+  string pileCode = 4;
+  string gunCode = 5;
+  string tradeNo = 6;
+  float outputVoltage = 7;
+  float outputCurrent = 8;
+  float soc = 9;
+  int32 totalChargingDurationMin = 10;
+  float totalChargingEnergyKWh = 11;
+  int64 totalChargingCostCent = 12;
+  optional string additionalInfo = 20;
+}
+
+message SetPricingRequest {
+  string pileCode = 4;
+  int64 pricingId = 30;
+  PricingModelProto pricingModel = 1;
+}
+
+message SetPricingResponse {
+  bool success = 1;
+  string pileCode = 4;
+  int64 pricingId = 30;
+}
+
+message RemoteStartChargingRequest {
+  string pileCode = 4;
+  string gunCode = 5;
+  string tradeNo = 6;
+  int32 limitCent = 7;
+  optional string additionalInfo = 20;
+}
+
+message RemoteStartChargingResponse {
+  int64 ts = 1;
+  string pileCode = 4;
+  string gunCode = 5;
+  string tradeNo = 6;
+  bool success = 7;
+  string failReason = 8;
+  optional string additionalInfo = 20;
+}
+
+message RemoteStopChargingRequest {
+  string pileCode = 4;
+  string gunCode = 5;
+}
+
+message RemoteStopChargingResponse {
+  int64 ts = 1;
+  string pileCode = 4;
+  string gunCode = 5;
+  bool success = 7;
+  string failReason = 8;
+  optional string additionalInfo = 20;
+}
+
+message TransactionRecord {
+  string pileCode = 4;
+  string gunCode = 5;
+  string tradeNo = 6;
+  int64 startTs = 51;
+  int64 endTs = 52;
+  float topEnergyKWh = 53;
+  int64 topAmountCent = 54;
+  float peakEnergyKWh = 55;
+  int64 peakAmountCent = 56;
+  float flatEnergyKWh = 57;
+  int64 flatAmountCent = 58;
+  float valleyEnergyKWh = 59;
+  int64 valleyAmountCent = 60;
+  float deepEnergyKWh = 61;
+  int64 deepAmountCent = 62;
+  float totalEnergyKWh = 63;
+  int64 totalAmountCent = 64;
+  int64 tradeTs = 65;
+  string stopReason = 66;
+  optional string additionalInfo = 20;
+}
+
+message TransactionRecordAck {
+  string tradeNo = 6;
+  bool success = 7;
+}

@@ -1,0 +1,152 @@
+﻿server:
+  address: "${HTTP_BIND_ADDRESS:0.0.0.0}"
+  port: "${HTTP_BIND_PORT:8081}"
+  undertow:
+    buffer-size: "${SERVER_UNDERTOW_BUFFER_SIZE:16384}"
+    directBuffers: "${SERVER_UNDERTOW_DIRECT_BUFFERS:true}"
+    threads:
+      io: "${SERVER_UNDERTOW_THREADS_IO:4}"
+      worker: "${SERVER_UNDERTOW_THREADS_WORKER:128}"
+    max-http-post-size: "${SERVER_UNDERTOW_MAX_HTTP_POST_SIZE:10MB}"
+    no-request-timeout: "${SERVER_UNDERTOW_NO_REQUEST_TIMEOUT:10000}"
+    accesslog:
+      enabled: true
+      pattern: "%t %a %r %s (%D ms)"
+      dir: /var/log/sanbing/accesslog
+    options:
+      server:
+        record-request-start-time: true
+
+spring:
+  application:
+    name: "${SPRING_APPLICATION_NAME:java-charge-point-protocol-server}"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '${METRICS_ENDPOINTS_EXPOSE:prometheus,health}'
+  endpoint:
+    health:
+      show-details: always
+
+metrics:
+  enabled: "${METRICS_ENABLED:true}"
+  timer:
+    percentiles: "${METRICS_TIMER_PERCENTILES:0.5}"
+
+service:
+  # 服务类型：纯协议解析前置 - protocol，纯应用后端 - app，单体服务(包含protocol和app) - monolith
+  type: "${SERVICE_TYPE:protocol}"
+  # 可自定义的服务ID，如果不指定，则默认为HOSTNAME
+  id: "${SERVICE_ID:}"
+  protocols:
+    sessions:
+      default-inactivity-timeout-in-sec: "${PROTOCOLS_SESSIONS_DEFAULT_INACTIVITY_TIMEOUT_IN_SEC:600}"
+      default-state-check-interval-in-sec: "${PROTOCOLS_SESSIONS_DEFAULT_STATE_CHECK_INTERVAL_IN_SEC:60}"
+    yunkuaichongV150:
+      enabled: "${PROTOCOLS_YUNKUAICHONGV150_ENABLED:true}"
+      listener:
+        tcp:
+          bind-address: "${PROTOCOLS_YUNKUAICHONGV150_LISTENER_TCP_BIND_ADDRESS:0.0.0.0}"
+          bind-port: "${PROTOCOLS_YUNKUAICHONGV150_LISTENER_TCP_BIND_PORT:38001}"
+          boss-group-thread_count: "${PROTOCOLS_YUNKUAICHONGV150_LISTENER_TCP_BOSS_GROUP_THREADS:4}"
+          worker-group-thread-count: "${PROTOCOLS_YUNKUAICHONGV150_LISTENER_TCP_WORKER_GROUP_THREADS:16}"
+          so-keep-alive: "${PROTOCOLS_YUNKUAICHONGV150_LISTENER_TCP_SO_KEEPALIVE:true}"
+          so-backlog: "${PROTOCOLS_YUNKUAICHONGV150_LISTENER_TCP_SO_BACKLOG:128}"
+          so-rcvbuf: "${PROTOCOLS_YUNKUAICHONGV150_LISTENER_TCP_SO_RCVBUF:65536}"
+          so-sndbuf: "${PROTOCOLS_YUNKUAICHONGV150_LISTENER_TCP_SO_SNDBUF:65536}"
+          nodelay: "${PROTOCOLS_YUNKUAICHONGV150_LISTENER_TCP_NODELAY:true}"
+          handler:
+            idle-timeout-seconds: "${PROTOCOLS_YUNKUAICHONGV150_LISTENER_TCP_HANDLER_IDLE_TIMEOUT_SECONDS:600}"
+            max_connections: "${PROTOCOLS_YUNKUAICHONGV150_LISTENER_TCP_HANDLER_MAX_CONNECTIONS:100000}"
+            # 默认为二进制类型的拆包器
+            # 可选JSON类型的拆包器  "${PROTOCOLS_YUNKUAICHONGV150_NETTY_HANDLER_BINARY_CONFIGURATION:type:JSON}"
+            # 可选纯文本类型的拆包器 "${PROTOCOLS_YUNKUAICHONGV150_NETTY_HANDLER_BINARY_CONFIGURATION:type:TEXT;maxFrameLength:128;stripDelimiter:true;messageSeparator:null;charsetName:UTF-8}"
+            configuration: "${PROTOCOLS_YUNKUAICHONGV150_NETTY_HANDLER_BINARY_CONFIGURATION:type:BINARY;decoder:sanbing.jcpp.protocol.listener.tcp.decoder.JCPPLengthFieldBasedFrameDecoder;byteOrder:LITTLE_ENDIAN;head:68;lengthFieldOffset:1;lengthFieldLength:1;lengthAdjustment:2;initialBytesToStrip:0}"
+      forwarder:
+        # 作为前置服务单独启时可选：kafka、kafka-sharding，未来计划扩展RocketMQ, GRpc、REST
+        type: "${PROTOCOLS_YUNKUAICHONGV150_FORWARD_TYPE:kafka}"
+        kafka:
+          topic: "${PROTOCOLS_YUNKUAICHONGV150_FORWARD_KAFKA_TOPIC:protocol_uplink}"
+          jcpp-partition: "${PROTOCOLS_YUNKUAICHONGV150_FORWARD_KAFKA_JCPP_PARTITION:true}" # 是否利用JCPP的分片框架
+          # 以下配置只有在service.type为protocol时且jcpp-partition为false时才生效
+          bootstrap-servers: "${PROTOCOLS_YUNKUAICHONGV150_FORWARD_KAFKA_SERVERS:10.102.12.102:9092}"
+          acks: "${PROTOCOLS_YUNKUAICHONGV150_FORWARD_KAFKA_ACKS:1}"
+          # # 可选 protobuf（推荐）、json
+          encoder: "${PROTOCOLS_YUNKUAICHONGV150_FORWARD_KAFKA_ENCODER:protobuf}"
+          retries: "${PROTOCOLS_YUNKUAICHONGV150_FORWARD_KAFKA_RETRIES:1}"
+          compression-type: "${PROTOCOLS_YUNKUAICHONGV150_FORWARD_KAFKA_COMPRESSION_TYPE:lz4}" # none, gzip, snappy, lz4, zstd
+          batch-size: "${PROTOCOLS_YUNKUAICHONGV150_FORWARD_KAFKA_BATCH_SIZE:16384}"
+          linger-ms: "${PROTOCOLS_YUNKUAICHONGV150_FORWARD_KAFKA_LINGER_MS:0}"
+          buffer-memory: "${PROTOCOLS_YUNKUAICHONGV150_FORWARD_BUFFER_MEMORY:33554432}"
+          other-properties: "${PROTOCOLS_YUNKUAICHONGV150_FORWARD_QUEUE_KAFKA_OTHER_PROPERTIES:}"
+
+# 应用程序服务注册中心配置
+zk:
+  enabled: "${ZOOKEEPER_ENABLED:true}"
+  url: "${ZOOKEEPER_URL:zookeeper:2181}"
+  retry-interval-ms: "${ZOOKEEPER_RETRY_INTERVAL_MS:3000}"
+  connection-timeout-ms: "${ZOOKEEPER_CONNECTION_TIMEOUT_MS:3000}"
+  session-timeout-ms: "${ZOOKEEPER_SESSION_TIMEOUT_MS:3000}"
+  zk-dir: "${ZOOKEEPER_NODES_DIR:/jcpp}"
+  recalculate-delay: "${ZOOKEEPER_RECALCULATE_DELAY_MS:0}"
+
+# 队列配置
+queue:
+  # 在protocol服务中只能选择 kafka
+  type: "${QUEUE_TYPE:kafka}"
+  partitions:
+    hash_function_name: "${QUEUE_PARTITIONS_HASH_FUNCTION_NAME:murmur3_128}" # murmur3_32, murmur3_128 or sha256
+  in_memory:
+    stats:
+      print-interval-ms: "${QUEUE_IN_MEMORY_STATS_PRINT_INTERVAL_MS:60000}"
+  kafka:
+    bootstrap-servers: "${KAFKA_SERVERS:kafka:9092}"
+    ssl:
+      enabled: "${KAFKA_SSL_ENABLED:false}"
+      truststore-location: "${KAFKA_SSL_TRUSTSTORE_LOCATION:}"
+      truststore-password: "${KAFKA_SSL_TRUSTSTORE_PASSWORD:}"
+      keystore-location: "${KAFKA_SSL_KEYSTORE_LOCATION:}"
+      keystore-password: "${KAFKA_SSL_KEYSTORE_PASSWORD:}"
+      key-password: "${KAFKA_SSL_KEY_PASSWORD:}"
+    acks: "${KAFKA_ACKS:1}"
+    retries: "${KAFKA_RETRIES:1}"
+    compression-type: "${KAFKA_COMPRESSION_TYPE:lz4}" # none, gzip, snappy, lz4, zstd
+    batch-size: "${KAFKA_BATCH_SIZE:1048576}"
+    linger-ms: "${KAFKA_LINGER_MS:1}"
+    max-request-size: "${KAFKA_MAX_REQUEST_SIZE:1048576}"
+    max-in-flight-requests-per-connection: "${KAFKA_MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION:5}"
+    buffer-memory: "${BUFFER_MEMORY:33554432}"
+    replication-factor: "${QUEUE_KAFKA_REPLICATION_FACTOR:1}"
+    max-poll-interval-ms: "${QUEUE_KAFKA_MAX_POLL_INTERVAL_MS:300000}"
+    max-poll-records: "${QUEUE_KAFKA_MAX_POLL_RECORDS:10240}"
+    max-partition-fetch-bytes: "${QUEUE_KAFKA_MAX_PARTITION_FETCH_BYTES:16777216}"
+    fetch-max-bytes: "${QUEUE_KAFKA_FETCH_MAX_BYTES:134217728}"
+    request-timeout-ms: "${QUEUE_KAFKA_REQUEST_TIMEOUT_MS:30000}"
+    session-timeout-ms: "${QUEUE_KAFKA_SESSION_TIMEOUT_MS:10000}"
+    auto-offset-reset: "${QUEUE_KAFKA_AUTO_OFFSET_RESET:earliest}"
+    other-inline: "${QUEUE_KAFKA_OTHER_PROPERTIES:}"
+    topic-properties:
+      app: "${QUEUE_KAFKA_APP_TOPIC_PROPERTIES:retention.ms:604800000;segment.bytes:52428800;retention.bytes:1048576000;partitions:1;min.insync.replicas:1}"
+    consumer-stats:
+      enabled: "${QUEUE_KAFKA_CONSUMER_STATS_ENABLED:true}"
+      print-interval-ms: "${QUEUE_KAFKA_CONSUMER_STATS_MIN_PRINT_INTERVAL_MS:60000}"
+      kafka-response-timeout-ms: "${QUEUE_KAFKA_CONSUMER_STATS_RESPONSE_TIMEOUT_MS:1000}"
+  app:
+    topic: "${QUEUE_APP_TOPIC:protocol_uplink}"
+    poll-interval: "${QUEUE_APP_POLL_INTERVAL_MS:5}"
+    pack-processing-timeout: "${QUEUE_APP_PACK_PROCESSING_TIMEOUT_MS:2000}"
+    consumer-per-partition: "${QUEUE_APP_CONSUMER_PER_PARTITION:true}"
+    partitions: "${QUEUE_APP_PARTITIONS:10}"
+    # 可选 protobuf（推荐）、json，需要跟..forwarder.kafka.encoder保持一致
+    decoder: "${QUEUE_APP_DECODER:protobuf}"
+    stats:
+      enabled: "${QUEUE_APP_STATS_ENABLED:true}"
+      print-interval-ms: "${QUEUE_APP_STATS_PRINT_INTERVAL_MS:60000}"
+
+thread-pool:
+  sharding:
+    hash_function_name: "${THREAD_POOL_SHARDING_HASH_FUNCTION_NAME:murmur3_128}" # murmur3_32, murmur3_128 or sha256
+    parallelism: "${THREAD_POOL_SHARDING_PARALLELISM:128}"
+    stats-print-interval-ms: "${THREAD_POOL_SHARDING_STATS_PRINT_INTERVAL_MS:10000}"

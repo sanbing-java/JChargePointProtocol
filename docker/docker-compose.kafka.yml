@@ -1,0 +1,57 @@
+#
+# 抖音关注：程序员三丙
+# 知识星球：https://t.zsxq.com/j9b21
+#
+
+networks:
+  sanbing-network:
+    driver: bridge
+    name: sanbing-network
+    ipam:
+      config:
+        - subnet: 10.10.0.0/24
+
+services:
+  zookeeper:
+    image: registry.cn-hangzhou.aliyuncs.com/sanbing/zookeeper:3.9
+    restart: always
+    networks:
+      - sanbing-network
+    ports:
+      - "2181:2181"
+    environment:
+      ALLOW_ANONYMOUS_LOGIN: true
+  kafka:
+    image: registry.cn-hangzhou.aliyuncs.com/sanbing/kafka:3.7.1
+    restart: always
+    depends_on:
+      - zookeeper
+    networks:
+      - sanbing-network
+    ports:
+      - "9092:9092"
+    env_file:
+      - kafka.env
+  kafka-exporter:
+    image: registry.cn-hangzhou.aliyuncs.com/sanbing/kafka-exporter:latest
+    restart: always
+    depends_on:
+      - kafka
+    networks:
+      - sanbing-network
+    ports:
+      - "9308:9308"
+    command:
+      - '--kafka.server=kafka:9092'
+  # 切换示例项目的队列类型为kafka
+  example:
+    restart: always
+    image: example:latest
+    depends_on:
+      - kafka
+    networks:
+      - sanbing-network
+    ports:
+      - "8080:8080"
+    env_file:
+      - queue-kafka.env
