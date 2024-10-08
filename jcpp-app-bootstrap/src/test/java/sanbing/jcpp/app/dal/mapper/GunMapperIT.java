@@ -17,14 +17,14 @@ import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static sanbing.jcpp.app.dal.mapper.PileMapperTest.NORMAL_PILE_ID;
-import static sanbing.jcpp.app.dal.mapper.StationMapperTest.NORMAL_STATION_ID;
-import static sanbing.jcpp.app.dal.mapper.UserMapperTest.NORMAL_USER_ID;
+import static sanbing.jcpp.app.dal.mapper.PileMapperIT.NORMAL_PILE_ID;
+import static sanbing.jcpp.app.dal.mapper.StationMapperIT.NORMAL_STATION_ID;
+import static sanbing.jcpp.app.dal.mapper.UserMapperIT.NORMAL_USER_ID;
 
 /**
  * @author baigod
  */
-public class GunMapperTest extends AbstractTestBase {
+class GunMapperIT extends AbstractTestBase {
     static final UUID[] NORMAL_GUN_ID = new UUID[]{
             UUID.fromString("8f1ffb5b-e536-4f2b-8cd0-31f7d0348a44"),
             UUID.fromString("ae256617-b747-4110-b27a-00773e03bed1"),

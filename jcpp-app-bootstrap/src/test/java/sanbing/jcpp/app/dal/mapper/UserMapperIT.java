@@ -18,7 +18,7 @@ import java.util.UUID;
 /**
  * @author baigod
  */
-class UserMapperTest extends AbstractTestBase {
+class UserMapperIT extends AbstractTestBase {
     static final UUID NORMAL_USER_ID = UUID.fromString("21cbf909-a23a-4396-840a-f34061f59f95");
 
     @Resource

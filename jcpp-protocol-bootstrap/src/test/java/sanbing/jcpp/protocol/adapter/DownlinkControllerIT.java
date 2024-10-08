@@ -13,7 +13,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import jakarta.annotation.Resource;
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,7 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static sanbing.jcpp.protocol.listener.tcp.configs.BinaryHandlerConfiguration.LITTLE_ENDIAN_BYTE_ORDER;
 
-class DownlinkControllerTest extends AbstractProtocolTestBase {
+class DownlinkControllerIT extends AbstractProtocolTestBase {
     final String PROTOCOL_NAME = "yunkuaichongV150";
 
     @Value("${service.protocols.yunkuaichongV150.listener.tcp.handler.configuration}")
@@ -81,7 +81,7 @@ class DownlinkControllerTest extends AbstractProtocolTestBase {
                                     @Override
                                     protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
 
-                                        log.info("接收到字节码:{}", msg);
+                                        log.info("接收到下行报文:{}", msg);
                                     }
                                 });
                     }
@@ -92,8 +92,8 @@ class DownlinkControllerTest extends AbstractProtocolTestBase {
         channel = f.channel();
     }
 
-    @After
-    public void tearDown() {
+    @AfterEach
+    void tearDown() {
         if (channel != null) {
             channel.close();
         }
@@ -101,7 +101,7 @@ class DownlinkControllerTest extends AbstractProtocolTestBase {
     }
 
     @Test
-    void remoteStartCharging() throws Exception {
+    void remoteStartChargingTest() throws Exception {
         // 先发送一段登录
         channel.writeAndFlush(Unpooled.wrappedBuffer(HexUtil.decodeHex("6822001900012023121200001001011047562e393572313300898604d11722d0348606024E87"))).sync();
 

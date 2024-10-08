@@ -16,7 +16,7 @@ import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.stream.IntStream;
 
-class RedisCacheConfigurationTest extends AbstractTestBase {
+class RedisCacheConfigurationIT extends AbstractTestBase {
 
     @Resource
     RedisTemplate<String, Object> redisTemplate;

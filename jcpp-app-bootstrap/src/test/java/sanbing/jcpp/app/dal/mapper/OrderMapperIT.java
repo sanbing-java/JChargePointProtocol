@@ -19,15 +19,15 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static sanbing.jcpp.app.dal.mapper.GunMapperTest.NORMAL_GUN_ID;
-import static sanbing.jcpp.app.dal.mapper.PileMapperTest.NORMAL_PILE_ID;
-import static sanbing.jcpp.app.dal.mapper.StationMapperTest.NORMAL_STATION_ID;
-import static sanbing.jcpp.app.dal.mapper.UserMapperTest.NORMAL_USER_ID;
+import static sanbing.jcpp.app.dal.mapper.GunMapperIT.NORMAL_GUN_ID;
+import static sanbing.jcpp.app.dal.mapper.PileMapperIT.NORMAL_PILE_ID;
+import static sanbing.jcpp.app.dal.mapper.StationMapperIT.NORMAL_STATION_ID;
+import static sanbing.jcpp.app.dal.mapper.UserMapperIT.NORMAL_USER_ID;
 
 /**
  * @author baigod
  */
-public class OrderMapperTest extends AbstractTestBase {
+class OrderMapperIT extends AbstractTestBase {
 
     @Resource
     OrderMapper orderMapper;

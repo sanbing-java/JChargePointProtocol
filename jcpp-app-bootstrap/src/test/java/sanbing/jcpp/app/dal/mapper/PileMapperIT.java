@@ -19,13 +19,13 @@ import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static sanbing.jcpp.app.dal.mapper.StationMapperTest.NORMAL_STATION_ID;
-import static sanbing.jcpp.app.dal.mapper.UserMapperTest.NORMAL_USER_ID;
+import static sanbing.jcpp.app.dal.mapper.StationMapperIT.NORMAL_STATION_ID;
+import static sanbing.jcpp.app.dal.mapper.UserMapperIT.NORMAL_USER_ID;
 
 /**
  * @author baigod
  */
-public class PileMapperTest extends AbstractTestBase {
+class PileMapperIT extends AbstractTestBase {
     static final UUID[] NORMAL_PILE_ID = new UUID[]{
             UUID.fromString("fd7b3f60-db6c-4347-bff3-3c922985b95c"),
             UUID.fromString("fa621927-6458-4e09-9666-99c52230db2b"),

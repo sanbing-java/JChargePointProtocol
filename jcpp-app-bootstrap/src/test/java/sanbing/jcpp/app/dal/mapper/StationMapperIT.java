@@ -16,12 +16,12 @@ import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static sanbing.jcpp.app.dal.mapper.UserMapperTest.NORMAL_USER_ID;
+import static sanbing.jcpp.app.dal.mapper.UserMapperIT.NORMAL_USER_ID;
 
 /**
  * @author baigod
  */
-class StationMapperTest extends AbstractTestBase {
+class StationMapperIT extends AbstractTestBase {
     static final UUID NORMAL_STATION_ID = UUID.fromString("07d80c81-fe99-4a1f-a6aa-dc4d798b5626");
 
     @Resource
