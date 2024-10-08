@@ -159,7 +159,7 @@ public class YunKuaiChongV150RealTimeDataULCmd extends YunKuaiChongUplinkCmdExe 
                     .setOutputCurrent(outputCurrent.toPlainString())
                     .setSoc(soc)
                     .setTotalChargingDurationMin(totalChargeTime)
-                    .setTotalChargingEnergyKWh(loseEnergy.toPlainString())
+                    .setTotalChargingEnergyKWh(chargeEnergy.toPlainString())
                     .setTotalChargingCostYuan(chargeAmount.toPlainString())
                     .setAdditionalInfo(additionalInfo.toString());
 
