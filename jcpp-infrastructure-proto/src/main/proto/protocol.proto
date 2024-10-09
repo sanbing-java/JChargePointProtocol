@@ -50,7 +50,8 @@ message DownlinkRestMessage {
 }
 
 message LoginRequest {
-  string pileCode = 3;
+  string pileCode = 2;
+  string credential = 3;
   string remoteAddress = 4;
   string nodeId = 10;
   string nodeWebapiIpPort = 11;

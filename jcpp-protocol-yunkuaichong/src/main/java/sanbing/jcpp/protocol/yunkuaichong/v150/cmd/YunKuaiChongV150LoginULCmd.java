@@ -63,6 +63,7 @@ public class YunKuaiChongV150LoginULCmd extends YunKuaiChongUplinkCmdExe {
         // 转发到后端
         LoginRequest loginRequest = LoginRequest.newBuilder()
                 .setPileCode(pileCode)
+                .setCredential(pileCode)
                 .setRemoteAddress(tcpSession.getAddress().toString())
                 .setNodeId(ctx.getServiceInfoProvider().getServiceId())
                 .setNodeWebapiIpPort(ctx.getServiceInfoProvider().getServiceWebapiEndpoint())
