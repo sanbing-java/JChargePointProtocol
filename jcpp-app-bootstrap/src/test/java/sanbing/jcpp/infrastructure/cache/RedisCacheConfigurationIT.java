@@ -7,6 +7,7 @@ package sanbing.jcpp.infrastructure.cache;
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.springframework.data.redis.core.*;
 import sanbing.jcpp.AbstractTestBase;
 
@@ -16,6 +17,7 @@ import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.stream.IntStream;
 
+@EnabledIfSystemProperty(named = "cache.type", matches = "redis")
 class RedisCacheConfigurationIT extends AbstractTestBase {
 
     @Resource

@@ -36,6 +36,8 @@
         <guava.version>33.3.0-jre</guava.version>
         <jacoco.version>0.8.12</jacoco.version>
         <itCoverageAgent/>
+        <skip.unit.tests/>
+        <skip.integration.tests/>
         <os-maven-plugin.version>1.7.0</os-maven-plugin.version>
         <disruptor.version>3.4.4</disruptor.version>
         <protobuf.version>3.21.9</protobuf.version>
@@ -52,18 +54,18 @@
     </properties>
 
     <profiles>
-        <!-- Unit test only -->
+        <!-- 默认不运行测试用例 -->
         <profile>
             <id>dev</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <skip.unit.test>true</skip.unit.test>
-                <skip.integration.test>true</skip.integration.test>
+                <skip.unit.tests>true</skip.unit.tests>
+                <skip.integration.tests>true</skip.integration.tests>
             </properties>
         </profile>
-        <!-- Unit test only -->
+        <!-- 只运行单侧 -->
         <profile>
             <id>unit-test</id>
             <properties>
@@ -71,7 +73,7 @@
                 <skip.integration.tests>true</skip.integration.tests>
             </properties>
         </profile>
-        <!-- Integration test only -->
+        <!-- 只运行集测 -->
         <profile>
             <id>integration-test</id>
             <properties>
@@ -79,7 +81,7 @@
                 <skip.integration.tests>false</skip.integration.tests>
             </properties>
         </profile>
-        <!-- Unit and Integration tests combined -->
+        <!-- 同时运行单侧和集测 -->
         <profile>
             <id>test-all</id>
             <properties>
@@ -368,7 +370,7 @@
                         -XX:+UseStringDeduplication -XX:MaxGCPauseMillis=20
                         --add-opens java.base/java.lang.reflect=ALL-UNNAMED
                     </argLine>
-                    <skipTests>${skip.unit.test}</skipTests>
+                    <skipTests>${skip.unit.tests}</skipTests>
                     <forkCount>1</forkCount>
                     <runOrder>filesystem</runOrder>
                     <includes>
@@ -392,11 +394,19 @@
                         <artifactId>surefire-junit47</artifactId>
                         <version>${maven-surefire-plugin.version}</version>
                     </dependency>
+                    <dependency>
+                        <groupId>org.apache.maven.surefire</groupId>
+                        <artifactId>surefire-junit-platform</artifactId>
+                        <version>${maven-surefire-plugin.version}</version>
+                    </dependency>
                 </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
+                <configuration>
+                    <skipTests>${skip.integration.tests}</skipTests>
+                </configuration>
                 <executions>
                     <execution>
                         <id>integration-tests</id>
@@ -405,7 +415,6 @@
                             <goal>verify</goal>
                         </goals>
                         <configuration>
-                            <skipTests>${skip.integration.test}</skipTests>
                             <includes>
                                 <include>**/*IntegrationTest.java</include>
                                 <include>**/IT*.java</include>
