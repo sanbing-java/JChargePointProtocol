@@ -7,7 +7,6 @@ package sanbing.jcpp.protocol.provider;
 import sanbing.jcpp.protocol.domain.ProtocolSession;
 
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * @author baigod
@@ -21,7 +20,7 @@ public interface ProtocolSessionRegistryProvider {
 
     void unregister(UUID sessionId);
 
-    CompletableFuture<ProtocolSession> get(UUID sessionId);
+    ProtocolSession get(UUID sessionId);
 
     /**
      * 活跃会话

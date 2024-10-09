@@ -160,7 +160,7 @@ public class YunKuaiChongV15ProtocolMessageProcessor extends ProtocolMessageProc
     }
 
     @Override
-    public void downlinkHandle(SessionToHandlerMsg sessionToHandlerMsg) throws Exception {
+    public void downlinkHandle(SessionToHandlerMsg sessionToHandlerMsg) {
         TcpSession session = (TcpSession) sessionToHandlerMsg.session();
 
         DownlinkRestMessage protocolDownlinkMsg = sessionToHandlerMsg.downlinkMsg();

@@ -109,7 +109,7 @@ class DownlinkControllerIT extends AbstractProtocolTestBase {
         Thread.sleep(1000);
 
         UUID messageId = UUID.randomUUID();
-        ProtocolSession protocolSession = sessionRegistryProvider.getSESSION_CACHE().asMap().values().stream().findFirst().get().get();
+        ProtocolSession protocolSession = sessionRegistryProvider.getSessionCache().asMap().values().stream().findFirst().get();
         UUID sessionId = protocolSession.getId();
         UUID requestId = UUID.randomUUID();
 
