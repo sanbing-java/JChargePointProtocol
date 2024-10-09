@@ -33,12 +33,12 @@ public class ShardingThreadPool {
     @Value("${thread-pool.sharding.hash_function_name:murmur3_128}")
     private String hashFunctionName;
 
-    @Value("${thread-pool.sharding.parallelism:128}")
+    @Value("${thread-pool.sharding.parallelism:8}")
     private int parallelism;
 
     private HashFunction hashFunction;
 
-    private final Map<Integer, ExecutorService> EXECUTOR_SERVICE_MAP = new ConcurrentHashMap<>(128);
+    private final Map<Integer, ExecutorService> EXECUTOR_SERVICE_MAP = new ConcurrentHashMap<>(8);
 
     @PostConstruct
     public void init() {
@@ -59,13 +59,16 @@ public class ShardingThreadPool {
 
             ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) v;
 
-            log.info("分区 {}/{} 的线程池中剩余 {} 条待执行任务,当前正在执行的线程数 {}, 已完成任务 {} / {}",
-                    k,
-                    EXECUTOR_SERVICE_MAP.size(),
-                    threadPoolExecutor.getQueue().size(),
-                    threadPoolExecutor.getActiveCount(),
-                    threadPoolExecutor.getCompletedTaskCount(),
-                    threadPoolExecutor.getTaskCount());
+            int size = threadPoolExecutor.getQueue().size();
+
+            if (size > 1) {
+                log.info("分区 {} 的线程池中剩余 {} 条待执行任务,当前正在执行的线程数 {}, 已完成任务 {} / {}",
+                        k,
+                        size,
+                        threadPoolExecutor.getActiveCount(),
+                        threadPoolExecutor.getCompletedTaskCount(),
+                        threadPoolExecutor.getTaskCount());
+            }
         });
     }
 

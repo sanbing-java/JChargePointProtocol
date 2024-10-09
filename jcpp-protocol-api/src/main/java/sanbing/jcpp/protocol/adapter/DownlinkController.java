@@ -20,7 +20,6 @@ import sanbing.jcpp.protocol.domain.ProtocolSession;
 import sanbing.jcpp.protocol.provider.ProtocolSessionRegistryProvider;
 
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * @author baigod
@@ -44,14 +43,14 @@ public class DownlinkController {
         final DeferredResult<ResponseEntity<String>> response = new DeferredResult<>(onDownlinkTimeout,
                 ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT).build());
 
-        UUID protocolSessionId = new UUID(downlinkMsg.getSessionIdMSB(),downlinkMsg.getSessionIdLSB()) ;
+        UUID protocolSessionId = new UUID(downlinkMsg.getSessionIdMSB(), downlinkMsg.getSessionIdLSB());
 
-        CompletableFuture<ProtocolSession> protocolSessionCompletableFuture = protocolSessionRegistryProvider.get(protocolSessionId);
+        ProtocolSession protocolSession = protocolSessionRegistryProvider.get(protocolSessionId);
 
-        protocolSessionCompletableFuture.thenAccept(session -> {
-            if (session != null) {
+        try {
+            if (protocolSession != null) {
 
-                session.onDownlink(downlinkMsg);
+                protocolSession.onDownlink(downlinkMsg);
 
                 response.setResult(ResponseEntity.status(HttpStatus.OK).build());
             } else {
@@ -60,17 +59,15 @@ public class DownlinkController {
 
                 response.setResult(ResponseEntity.status(HttpStatus.NOT_FOUND).body("Protocol Session not found for ID:" + protocolSessionId));
             }
-        }).whenComplete((unused, throwable) -> {
-            if (throwable != null) {
+        } catch (Exception e) {
 
-                log.warn("下发报文时处理失败 sessionId: {}", protocolSessionId, throwable);
+            log.warn("下发报文时处理失败 sessionId: {}", protocolSessionId, e);
 
-                if (!response.isSetOrExpired()) {
+            if (!response.isSetOrExpired()) {
 
-                    response.setResult(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(throwable.getMessage()));
-                }
+                response.setResult(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage()));
             }
-        });
+        }
 
         return response;
     }

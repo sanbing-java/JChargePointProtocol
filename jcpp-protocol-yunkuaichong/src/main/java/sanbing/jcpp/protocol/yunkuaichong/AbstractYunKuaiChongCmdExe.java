@@ -121,10 +121,10 @@ public class AbstractYunKuaiChongCmdExe {
     }
 
     protected void encodeAndWriteFlush(YunKuaiChongV150DownlinkCmdEnum downlinkCmd,
-                                    int seqNo,
-                                    int encryptionFlag,
-                                    ByteBuf msgBody,
-                                    TcpSession tcpSession) {
+                                       int seqNo,
+                                       int encryptionFlag,
+                                       ByteBuf msgBody,
+                                       TcpSession tcpSession) {
 
         byte[] encode = encode(downlinkCmd, seqNo, encryptionFlag, msgBody);
 
@@ -132,8 +132,8 @@ public class AbstractYunKuaiChongCmdExe {
     }
 
     protected void encodeAndWriteFlush(YunKuaiChongV150DownlinkCmdEnum downlinkCmd,
-                                    ByteBuf msgBody,
-                                    TcpSession tcpSession) {
+                                       ByteBuf msgBody,
+                                       TcpSession tcpSession) {
 
         byte[] encode = encode(downlinkCmd,
                 tcpSession.nextSeqNo(SequenceNumberLength.SHORT),

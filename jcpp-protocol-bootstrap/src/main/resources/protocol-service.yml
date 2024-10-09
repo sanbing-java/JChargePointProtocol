@@ -148,5 +148,5 @@ queue:
 thread-pool:
   sharding:
     hash_function_name: "${THREAD_POOL_SHARDING_HASH_FUNCTION_NAME:murmur3_128}" # murmur3_32, murmur3_128 or sha256
-    parallelism: "${THREAD_POOL_SHARDING_PARALLELISM:128}"
+    parallelism: "${THREAD_POOL_SHARDING_PARALLELISM:8}"
     stats-print-interval-ms: "${THREAD_POOL_SHARDING_STATS_PRINT_INTERVAL_MS:10000}"

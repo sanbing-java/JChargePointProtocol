@@ -47,7 +47,7 @@ public abstract class ProtocolMessageProcessor {
         }));
     }
 
-    protected abstract void uplinkHandle(ListenerToHandlerMsg listenerToHandlerMsg) throws Exception;
+    protected abstract void uplinkHandle(ListenerToHandlerMsg listenerToHandlerMsg);
 
     public void downlinkHandle(SessionToHandlerMsg sessionToHandlerMsg, MessagesStats downlinkMsgStats) throws DownlinkException {
         try {
@@ -62,5 +62,5 @@ public abstract class ProtocolMessageProcessor {
         }
     }
 
-    protected abstract void downlinkHandle(SessionToHandlerMsg sessionToHandlerMsg) throws Exception;
+    protected abstract void downlinkHandle(SessionToHandlerMsg sessionToHandlerMsg);
 }
