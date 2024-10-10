@@ -11,13 +11,11 @@ import java.util.function.Function;
 
 public class Validator {
 
-
     public static void validateString(String val, String errorMessage) {
         if (val == null || val.isEmpty()) {
             throw new IncorrectParameterException(errorMessage);
         }
     }
-
 
     public static void validateString(String val, Function<String, String> errorMessageFunction) {
         if (val == null || val.isEmpty()) {
@@ -27,13 +25,6 @@ public class Validator {
 
     public static void validatePositiveNumber(long val, String errorMessage) {
         if (val <= 0) {
-            throw new IncorrectParameterException(errorMessage);
-        }
-    }
-
-    @Deprecated
-    public static void validateId(UUID id, String errorMessage) {
-        if (id == null) {
             throw new IncorrectParameterException(errorMessage);
         }
     }
