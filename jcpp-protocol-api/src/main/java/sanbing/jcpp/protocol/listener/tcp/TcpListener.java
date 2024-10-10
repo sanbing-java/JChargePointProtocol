@@ -38,7 +38,7 @@ public class TcpListener extends Listener {
     private final ChannelHandlerParameter parameter;
 
     public TcpListener(String protocolName, TcpCfg tcpCfg, ProtocolMessageProcessor protocolMessageProcessor, StatsFactory statsFactory) throws InterruptedException {
-        super(protocolName, statsFactory);
+        super(protocolName, protocolMessageProcessor, statsFactory);
 
         parameter = new ChannelHandlerParameter(protocolName, tcpCfg.getHandler(), protocolMessageProcessor, connectionsGauge, uplinkMsgStats, downlinkMsgStats, uplinkTrafficCounter, downlinkTrafficCounter, downlinkTimer);
 

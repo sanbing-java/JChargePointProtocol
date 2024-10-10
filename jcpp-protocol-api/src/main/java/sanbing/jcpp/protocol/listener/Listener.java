@@ -10,6 +10,7 @@ import org.springframework.boot.actuate.health.Health;
 import sanbing.jcpp.infrastructure.stats.DefaultCounter;
 import sanbing.jcpp.infrastructure.stats.MessagesStats;
 import sanbing.jcpp.infrastructure.stats.StatsFactory;
+import sanbing.jcpp.protocol.ProtocolMessageProcessor;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -21,6 +22,9 @@ public abstract class Listener {
     @Getter
     private final String protocolName;
 
+    @Getter
+    private final ProtocolMessageProcessor protocolMessageProcessor;
+
     protected AtomicInteger connectionsGauge = new AtomicInteger();
     protected MessagesStats uplinkMsgStats;
     protected MessagesStats downlinkMsgStats;
@@ -28,8 +32,9 @@ public abstract class Listener {
     protected DefaultCounter downlinkTrafficCounter;
     protected Timer downlinkTimer;
 
-    public Listener(String protocolName, StatsFactory statsFactory) {
+    protected Listener(String protocolName, ProtocolMessageProcessor protocolMessageProcessor, StatsFactory statsFactory) {
         this.protocolName = protocolName;
+        this.protocolMessageProcessor = protocolMessageProcessor;
 
         statsFactory.createGauge("openConnections", connectionsGauge, "protocol", protocolName);
         this.uplinkMsgStats = statsFactory.createMessagesStats("listenerUplinkMessage", "protocol", protocolName);
