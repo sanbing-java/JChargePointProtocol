@@ -70,7 +70,7 @@ public abstract class ProtocolBootstrap implements HealthIndicator {
 
         if (tcpCfg != null) {
 
-            listener = new TcpListener<>(protocolName, tcpCfg, messageProcessor(), protocolContext.getStatsFactory());
+            listener = new TcpListener(protocolName, tcpCfg, messageProcessor(), protocolContext.getStatsFactory());
         }
 
         _init();

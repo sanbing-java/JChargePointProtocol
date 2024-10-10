@@ -29,7 +29,7 @@ import sanbing.jcpp.protocol.listener.Listener;
  * @author baigod
  */
 @Slf4j
-public class TcpListener<T> extends Listener {
+public class TcpListener extends Listener {
 
     private Channel serverChannel;
     private EventLoopGroup bossGroup;
