@@ -32,6 +32,8 @@ public abstract class Listener {
     protected DefaultCounter downlinkTrafficCounter;
     protected Timer downlinkTimer;
 
+    protected final ChannelHandlerParameter parameter;
+
     protected Listener(String protocolName, ProtocolMessageProcessor protocolMessageProcessor, StatsFactory statsFactory) {
         this.protocolName = protocolName;
         this.protocolMessageProcessor = protocolMessageProcessor;
@@ -42,6 +44,8 @@ public abstract class Listener {
         this.uplinkTrafficCounter = statsFactory.createDefaultCounter("listenerUplinkTraffic", "protocol", protocolName);
         this.downlinkTrafficCounter = statsFactory.createDefaultCounter("listenerDownlinkTraffic", "protocol", protocolName);
         this.downlinkTimer = statsFactory.createTimer("listenerDownlink", "protocol", protocolName);
+
+        this.parameter = new ChannelHandlerParameter(protocolName, protocolMessageProcessor, connectionsGauge, uplinkMsgStats, downlinkMsgStats, uplinkTrafficCounter, downlinkTrafficCounter, downlinkTimer);
     }
 
     public abstract Health health();

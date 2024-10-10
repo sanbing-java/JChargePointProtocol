@@ -22,7 +22,6 @@ import sanbing.jcpp.infrastructure.util.async.JCPPThreadFactory;
 import sanbing.jcpp.protocol.ProtocolMessageProcessor;
 import sanbing.jcpp.protocol.cfg.TcpCfg;
 import sanbing.jcpp.protocol.listener.ChannelHandlerInitializer;
-import sanbing.jcpp.protocol.listener.ChannelHandlerParameter;
 import sanbing.jcpp.protocol.listener.Listener;
 
 /**
@@ -35,21 +34,17 @@ public class TcpListener extends Listener {
     private EventLoopGroup bossGroup;
     private EventLoopGroup workerGroup;
 
-    private final ChannelHandlerParameter parameter;
-
     public TcpListener(String protocolName, TcpCfg tcpCfg, ProtocolMessageProcessor protocolMessageProcessor, StatsFactory statsFactory) throws InterruptedException {
         super(protocolName, protocolMessageProcessor, statsFactory);
 
-        parameter = new ChannelHandlerParameter(protocolName, tcpCfg.getHandler(), protocolMessageProcessor, connectionsGauge, uplinkMsgStats, downlinkMsgStats, uplinkTrafficCounter, downlinkTrafficCounter, downlinkTimer);
-
-        tcpServerBootstrap(tcpCfg, getProtocolName());
+        tcpServerBootstrap(tcpCfg);
     }
 
-    private void tcpServerBootstrap(TcpCfg tcpCfg, String protocolName) throws InterruptedException {
+    private void tcpServerBootstrap(TcpCfg tcpCfg) throws InterruptedException {
         bossGroup = new NioEventLoopGroup(tcpCfg.getBossGroupThreadCount(), JCPPThreadFactory.forName("tcp-boss"));
         workerGroup = new NioEventLoopGroup(tcpCfg.getWorkerGroupThreadCount(), JCPPThreadFactory.forName("tcp-worker"));
 
-        ChannelHandlerInitializer<SocketChannel> channelHandler = ChannelHandlerInitializer.createTcpChannelHandler(parameter);
+        ChannelHandlerInitializer<SocketChannel> channelHandler = ChannelHandlerInitializer.createTcpChannelHandler(tcpCfg, parameter);
 
         ServerBootstrap server = new ServerBootstrap()
                 .group(bossGroup, workerGroup)
@@ -63,7 +58,7 @@ public class TcpListener extends Listener {
                 .handler(new LoggingHandler(LogLevel.INFO))
                 .childHandler(channelHandler);
         serverChannel = server.bind(tcpCfg.getBindAddress(), tcpCfg.getBindPort()).sync().channel();
-        log.info("Tcp server [{}] started, BindAddress:[{}], BindPort: [{}]", protocolName, tcpCfg.getBindAddress(), tcpCfg.getBindPort());
+        log.info("Tcp server [{}] started, BindAddress:[{}], BindPort: [{}]", getProtocolName(), tcpCfg.getBindAddress(), tcpCfg.getBindPort());
     }
 
 

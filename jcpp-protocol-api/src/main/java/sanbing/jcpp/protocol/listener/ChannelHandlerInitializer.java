@@ -19,6 +19,8 @@ import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.concurrent.GlobalEventExecutor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import sanbing.jcpp.protocol.cfg.TcpCfg;
+import sanbing.jcpp.protocol.cfg.TcpHandlerCfg;
 import sanbing.jcpp.protocol.cfg.enums.TcpHandlerType;
 import sanbing.jcpp.protocol.listener.tcp.TcpChannelHandler;
 import sanbing.jcpp.protocol.listener.tcp.configs.BinaryHandlerConfiguration;
@@ -59,22 +61,23 @@ public abstract class ChannelHandlerInitializer<C extends Channel> extends Chann
         super.channelUnregistered(ctx);
     }
 
-    public static ChannelHandlerInitializer<SocketChannel> createTcpChannelHandler(ChannelHandlerParameter parameter) {
-        TcpHandlerType type = parameter.handlerCfg().getType();
+    public static ChannelHandlerInitializer<SocketChannel> createTcpChannelHandler(TcpCfg tcpCfg, ChannelHandlerParameter parameter) {
+        TcpHandlerCfg tcpCfgHandler = tcpCfg.getHandler();
+        TcpHandlerType type = tcpCfgHandler.getType();
 
         return switch (type) {
             case TEXT -> new ChannelHandlerInitializer<>() {
                 @Override
                 protected void initChannel(SocketChannel socketChannel) {
-                    TextHandlerConfiguration textHandlerConfig = (TextHandlerConfiguration) parameter.handlerCfg().getConfiguration(TEXT);
+                    TextHandlerConfiguration textHandlerConfig = (TextHandlerConfiguration) tcpCfgHandler.getConfiguration(TEXT);
                     ByteBuf[] delimiters = SYSTEM_LINE_SEPARATOR.equals(textHandlerConfig.getMessageSeparator())
                             ? Delimiters.lineDelimiter() : Delimiters.nulDelimiter();
                     DelimiterBasedFrameDecoder framer = new DelimiterBasedFrameDecoder(textHandlerConfig.getMaxFrameLength(),
                             textHandlerConfig.isStripDelimiter(), delimiters);
                     socketChannel.pipeline()
                             .addLast("tracerHandler", new TracerHandler())
-                            .addLast("connectionLimitHandler", new ConnectionLimitHandler(parameter.protocolName(), parameter.handlerCfg().getMaxConnections(), CHANNEL_GROUP, parameter.connectionsGauge()))
-                            .addLast("idleStateHandler", new IdleStateHandler(parameter.handlerCfg().getIdleTimeoutSeconds(), 0, 0))
+                            .addLast("connectionLimitHandler", new ConnectionLimitHandler(parameter.protocolName(), tcpCfgHandler.getMaxConnections(), CHANNEL_GROUP, parameter.connectionsGauge()))
+                            .addLast("idleStateHandler", new IdleStateHandler(tcpCfgHandler.getIdleTimeoutSeconds(), 0, 0))
                             .addLast("idleEventHandler", new IdleEventHandler(parameter.protocolName()))
                             .addLast("framer", framer)
                             .addLast("tcpTextDecoder", new TcpMsgDecoder<>(parameter.protocolName(), msg -> TcpMsgDecoder.toString(msg, textHandlerConfig.getCharsetName())))
@@ -87,9 +90,9 @@ public abstract class ChannelHandlerInitializer<C extends Channel> extends Chann
                 protected void initChannel(SocketChannel socketChannel) {
                     socketChannel.pipeline()
                             .addLast("tracerHandler", new TracerHandler())
-                            .addLast("connectionLimitHandler", new ConnectionLimitHandler(parameter.protocolName(), parameter.handlerCfg().getMaxConnections(), CHANNEL_GROUP, parameter.connectionsGauge()))
+                            .addLast("connectionLimitHandler", new ConnectionLimitHandler(parameter.protocolName(), tcpCfgHandler.getMaxConnections(), CHANNEL_GROUP, parameter.connectionsGauge()))
                             .addLast("idleStateHandler",
-                                    new IdleStateHandler(parameter.handlerCfg().getIdleTimeoutSeconds(), 0, 0))
+                                    new IdleStateHandler(tcpCfgHandler.getIdleTimeoutSeconds(), 0, 0))
                             .addLast("idleEventHandler", new IdleEventHandler(parameter.protocolName()))
                             .addLast("datagramToJsonDecoder", new JsonObjectDecoder())
                             .addLast("tcpJsonDecoder", new TcpMsgDecoder<>(parameter.protocolName(), TcpMsgDecoder::toJson))
@@ -99,15 +102,15 @@ public abstract class ChannelHandlerInitializer<C extends Channel> extends Chann
             case BINARY -> new ChannelHandlerInitializer<>() {
                 @Override
                 protected void initChannel(SocketChannel socketChannel) {
-                    BinaryHandlerConfiguration binaryHandlerConfig = (BinaryHandlerConfiguration) parameter.handlerCfg().getConfiguration(BINARY);
+                    BinaryHandlerConfiguration binaryHandlerConfig = (BinaryHandlerConfiguration) tcpCfgHandler.getConfiguration(BINARY);
 
                     ByteOrder byteOrder = LITTLE_ENDIAN_BYTE_ORDER.equalsIgnoreCase(binaryHandlerConfig.getByteOrder())
                             ? ByteOrder.LITTLE_ENDIAN : ByteOrder.BIG_ENDIAN;
 
                     socketChannel.pipeline()
                             .addLast("tracerHandler", new TracerHandler())
-                            .addLast("connectionLimitHandler", new ConnectionLimitHandler(parameter.protocolName(), parameter.handlerCfg().getMaxConnections(), CHANNEL_GROUP, parameter.connectionsGauge()))
-                            .addLast("idleStateHandler", new IdleStateHandler(parameter.handlerCfg().getIdleTimeoutSeconds(), 0, 0))
+                            .addLast("connectionLimitHandler", new ConnectionLimitHandler(parameter.protocolName(), tcpCfgHandler.getMaxConnections(), CHANNEL_GROUP, parameter.connectionsGauge()))
+                            .addLast("idleStateHandler", new IdleStateHandler(tcpCfgHandler.getIdleTimeoutSeconds(), 0, 0))
                             .addLast("idleEventHandler", new IdleEventHandler(parameter.protocolName()));
 
                     if (LengthFieldBasedFrameDecoder.class.isAssignableFrom(binaryHandlerConfig.getDecoder())) {
@@ -134,9 +137,7 @@ public abstract class ChannelHandlerInitializer<C extends Channel> extends Chann
                             .addLast("tcpByteHandler", new TcpChannelHandler<>(parameter));
                 }
             };
-            case null -> throw new IllegalArgumentException("Unknown: " + parameter.handlerCfg());
+            case null -> throw new IllegalArgumentException("Unknown: " + tcpCfgHandler);
         };
     }
-
-
 }
