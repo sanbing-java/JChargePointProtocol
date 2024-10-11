@@ -57,10 +57,10 @@ public class AbstractYunKuaiChongCmdExe {
                         return TOP_BYTE;
                     case PEAK:
                         return PEAK_BYTE;
-                    case FLAT:
-                        return FLAT_BYTE;
                     case VALLEY:
                         return VALLEY_BYTE;
+                    default:
+                        return FLAT_BYTE;
                 }
             }
         }

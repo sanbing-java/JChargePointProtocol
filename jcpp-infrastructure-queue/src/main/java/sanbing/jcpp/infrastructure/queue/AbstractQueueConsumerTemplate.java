@@ -60,7 +60,7 @@ public abstract class AbstractQueueConsumerTemplate<R, T extends QueueMsg> imple
         List<R> records;
         long startNanos = System.nanoTime();
         if (stopped) {
-            log.error("poll invoked but consumer stopped for topic " + topic, new RuntimeException("stacktrace"));
+            log.error("poll invoked but consumer stopped for topic {}", topic, new RuntimeException("stacktrace"));
             return emptyList();
         }
         if (!subscribed && partitions == null && subscribeQueue.isEmpty()) {
@@ -68,7 +68,7 @@ public abstract class AbstractQueueConsumerTemplate<R, T extends QueueMsg> imple
         }
 
         if (consumerLock.isLocked()) {
-            log.error("poll. consumerLock is locked. will wait with no timeout. it looks like a race conditions or deadlock topic " + topic, new RuntimeException("stacktrace"));
+            log.error("poll. consumerLock is locked. will wait with no timeout. it looks like a race conditions or deadlock topic {}", topic, new RuntimeException("stacktrace"));
         }
 
         consumerLock.lock();
@@ -132,7 +132,7 @@ public abstract class AbstractQueueConsumerTemplate<R, T extends QueueMsg> imple
     @Override
     public void commit() {
         if (consumerLock.isLocked()) {
-            log.error("commit. consumerLock is locked. will wait with no timeout. it looks like a race conditions or deadlock topic " + topic, new RuntimeException("stacktrace"));
+            log.error("commit. consumerLock is locked. will wait with no timeout. it looks like a race conditions or deadlock topic {}", topic, new RuntimeException("stacktrace"));
         }
         consumerLock.lock();
         try {

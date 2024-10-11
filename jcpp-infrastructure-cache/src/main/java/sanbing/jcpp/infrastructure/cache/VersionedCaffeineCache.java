@@ -12,7 +12,7 @@ import java.io.Serializable;
 
 public abstract class VersionedCaffeineCache<K extends VersionedCacheKey, V extends Serializable & HasVersion> extends CaffeineTransactionalCache<K, V> implements VersionedCache<K, V> {
 
-    public VersionedCaffeineCache(CacheManager cacheManager, String cacheName) {
+    protected VersionedCaffeineCache(CacheManager cacheManager, String cacheName) {
         super(cacheManager, cacheName);
     }
 

@@ -7,7 +7,6 @@ package sanbing.jcpp.protocol.yunkuaichong.v150.cmd;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.extern.slf4j.Slf4j;
-import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
 import sanbing.jcpp.proto.gen.ProtocolProto.FlagPriceProto;
 import sanbing.jcpp.proto.gen.ProtocolProto.PeriodProto;
 import sanbing.jcpp.proto.gen.ProtocolProto.PricingModelProto;
@@ -16,7 +15,6 @@ import sanbing.jcpp.protocol.ProtocolContext;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDownlinkCmdExe;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDwonlinkMessage;
-import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkMessage;
 import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
 
 import java.math.BigDecimal;
@@ -45,8 +43,6 @@ public class YunKuaiChongV150QueryPricingModelAckDLCmd extends YunKuaiChongDownl
         }
 
         QueryPricingResponse queryPricingResponse = yunKuaiChongDwonlinkMessage.getMsg().getQueryPricingResponse();
-
-        YunKuaiChongUplinkMessage requestData = JacksonUtil.fromBytes(yunKuaiChongDwonlinkMessage.getMsg().getRequestData().toByteArray(), YunKuaiChongUplinkMessage.class);
 
         long pricingId = queryPricingResponse.getPricingId();
         String pileCode = queryPricingResponse.getPileCode();

@@ -34,8 +34,8 @@ import static sanbing.jcpp.infrastructure.util.codec.ByteUtil.checkCrcSum;
 
 @Slf4j
 public class YunKuaiChongV15ProtocolMessageProcessor extends ProtocolMessageProcessor {
-    private final Map<Byte, YunKuaiChongUplinkCmdExe> UPLINK_CMD_EXE_MAP = new ConcurrentHashMap<>();
-    private final Map<Byte, YunKuaiChongDownlinkCmdExe> DOWNLINK_CMD_EXE_MAP = new ConcurrentHashMap<>();
+    private final Map<Byte, YunKuaiChongUplinkCmdExe> uplinkCmdExeMap = new ConcurrentHashMap<>();
+    private final Map<Byte, YunKuaiChongDownlinkCmdExe> downlinkCmdExeMap = new ConcurrentHashMap<>();
 
     public YunKuaiChongV15ProtocolMessageProcessor(Forwarder forwarder, ProtocolContext protocolContext) {
         super(forwarder, protocolContext);
@@ -46,8 +46,10 @@ public class YunKuaiChongV15ProtocolMessageProcessor extends ProtocolMessageProc
                     byte cmd = clazz.getAnnotation(YunKuaiChongCmd.class).value();
                     try {
                         YunKuaiChongUplinkCmdExe yunKuaiChongUplinkCmdExe = (YunKuaiChongUplinkCmdExe) clazz.getDeclaredConstructor().newInstance();
-                        UPLINK_CMD_EXE_MAP.put(cmd, yunKuaiChongUplinkCmdExe);
-                    } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                        uplinkCmdExeMap.put(cmd, yunKuaiChongUplinkCmdExe);
+                    } catch (InstantiationException |
+                             IllegalAccessException |
+                             InvocationTargetException |
                              NoSuchMethodException e) {
                         throw new RuntimeException(e);
                     }
@@ -58,8 +60,10 @@ public class YunKuaiChongV15ProtocolMessageProcessor extends ProtocolMessageProc
                     byte cmd = clazz.getAnnotation(YunKuaiChongCmd.class).value();
                     try {
                         YunKuaiChongDownlinkCmdExe yunKuaiChongDownlinkCmdExe = (YunKuaiChongDownlinkCmdExe) clazz.getDeclaredConstructor().newInstance();
-                        DOWNLINK_CMD_EXE_MAP.put(cmd, yunKuaiChongDownlinkCmdExe);
-                    } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                        downlinkCmdExeMap.put(cmd, yunKuaiChongDownlinkCmdExe);
+                    } catch (InstantiationException |
+                             IllegalAccessException |
+                             InvocationTargetException |
                              NoSuchMethodException e) {
                         throw new RuntimeException(e);
                     }
@@ -184,7 +188,7 @@ public class YunKuaiChongV15ProtocolMessageProcessor extends ProtocolMessageProc
     }
 
     private void exeCmd(YunKuaiChongUplinkMessage message, TcpSession session) {
-        YunKuaiChongUplinkCmdExe uplinkCmdExe = UPLINK_CMD_EXE_MAP.get((byte) message.getCmd());
+        YunKuaiChongUplinkCmdExe uplinkCmdExe = uplinkCmdExeMap.get((byte) message.getCmd());
 
         if (uplinkCmdExe == null) {
 
@@ -197,7 +201,7 @@ public class YunKuaiChongV15ProtocolMessageProcessor extends ProtocolMessageProc
     }
 
     private void exeCmd(YunKuaiChongDwonlinkMessage message, TcpSession session) {
-        YunKuaiChongDownlinkCmdExe downlinkCmdExe = DOWNLINK_CMD_EXE_MAP.get((byte) message.getCmd());
+        YunKuaiChongDownlinkCmdExe downlinkCmdExe = downlinkCmdExeMap.get((byte) message.getCmd());
 
         if (downlinkCmdExe == null) {
 

@@ -44,12 +44,12 @@ public class YunKuaiChongV150BmsHandshakeULCmd extends YunKuaiChongUplinkCmdExe 
         byte[] pileCodeBytes = new byte[7];
         byteBuf.readBytes(pileCodeBytes);
         String pileCode = BCDUtil.toString(pileCodeBytes);
-        additionalInfo.put("桩编号", tradeNo);
+        additionalInfo.put("桩编号", pileCode);
 
         // 3.抢号
         byte gunCodeByte = byteBuf.readByte();
         String gunCode = BCDUtil.toString(gunCodeByte);
-        additionalInfo.put("抢号", tradeNo);
+        additionalInfo.put("抢号", gunCode);
 
         // 4.BMS 通信协议版本号
         byte[] bmsConnectVersionBytes = new byte[3];
