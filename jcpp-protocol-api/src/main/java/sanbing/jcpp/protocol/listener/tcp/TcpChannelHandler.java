@@ -121,15 +121,17 @@ public class TcpChannelHandler<T> extends SimpleChannelInboundHandler<ProtocolUp
         }
     }
 
-    protected void onDownlink(ChannelHandlerContext ctx, DownlinkRestMessage downlinkMsg) throws DownlinkException {
+    protected void onDownlink(DownlinkRestMessage downlinkMsg) throws DownlinkException {
         protocolMessageProcessor.downlinkHandle(new SessionToHandlerMsg(downlinkMsg, tcpSession), downlinkMsgStats);
     }
 
-    protected void writeAndFlush(ChannelHandlerContext ctx, ByteBuf... byteBufList) {
+    protected void writeAndFlush(ByteBuf... byteBufList) {
         if (byteBufList == null || byteBufList.length == 0) {
 
             return;
         }
+
+        ChannelHandlerContext ctx = tcpSession.getCtx();
 
         if (ctx.isRemoved()) {
 
@@ -151,10 +153,10 @@ public class TcpChannelHandler<T> extends SimpleChannelInboundHandler<ProtocolUp
                     continue;
                 }
 
-                logDownlinkStart(ctx, byteBuf.readableBytes(), () -> ByteBufUtil.hexDump(byteBuf));
+                logDownlinkStart(byteBuf.readableBytes(), () -> ByteBufUtil.hexDump(byteBuf));
 
                 ctx.writeAndFlush(Unpooled.wrappedBuffer(byteBuf))
-                        .addListener(channelFuture -> logDownlinkUnsuccessful(ctx, channelFuture));
+                        .addListener(this::logDownlinkUnsuccessful);
 
 
                 downlinkMsgStats.incrementSuccessful();
@@ -169,21 +171,21 @@ public class TcpChannelHandler<T> extends SimpleChannelInboundHandler<ProtocolUp
 
     }
 
-    private void logDownlinkStart(ChannelHandlerContext ctx, int payloadSize, Supplier<String> logTransform) {
+    private void logDownlinkStart(int payloadSize, Supplier<String> logTransform) {
 
         downlinkTrafficCounter.add(payloadSize);
 
         if (log.isDebugEnabled()) {
-            log.debug("[{}]{}{} 开始发送下行报文:{}", protocolName, ctx.channel(), tcpSession, logTransform.get());
+            log.debug("[{}]{} 开始发送下行报文:{}", protocolName, tcpSession, logTransform.get());
         }
     }
 
-    private void logDownlinkUnsuccessful(ChannelHandlerContext ctx, Future<? super Void> channelFuture) {
+    private void logDownlinkUnsuccessful(Future<? super Void> channelFuture) {
 
         downlinkTimer.record(Duration.ofMillis(System.currentTimeMillis() - TracerContextUtil.getCurrentTracer().getTracerTs()));
 
         if (channelFuture.isDone() && !channelFuture.isSuccess()) {
-            log.info("[{}]{}{} 下行报文发送未成功", protocolName, ctx.channel(), tcpSession);
+            log.info("[{}]{} 下行报文发送未成功", protocolName, tcpSession);
         }
     }
 

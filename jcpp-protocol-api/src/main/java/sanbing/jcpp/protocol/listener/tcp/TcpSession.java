@@ -16,7 +16,7 @@ import sanbing.jcpp.protocol.listener.tcp.enums.SequenceNumberLength;
 
 import java.net.SocketAddress;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 /**
  * 设备会话
@@ -32,9 +32,9 @@ public class TcpSession extends ProtocolSession {
 
     private ChannelHandlerContext ctx;
 
-    private final BiConsumer<ChannelHandlerContext, DownlinkRestMessage> sendDownlinkConsumer;
+    private final Consumer<DownlinkRestMessage> sendDownlinkConsumer;
 
-    private final BiConsumer<ChannelHandlerContext, ByteBuf> writeAndFlushConsumer;
+    private final Consumer<ByteBuf> writeAndFlushConsumer;
 
     private final AtomicInteger sequenceNumber = new AtomicInteger(0);
 
@@ -64,8 +64,8 @@ public class TcpSession extends ProtocolSession {
     }
 
     public TcpSession(String protocolName,
-                      BiConsumer<ChannelHandlerContext, DownlinkRestMessage> sendDownlinkConsumer,
-                      BiConsumer<ChannelHandlerContext, ByteBuf> writeAndFlushConsumer) {
+                      Consumer<DownlinkRestMessage> sendDownlinkConsumer,
+                      Consumer<ByteBuf> writeAndFlushConsumer) {
         super(protocolName);
         this.sendDownlinkConsumer = sendDownlinkConsumer;
         this.writeAndFlushConsumer = writeAndFlushConsumer;
@@ -73,7 +73,7 @@ public class TcpSession extends ProtocolSession {
 
     @Override
     public void onDownlink(DownlinkRestMessage downlinkMsg) {
-        sendDownlinkConsumer.accept(ctx, downlinkMsg);
+        sendDownlinkConsumer.accept(downlinkMsg);
     }
 
     @Override
@@ -85,6 +85,6 @@ public class TcpSession extends ProtocolSession {
     }
 
     public void writeAndFlush(ByteBuf byteBuf) {
-        writeAndFlushConsumer.accept(ctx, byteBuf);
+        writeAndFlushConsumer.accept(byteBuf);
     }
 }
