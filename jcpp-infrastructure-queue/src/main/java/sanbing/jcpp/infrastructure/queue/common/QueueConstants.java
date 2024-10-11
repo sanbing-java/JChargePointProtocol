@@ -12,6 +12,4 @@ public final class QueueConstants {
     public static final String MSG_MD_PREFIX = "jcpp_";
 
     public static final String MSG_MD_TS = "ts";
-
-    public static final String MSG_MD_PROTOCOL_SESSION_ID = "protocol_session_id";
 }
