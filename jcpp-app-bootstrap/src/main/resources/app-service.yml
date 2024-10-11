@@ -49,7 +49,7 @@ metrics:
 
 # 应用程序服务注册中心配置
 zk:
-  enabled: "${ZOOKEEPER_ENABLED:true}"
+  enabled: "${ZOOKEEPER_ENABLED:false}"
   url: "${ZOOKEEPER_URL:zookeeper:2181}"
   retry-interval-ms: "${ZOOKEEPER_RETRY_INTERVAL_MS:3000}"
   connection-timeout-ms: "${ZOOKEEPER_CONNECTION_TIMEOUT_MS:3000}"
