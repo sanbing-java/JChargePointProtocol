@@ -2,7 +2,7 @@
  * 抖音关注：程序员三丙
  * 知识星球：https://t.zsxq.com/j9b21
  */
-package sanbing.jcpp.protocol.yunkuaichong.v150;
+package sanbing.jcpp.protocol.yunkuaichong.v160;
 
 import lombok.extern.slf4j.Slf4j;
 import sanbing.jcpp.infrastructure.util.annotation.ProtocolComponent;
@@ -10,7 +10,7 @@ import sanbing.jcpp.protocol.ProtocolBootstrap;
 import sanbing.jcpp.protocol.ProtocolMessageProcessor;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongProtocolMessageProcessor;
 
-import static sanbing.jcpp.protocol.yunkuaichong.v150.YunkuaichongV150ProtocolBootstrap.PROTOCOL_NAME;
+import static sanbing.jcpp.protocol.yunkuaichong.v160.YunkuaichongV160ProtocolBootstrap.PROTOCOL_NAME;
 
 /**
  * @author baigod
@@ -18,9 +18,9 @@ import static sanbing.jcpp.protocol.yunkuaichong.v150.YunkuaichongV150ProtocolBo
 
 @ProtocolComponent(PROTOCOL_NAME)
 @Slf4j
-public class YunkuaichongV150ProtocolBootstrap extends ProtocolBootstrap {
+public class YunkuaichongV160ProtocolBootstrap extends ProtocolBootstrap {
 
-    public static final String PROTOCOL_NAME = "yunkuaichongV150";
+    public static final String PROTOCOL_NAME = "yunkuaichongV160";
 
     @Override
     protected String getProtocolName() {

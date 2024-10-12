@@ -10,7 +10,7 @@ import sanbing.jcpp.protocol.listener.tcp.TcpSession;
 /**
  * @author baigod
  */
-public abstract class YunKuaiChongDownlinkCmdExe extends AbstractYunKuaiChongCmdExe{
+public abstract class YunKuaiChongDownlinkCmdExe extends AbstractYunKuaiChongCmdExe {
 
     public abstract void execute(TcpSession tcpSession, YunKuaiChongDwonlinkMessage yunKuaiChongDwonlinkMessage, ProtocolContext ctx);
 

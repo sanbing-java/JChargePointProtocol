@@ -12,7 +12,7 @@ import sanbing.jcpp.infrastructure.util.codec.BCDUtil;
 import sanbing.jcpp.proto.gen.ProtocolProto;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
 import sanbing.jcpp.protocol.listener.tcp.enums.SequenceNumberLength;
-import sanbing.jcpp.protocol.yunkuaichong.v150.enums.YunKuaiChongV150DownlinkCmdEnum;
+import sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEnum;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -98,7 +98,7 @@ public class AbstractYunKuaiChongCmdExe {
     }
 
 
-    protected byte[] encode(YunKuaiChongV150DownlinkCmdEnum downlinkCmd,
+    protected byte[] encode(YunKuaiChongDownlinkCmdEnum downlinkCmd,
                             int seqNo,
                             int encryptionFlag,
                             ByteBuf msgBody) {
@@ -120,7 +120,7 @@ public class AbstractYunKuaiChongCmdExe {
         return toBytes(response);
     }
 
-    protected void encodeAndWriteFlush(YunKuaiChongV150DownlinkCmdEnum downlinkCmd,
+    protected void encodeAndWriteFlush(YunKuaiChongDownlinkCmdEnum downlinkCmd,
                                        int seqNo,
                                        int encryptionFlag,
                                        ByteBuf msgBody,
@@ -131,7 +131,7 @@ public class AbstractYunKuaiChongCmdExe {
         tcpSession.writeAndFlush(Unpooled.copiedBuffer(encode));
     }
 
-    protected void encodeAndWriteFlush(YunKuaiChongV150DownlinkCmdEnum downlinkCmd,
+    protected void encodeAndWriteFlush(YunKuaiChongDownlinkCmdEnum downlinkCmd,
                                        ByteBuf msgBody,
                                        TcpSession tcpSession) {
 

@@ -20,4 +20,6 @@ public enum DownlinkCmdEnum {
     REMOTE_START_CHARGING,
 
     TRANSACTION_RECORD,
+
+    REMOTE_PARALLEL_START_CHARGING,
 }

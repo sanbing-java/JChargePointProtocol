@@ -15,7 +15,7 @@ import sanbing.jcpp.protocol.listener.tcp.TcpSession;
  * @author baigod
  */
 @Slf4j
-public abstract class YunKuaiChongUplinkCmdExe extends AbstractYunKuaiChongCmdExe{
+public abstract class YunKuaiChongUplinkCmdExe extends AbstractYunKuaiChongCmdExe {
 
     public abstract void execute(TcpSession tcpSession, YunKuaiChongUplinkMessage yunKuaiChongUplinkMessage, ProtocolContext ctx);
 
