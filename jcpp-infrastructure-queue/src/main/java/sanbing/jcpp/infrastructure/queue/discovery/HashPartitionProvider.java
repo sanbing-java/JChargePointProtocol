@@ -39,12 +39,12 @@ public class HashPartitionProvider implements PartitionProvider {
     @Value("${queue.partitions.hash_function_name:murmur3_128}")
     private String hashFunctionName;
 
-    private final ConcurrentMap<QueueKey, String> partitionTopicsMap = new ConcurrentHashMap<>();
-    private final ConcurrentMap<QueueKey, Integer> partitionSizesMap = new ConcurrentHashMap<>();
+    private final Map<QueueKey, String> partitionTopicsMap = new ConcurrentHashMap<>();
+    private final Map<QueueKey, Integer> partitionSizesMap = new ConcurrentHashMap<>();
 
     private HashFunction hashFunction;
 
-    protected volatile ConcurrentMap<QueueKey, List<Integer>> myPartitions = new ConcurrentHashMap<>();
+    protected Map<QueueKey, List<Integer>> myPartitions = new ConcurrentHashMap<>();
 
     @Resource
     private ApplicationEventPublisher applicationEventPublisher;
@@ -118,7 +118,7 @@ public class HashPartitionProvider implements PartitionProvider {
             }
         });
 
-        final ConcurrentMap<QueueKey, List<Integer>> oldPartitions = myPartitions;
+        final Map<QueueKey, List<Integer>> oldPartitions = myPartitions;
         myPartitions = newPartitions;
 
         log.info("Current Server responsible partitions: {}", myPartitions);
