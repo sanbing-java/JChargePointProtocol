@@ -12,6 +12,7 @@ import sanbing.jcpp.app.dal.config.ibatis.enums.GunOptStatusEnum;
 import sanbing.jcpp.app.dal.config.ibatis.enums.GunRunStatusEnum;
 import sanbing.jcpp.app.dal.config.ibatis.enums.OwnerTypeEnum;
 import sanbing.jcpp.app.dal.entity.Gun;
+import sanbing.jcpp.app.dal.entity.Pile;
 import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
 
 import java.time.LocalDateTime;
@@ -37,8 +38,12 @@ class GunMapperIT extends AbstractTestBase {
             UUID.fromString("3f3a61e9-de55-4177-9b4e-3a1d8c529890"),
             UUID.fromString("cf1a8970-5aa9-4636-a76e-d6bcf98b4a07")
     };
+
     @Resource
     GunMapper gunMapper;
+
+    @Resource
+    PileMapper pileMapper;
 
     @Test
     void curdTest() {
@@ -47,13 +52,16 @@ class GunMapperIT extends AbstractTestBase {
         for (int i = 0; i < NORMAL_PILE_ID.length; i++) {
             UUID pileId = NORMAL_PILE_ID[i];
             UUID gunId = NORMAL_GUN_ID[i];
+
+            Pile pile = pileMapper.selectById(pileId);
+
             Gun gun = Gun.builder()
                     .id(gunId)
                     .createdTime(LocalDateTime.now())
                     .additionalInfo(JacksonUtil.newObjectNode())
-                    .gunNo("01")
-                    .gunName("三丙的1号枪")
-                    .gunCode("20231212000001-" + (i + 1))
+                    .gunNo("02")
+                    .gunName(pile.getPileName() + "的2号枪")
+                    .gunCode(pile.getPileCode() + "-02")
                     .stationId(NORMAL_STATION_ID)
                     .pileId(pileId)
                     .ownerId(NORMAL_USER_ID)

@@ -66,7 +66,6 @@ class DownlinkControllerIT extends AbstractProtocolTestBase {
                 binaryHandlerConfig.getLengthFieldOffset(), binaryHandlerConfig.getLengthFieldLength(),
                 binaryHandlerConfig.getLengthAdjustment(), binaryHandlerConfig.getInitialBytesToStrip());
 
-
         group = new NioEventLoopGroup();
         Bootstrap b = new Bootstrap();
         b.group(group)
@@ -80,7 +79,6 @@ class DownlinkControllerIT extends AbstractProtocolTestBase {
                                 .addLast(new SimpleChannelInboundHandler<>() {
                                     @Override
                                     protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
-
                                         log.info("接收到下行报文:{}", msg);
                                     }
                                 });
@@ -105,14 +103,19 @@ class DownlinkControllerIT extends AbstractProtocolTestBase {
         // 先发送一段登录
         channel.writeAndFlush(Unpooled.wrappedBuffer(HexUtil.decodeHex("6822001900012023121200001001011047562e393572313300898604d11722d0348606024E87"))).sync();
 
-        // 停一会等注册完成 todo 也可以读下行消息判断是否登录成功
-        Thread.sleep(1000);
+        // 一直检查等待会话注册完成
+        UUID sessionId;
+        while (true) {
+            if (sessionRegistryProvider.getSessionCache().asMap().values().stream().findFirst().isPresent()) {
+                ProtocolSession protocolSession = sessionRegistryProvider.getSessionCache().asMap().values().stream().findFirst().get();
+                sessionId = protocolSession.getId();
+                break;
+            }
+            Thread.sleep(100);
+        }
 
         UUID messageId = UUID.randomUUID();
-        ProtocolSession protocolSession = sessionRegistryProvider.getSessionCache().asMap().values().stream().findFirst().get();
-        UUID sessionId = protocolSession.getId();
         UUID requestId = UUID.randomUUID();
-
         // 创建 DownlinkRestMessage 实例
         String pileCode = "20231212000010";
         DownlinkRestMessage downlinkMsg = DownlinkRestMessage.newBuilder()
