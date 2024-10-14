@@ -79,7 +79,7 @@ public class ShardingThreadPool {
         int partition = hash(hashFunction, hashKey);
 
         EXECUTOR_SERVICE_MAP.computeIfAbsent(partition % parallelism,
-                        p -> Executors.newFixedThreadPool(1, JCPPThreadFactory.forName("sharding-threads" + p)))
+                        p -> Executors.newFixedThreadPool(1, JCPPThreadFactory.forName("sharding-threads-%d" + p)))
                 .execute(runnable);
     }
 }
