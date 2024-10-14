@@ -185,12 +185,16 @@ public class DefaultPileProtocolService implements PileProtocolService {
     public void postGunRunStatus(UplinkQueueMessage uplinkQueueMessage, Callback callback) {
         log.info("接收到充电桩上报的电桩状态 {}", uplinkQueueMessage);
 
+        // TODO 处理相关业务逻辑
+
         callback.onSuccess();
     }
 
     @Override
     public void postChargingProgress(UplinkQueueMessage uplinkQueueMessage, Callback callback) {
         log.info("接收到充电桩上报的充电进度 {}", uplinkQueueMessage);
+
+        // TODO 处理相关业务逻辑
 
         callback.onSuccess();
     }
@@ -199,6 +203,8 @@ public class DefaultPileProtocolService implements PileProtocolService {
     public void onSetPricingResponse(UplinkQueueMessage uplinkQueueMessage, Callback callback) {
         log.info("接收到充电桩上费率下发反馈 {}", uplinkQueueMessage);
 
+        // TODO 处理相关业务逻辑
+
         callback.onSuccess();
     }
 
@@ -206,12 +212,16 @@ public class DefaultPileProtocolService implements PileProtocolService {
     public void onRemoteStartChargingResponse(UplinkQueueMessage uplinkQueueMessage, Callback callback) {
         log.info("接收到充电桩启动结果反馈 {}", uplinkQueueMessage);
 
+        // TODO 处理相关业务逻辑
+
         callback.onSuccess();
     }
 
     @Override
     public void onRemoteStopChargingResponse(UplinkQueueMessage uplinkQueueMessage, Callback callback) {
         log.info("接收到充电桩停止结果反馈 {}", uplinkQueueMessage);
+
+        // TODO 处理相关业务逻辑
 
         callback.onSuccess();
     }
