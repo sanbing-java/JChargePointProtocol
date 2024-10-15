@@ -38,7 +38,7 @@ public class ShardingThreadPool {
 
     private HashFunction hashFunction;
 
-    private final Map<Integer, ExecutorService> EXECUTOR_SERVICE_MAP = new ConcurrentHashMap<>(8);
+    private final Map<Integer, ExecutorService> executorServiceMap = new ConcurrentHashMap<>(8);
 
     @PostConstruct
     public void init() {
@@ -47,7 +47,7 @@ public class ShardingThreadPool {
 
     @PreDestroy
     public void destroy() {
-        for (ExecutorService executorService : EXECUTOR_SERVICE_MAP.values()) {
+        for (ExecutorService executorService : executorServiceMap.values()) {
             executorService.shutdownNow();
             log.info("Sharding Thread [{}] Shutdown completed.", executorService);
         }
@@ -55,7 +55,7 @@ public class ShardingThreadPool {
 
     @Scheduled(fixedDelayString = "${thread-pool.sharding.stats-print-interval-ms:10000}")
     public void printStats() {
-        EXECUTOR_SERVICE_MAP.forEach((k, v) -> {
+        executorServiceMap.forEach((k, v) -> {
 
             ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) v;
 
@@ -78,8 +78,8 @@ public class ShardingThreadPool {
     public void execute(UUID hashKey, TracerRunnable runnable) {
         int partition = hash(hashFunction, hashKey);
 
-        EXECUTOR_SERVICE_MAP.computeIfAbsent(partition % parallelism,
-                        p -> Executors.newFixedThreadPool(1, JCPPThreadFactory.forName("sharding-threads" + p)))
+        executorServiceMap.computeIfAbsent(Math.abs(partition % parallelism),
+                        p -> Executors.newFixedThreadPool(1, JCPPThreadFactory.forName("sharding-threads-" + p)))
                 .execute(runnable);
     }
 }

@@ -22,7 +22,7 @@ spring:
     name: "${SPRING_APPLICATION_NAME:java-charge-point-server}"
   datasource:
     driver-class-name: "${SPRING_DRIVER_CLASS_NAME:org.postgresql.Driver}"
-    url: "${SPRING_DATASOURCE_URL:jdbc:postgresql://10.102.12.102:30135/jcpp}"
+    url: "${SPRING_DATASOURCE_URL:jdbc:postgresql://postgres:5432/jcpp}"
     username: "${SPRING_DATASOURCE_USERNAME:postgres}"
     password: "${SPRING_DATASOURCE_PASSWORD:postgres}"
     hikari:
@@ -196,7 +196,7 @@ service:
           topic: "${PROTOCOLS_YUNKUAICHONGV150_FORWARD_KAFKA_TOPIC:protocol_uplink}"
           jcpp-partition: "${PROTOCOLS_YUNKUAICHONGV150_FORWARD_KAFKA_JCPP_PARTITION:true}" # 是否利用JCPP的分片框架
           # 以下配置只有在service.type为protocol时且jcpp-partition为false时才生效
-          bootstrap-servers: "${PROTOCOLS_YUNKUAICHONGV150_FORWARD_KAFKA_SERVERS:10.102.12.102:9092}"
+          bootstrap-servers: "${PROTOCOLS_YUNKUAICHONGV150_FORWARD_KAFKA_SERVERS:kafka:9092}"
           acks: "${PROTOCOLS_YUNKUAICHONGV150_FORWARD_KAFKA_ACKS:1}"
           # # 可选 protobuf（推荐）、json
           encoder: "${PROTOCOLS_YUNKUAICHONGV150_FORWARD_KAFKA_ENCODER:protobuf}"

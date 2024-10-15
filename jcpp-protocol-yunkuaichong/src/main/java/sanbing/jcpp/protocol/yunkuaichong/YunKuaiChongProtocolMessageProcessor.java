@@ -98,7 +98,7 @@ public class YunKuaiChongProtocolMessageProcessor extends ProtocolMessageProcess
         int seqNo = in.readUnsignedShortLE();
 
         // 加密标志
-        int encrpyFlag = in.readUnsignedByte();
+        int encryptFlag = in.readUnsignedByte();
 
         // 帧类型标志
         int frameType = in.readUnsignedByte();
@@ -150,7 +150,7 @@ public class YunKuaiChongProtocolMessageProcessor extends ProtocolMessageProcess
         message.setHead(startFlag);
         message.setDataLength(dataLength);
         message.setSequenceNumber(seqNo);
-        message.setEncryptionFlag(encrpyFlag);
+        message.setEncryptionFlag(encryptFlag);
         message.setCmd(frameType);
         message.setMsgBody(msgBody);
         message.setCheckSum(checkSum);
