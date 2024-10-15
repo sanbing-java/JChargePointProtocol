@@ -13,8 +13,8 @@ public record ProtocolUplinkMsg<T>(SocketAddress address, UUID id, T data, int s
 
     @Override
     public String toString() {
-        if (data instanceof byte[]) {
-            return ByteBufUtil.hexDump((byte[]) data);
+        if (data instanceof byte[] bytes) {
+            return ByteBufUtil.hexDump(bytes);
         } else {
             return data.toString();
         }
