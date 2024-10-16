@@ -5,6 +5,7 @@
 package sanbing.jcpp.infrastructure.queue.memory;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import sanbing.jcpp.infrastructure.queue.QueueMsg;
 
@@ -17,6 +18,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 @Slf4j
 public final class DefaultInMemoryStorage implements InMemoryStorage {
     private final ConcurrentHashMap<String, BlockingQueue<QueueMsg>> storage = new ConcurrentHashMap<>();
+
+    @Value("${queue.in-memory.queue-capacity:100000}")
+    private int queueCapacity;
 
     @Override
     public void printStats() {
@@ -39,7 +43,7 @@ public final class DefaultInMemoryStorage implements InMemoryStorage {
 
     @Override
     public boolean put(String topic, QueueMsg msg) {
-        return storage.computeIfAbsent(topic, t -> new LinkedBlockingQueue<>(10000)).add(msg);
+        return storage.computeIfAbsent(topic, t -> new LinkedBlockingQueue<>(queueCapacity)).add(msg);
     }
 
     @Override

@@ -98,9 +98,6 @@ queue:
   type: "${QUEUE_TYPE:kafka}"
   partitions:
     hash_function_name: "${QUEUE_PARTITIONS_HASH_FUNCTION_NAME:murmur3_128}" # murmur3_32, murmur3_128 or sha256
-  in_memory:
-    stats:
-      print-interval-ms: "${QUEUE_IN_MEMORY_STATS_PRINT_INTERVAL_MS:60000}"
   kafka:
     bootstrap-servers: "${KAFKA_SERVERS:kafka:9092}"
     ssl:
