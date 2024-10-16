@@ -115,7 +115,7 @@ cache:
   type: "${CACHE_TYPE:caffeine}" # caffeine or redis
   specs:
     piles:
-      timeToLiveInMinutes: "${CACHE_SPECS_PILES_TTL:15}"
+      timeToLiveInMinutes: "${CACHE_SPECS_PILES_TTL:1440}"
       maxSize: "${CACHE_SPECS_PILES_MAX_SIZE:1000}"
     pileSessions:
       timeToLiveInMinutes: "${CACHE_SPECS_PILE_SESSIONS_TTL:1440}"
