@@ -108,7 +108,6 @@ public class DefaultPileProtocolService implements PileProtocolService {
         pileSession.setRemoteAddress(remoteAddress);
         pileSession.setNodeId(nodeId);
         pileSession.setNodeWebapiIpPort(nodeWebapiIpPort);
-        pileSessionCache.put(new PileSessionCacheKey(pile.getId()), pileSession);
         pileSessionCache.put(new PileSessionCacheKey(pile.getPileCode()), pileSession);
     }
 
