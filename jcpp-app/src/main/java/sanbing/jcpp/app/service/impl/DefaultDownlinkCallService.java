@@ -49,7 +49,7 @@ public class DefaultDownlinkCallService implements DownlinkCallService {
         if (serviceInfoProvider.isMonolith()) {
 
             downlinkController.onDownlink(downlinkMessageBuilder.build())
-                    .setResultHandler(result -> log.info("下行消息发送完成"));
+                    .setResultHandler(result -> log.debug("下行消息发送完成"));
 
         } else {
             try {

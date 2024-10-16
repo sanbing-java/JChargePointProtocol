@@ -38,7 +38,7 @@ public class DownlinkController {
 
     @PostMapping(value = "/onDownlink", consumes = "application/x-protobuf", produces = "application/x-protobuf")
     public DeferredResult<ResponseEntity<String>> onDownlink(@RequestBody DownlinkRestMessage downlinkMsg) {
-        log.info("收到REST下行请求 {}", downlinkMsg);
+        log.debug("收到REST下行请求 {}", downlinkMsg);
 
         final DeferredResult<ResponseEntity<String>> response = new DeferredResult<>(onDownlinkTimeout,
                 ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT).build());
@@ -55,7 +55,7 @@ public class DownlinkController {
                 response.setResult(ResponseEntity.status(HttpStatus.OK).build());
             } else {
 
-                log.warn("下发报文时Session未找到 sessionId: {}", protocolSessionId);
+                log.info("下发报文时Session未找到 sessionId: {}", protocolSessionId);
 
                 response.setResult(ResponseEntity.status(HttpStatus.NOT_FOUND).body("Protocol Session not found for ID:" + protocolSessionId));
             }
