@@ -142,7 +142,7 @@ public class YunKuaiChongV15ProtocolMessageProcessor extends ProtocolMessageProc
             csTemp.writeBytes(byCheckSum);
             checkSum = csTemp.readUnsignedShortLE();
             checkResult = checkCrcSum(checkData, checkSum);
-            log.info("云快充V1.5检验和 第二次检查: checkResult:{}, checkSum:{}", checkResult, checkSum);
+            log.debug("云快充V1.5检验和 第二次检查: checkResult:{}, checkSum:{}", checkResult, checkSum);
         }
 
         if (!checkResult.getFirst()) {
