@@ -42,14 +42,14 @@ public class ConnectionLimitHandler extends ChannelInboundHandlerAdapter {
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
         channelGroup.add(ctx.channel());
-        log.info("[{}]{} channelActive 当前连接数管道数 {} / {}",protocolName, ctx.channel(), channelGroup.size(), maxConnections);
+        log.info("[{}]{} channelActive 当前连接数 {} / {}",protocolName, ctx.channel(), channelGroup.size(), maxConnections);
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         super.channelInactive(ctx);
         channelGroup.remove(ctx.channel());
-        log.info("[{}]{} channelInactive 当前连接数管道数 {} / {}",protocolName, ctx.channel(), channelGroup.size(), maxConnections);
+        log.info("[{}]{} channelInactive 当前连接数 {} / {}",protocolName, ctx.channel(), channelGroup.size(), maxConnections);
     }
 
     @Override
