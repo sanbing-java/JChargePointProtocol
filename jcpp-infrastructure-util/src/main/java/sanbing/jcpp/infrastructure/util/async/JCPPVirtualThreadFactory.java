@@ -4,8 +4,6 @@
  */
 package sanbing.jcpp.infrastructure.util.async;
 
-import sanbing.jcpp.infrastructure.util.trace.TracerRunnable;
-
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -19,6 +17,6 @@ public class JCPPVirtualThreadFactory implements ThreadFactory {
 
     @Override
     public Thread newThread(Runnable r) {
-        return Thread.ofVirtual().name(namePrefix + "-" + threadNumber.getAndIncrement()).unstarted(new TracerRunnable(r));
+        return Thread.ofVirtual().name(namePrefix + "-" + threadNumber.getAndIncrement()).unstarted(r);
     }
 }
