@@ -101,6 +101,7 @@ public class ProtocolUplinkConsumerService extends AbstractConsumerService imple
     }
 
 
+    @Override
     @PreDestroy
     public void destroy() {
         super.destroy();
@@ -132,7 +133,7 @@ public class ProtocolUplinkConsumerService extends AbstractConsumerService imple
                 processingTimeoutLatch, pendingMap, new ConcurrentHashMap<>());
         PendingMsgHolder pendingMsgHolder = new PendingMsgHolder();
         Future<?> packSubmitFuture = consumersExecutor.submit(new TracerRunnable(() ->
-                orderedMsgList.forEach((element) -> {
+                orderedMsgList.forEach(element -> {
                     UUID id = element.getUuid();
                     ProtoQueueMsg<UplinkQueueMessage> msg = element.getMsg();
                     tracer(msg);
@@ -157,11 +158,11 @@ public class ProtocolUplinkConsumerService extends AbstractConsumerService imple
                             pileProtocolService.onSetPricingResponse(uplinkQueueMsg, callback);
                         } else if (uplinkQueueMsg.hasRemoteStartChargingResponse()) {
                             pileProtocolService.onRemoteStartChargingResponse(uplinkQueueMsg, callback);
-                        }  else if (uplinkQueueMsg.hasRemoteStopChargingResponse()) {
+                        } else if (uplinkQueueMsg.hasRemoteStopChargingResponse()) {
                             pileProtocolService.onRemoteStopChargingResponse(uplinkQueueMsg, callback);
-                        } else if(uplinkQueueMsg.hasTransactionRecord()){
+                        } else if (uplinkQueueMsg.hasTransactionRecord()) {
                             pileProtocolService.onTransactionRecord(uplinkQueueMsg, callback);
-                        }else {
+                        } else {
                             callback.onSuccess();
                         }
 
@@ -189,7 +190,7 @@ public class ProtocolUplinkConsumerService extends AbstractConsumerService imple
     }
 
     private void tracer(ProtoQueueMsg<UplinkQueueMessage> msg) {
-        Optional.ofNullable(msg.getHeaders().get(MSG_MD_PREFIX + JCPP_TRACER_ID))
+        if (Optional.ofNullable(msg.getHeaders().get(MSG_MD_PREFIX + JCPP_TRACER_ID))
                 .map(tracerId -> {
                     String origin = null;
                     byte[] tracerOrigin = msg.getHeaders().get(MSG_MD_PREFIX + JCPP_TRACER_ORIGIN);
@@ -205,7 +206,10 @@ public class ProtocolUplinkConsumerService extends AbstractConsumerService imple
 
                     return TracerContextUtil.newTracer(ByteUtil.bytesToString(tracerId), origin, ts);
                 })
-                .orElseGet(TracerContextUtil::newTracer);
+                .isEmpty()) {
+
+            TracerContextUtil.newTracer();
+        }
 
         MDCUtils.recordTracer();
     }
@@ -231,6 +235,6 @@ public class ProtocolUplinkConsumerService extends AbstractConsumerService imple
     @Setter
     @Getter
     private static class PendingMsgHolder {
-        private volatile UplinkQueueMessage uplinkQueueMessage;
+        private UplinkQueueMessage uplinkQueueMessage;
     }
 }
