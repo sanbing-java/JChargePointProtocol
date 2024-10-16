@@ -20,13 +20,11 @@ public final class DefaultInMemoryStorage implements InMemoryStorage {
 
     @Override
     public void printStats() {
-        if (log.isDebugEnabled()) {
-            storage.forEach((topic, queue) -> {
-                if (!queue.isEmpty()) {
-                    log.debug("[{}] Queue Size [{}]", topic, queue.size());
-                }
-            });
-        }
+        storage.forEach((topic, queue) -> {
+            if (!queue.isEmpty()) {
+                log.info("[{}] Queue Size [{}]", topic, queue.size());
+            }
+        });
     }
 
     @Override
@@ -45,7 +43,7 @@ public final class DefaultInMemoryStorage implements InMemoryStorage {
     }
 
     @Override
-    public  List<QueueMsg> get(String topic) throws InterruptedException {
+    public List<QueueMsg> get(String topic) throws InterruptedException {
         final BlockingQueue<QueueMsg> queue = storage.get(topic);
         if (queue != null) {
             final QueueMsg firstMsg = queue.poll();
