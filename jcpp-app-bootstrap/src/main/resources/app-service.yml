@@ -27,7 +27,7 @@ spring:
     password: "${SPRING_DATASOURCE_PASSWORD:postgres}"
     hikari:
       leak-detection-threshold: "${SPRING_DATASOURCE_HIKARI_LEAK_DETECTION_THRESHOLD:0}"
-      maximum-pool-size: "${SPRING_DATASOURCE_MAXIMUM_POOL_SIZE:16}"
+      maximum-pool-size: "${SPRING_DATASOURCE_MAXIMUM_POOL_SIZE:32}"
       register-mbeans: "${SPRING_DATASOURCE_HIKARI_REGISTER_MBEANS:false}"
 
 mybatis-plus:
