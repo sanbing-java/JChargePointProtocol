@@ -41,8 +41,8 @@ public class TcpListener extends Listener {
     }
 
     private void tcpServerBootstrap(TcpCfg tcpCfg) throws InterruptedException {
-        bossGroup = new NioEventLoopGroup(tcpCfg.getBossGroupThreadCount(), JCPPThreadFactory.forName("tcp-boss"));
-        workerGroup = new NioEventLoopGroup(tcpCfg.getWorkerGroupThreadCount(), JCPPThreadFactory.forName("tcp-worker"));
+        bossGroup = new NioEventLoopGroup(tcpCfg.getBossGroupThreadCount(), JCPPThreadFactory.forName("tcp-boss-%d"));
+        workerGroup = new NioEventLoopGroup(tcpCfg.getWorkerGroupThreadCount(), JCPPThreadFactory.forName("tcp-worker-%d"));
 
         ChannelHandlerInitializer<SocketChannel> channelHandler = ChannelHandlerInitializer.createTcpChannelHandler(tcpCfg, parameter);
 
