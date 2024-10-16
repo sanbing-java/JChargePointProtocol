@@ -39,7 +39,7 @@ public final class DefaultInMemoryStorage implements InMemoryStorage {
 
     @Override
     public boolean put(String topic, QueueMsg msg) {
-        return storage.computeIfAbsent(topic, (t) -> new LinkedBlockingQueue<>()).add(msg);
+        return storage.computeIfAbsent(topic, t -> new LinkedBlockingQueue<>(100000)).add(msg);
     }
 
     @Override
