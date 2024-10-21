@@ -6,6 +6,7 @@ package sanbing.jcpp.app.service.impl;
 
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -44,9 +45,12 @@ public class DefaultDownlinkCallService implements DownlinkCallService {
     @Resource
     TransactionalCache<PileSessionCacheKey, PileSession> pileSessionCache;
 
+    @Value("${cache.type}")
+    private String cacheType;
+
     @Override
     public void sendDownlinkMessage(DownlinkRestMessage.Builder downlinkMessageBuilder, String pileCode) {
-        if (serviceInfoProvider.isMonolith()) {
+        if (serviceInfoProvider.isMonolith() && "caffeine".equalsIgnoreCase(cacheType)) {
 
             downlinkController.onDownlink(downlinkMessageBuilder.build())
                     .setResultHandler(result -> log.debug("下行消息发送完成"));
