@@ -27,7 +27,7 @@ spring:
     password: "${SPRING_DATASOURCE_PASSWORD:postgres}"
     hikari:
       leak-detection-threshold: "${SPRING_DATASOURCE_HIKARI_LEAK_DETECTION_THRESHOLD:0}"
-      maximum-pool-size: "${SPRING_DATASOURCE_MAXIMUM_POOL_SIZE:32}"
+      maximum-pool-size: "${SPRING_DATASOURCE_MAXIMUM_POOL_SIZE:64}"
       register-mbeans: "${SPRING_DATASOURCE_HIKARI_REGISTER_MBEANS:false}"
 
 mybatis-plus:
@@ -66,7 +66,7 @@ queue:
   in-memory:
     queue-capacity: "${QUEUE_IN_MEMORY_QUEUE_CAPACITY:100000}"
     stats:
-      print-interval-ms: "${QUEUE_IN_MEMORY_STATS_PRINT_INTERVAL_MS:60000}"
+      print-interval-ms: "${QUEUE_IN_MEMORY_STATS_PRINT_INTERVAL_MS:10000}"
   kafka:
     bootstrap-servers: "${KAFKA_SERVERS:kafka:9092}"
     ssl:
@@ -128,7 +128,7 @@ redis:
   standalone:
     host: "${REDIS_HOST:redis}"
     port: "${REDIS_PORT:6379}"
-    useDefaultClientConfig: "${REDIS_USE_DEFAULT_CLIENT_CONFIG:false}"
+    useDefaultClientConfig: "${REDIS_USE_DEFAULT_CLIENT_CONFIG:true}"
     clientName: "${REDIS_CLIENT_NAME:standalone}"
     commandTimeout: "${REDIS_CLIENT_COMMAND_TIMEOUT:30000}"
     shutdownTimeout: "${REDIS_CLIENT_SHUTDOWN_TIMEOUT:1000}"

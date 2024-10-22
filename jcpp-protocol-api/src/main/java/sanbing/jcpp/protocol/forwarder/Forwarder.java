@@ -25,10 +25,7 @@ import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 
-import static sanbing.jcpp.infrastructure.queue.common.QueueConstants.MSG_MD_PREFIX;
-import static sanbing.jcpp.infrastructure.queue.common.QueueConstants.MSG_MD_TS;
-import static sanbing.jcpp.infrastructure.util.trace.TracerContextUtil.JCPP_TRACER_ID;
-import static sanbing.jcpp.infrastructure.util.trace.TracerContextUtil.JCPP_TRACER_ORIGIN;
+import static sanbing.jcpp.infrastructure.queue.common.QueueConstants.*;
 
 /**
  * @author baigod
@@ -70,9 +67,9 @@ public abstract class Forwarder {
         QueueMsgHeaders headers = new DefaultQueueMsgHeaders();
 
         Tracer currentTracer = TracerContextUtil.getCurrentTracer();
-        headers.put(MSG_MD_PREFIX + JCPP_TRACER_ID, ByteUtil.stringToBytes(currentTracer.getTraceId()));
-        headers.put(MSG_MD_PREFIX + JCPP_TRACER_ORIGIN, ByteUtil.stringToBytes(currentTracer.getOrigin()));
-        headers.put(MSG_MD_PREFIX + MSG_MD_TS, ByteUtil.longToBytes(currentTracer.getTracerTs()));
+        headers.put(MSG_MD_TRACER_ID, ByteUtil.stringToBytes(currentTracer.getTraceId()));
+        headers.put(MSG_MD_TRACER_ORIGIN, ByteUtil.stringToBytes(currentTracer.getOrigin()));
+        headers.put(MSG_MD_TRACER_TS, ByteUtil.longToBytes(currentTracer.getTracerTs()));
 
         TopicPartitionInfo tpi = partitionProvider.resolve(ServiceType.APP, topic, key);
         producer.send(tpi, new ProtoQueueMsg<>(key, msg, headers), new QueueCallback() {

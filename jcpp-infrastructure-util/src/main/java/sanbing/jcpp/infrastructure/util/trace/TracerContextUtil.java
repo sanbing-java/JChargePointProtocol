@@ -40,7 +40,6 @@ public class TracerContextUtil {
             tracer = new Tracer(traceId, origin, ts);
         }
 
-
         TRACE_ID_CONTAINER.set(tracer);
 
         return tracer;

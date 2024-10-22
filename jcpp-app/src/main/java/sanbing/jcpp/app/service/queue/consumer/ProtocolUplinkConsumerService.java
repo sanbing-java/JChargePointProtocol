@@ -35,16 +35,12 @@ import sanbing.jcpp.infrastructure.util.trace.TracerRunnable;
 import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
-import static sanbing.jcpp.infrastructure.queue.common.QueueConstants.MSG_MD_PREFIX;
-import static sanbing.jcpp.infrastructure.queue.common.QueueConstants.MSG_MD_TS;
-import static sanbing.jcpp.infrastructure.util.trace.TracerContextUtil.JCPP_TRACER_ID;
-import static sanbing.jcpp.infrastructure.util.trace.TracerContextUtil.JCPP_TRACER_ORIGIN;
+import static sanbing.jcpp.infrastructure.queue.common.QueueConstants.*;
 
 
 /**
@@ -232,23 +228,10 @@ public class ProtocolUplinkConsumerService extends AbstractConsumerService imple
     }
 
     private void tracer(ProtoQueueMsg<UplinkQueueMessage> msg) {
-        if (Optional.ofNullable(msg.getHeaders().get(MSG_MD_PREFIX + JCPP_TRACER_ID))
-                .map(tracerId -> {
-                    String origin = null;
-                    byte[] tracerOrigin = msg.getHeaders().get(MSG_MD_PREFIX + JCPP_TRACER_ORIGIN);
-                    if (tracerOrigin != null) {
-                        origin = ByteUtil.bytesToString(tracerOrigin);
-                    }
 
-                    byte[] tracerTs = msg.getHeaders().get(MSG_MD_PREFIX + MSG_MD_TS);
-                    long ts = tracerTs != null ? ByteUtil.bytesToLong(tracerTs) : System.currentTimeMillis();
-
-                    return TracerContextUtil.newTracer(ByteUtil.bytesToString(tracerId), origin, ts);
-                })
-                .isEmpty()) {
-
-            TracerContextUtil.newTracer();
-        }
+        TracerContextUtil.newTracer(ByteUtil.bytesToString(msg.getHeaders().get(MSG_MD_TRACER_ID)),
+                ByteUtil.bytesToString(msg.getHeaders().get(MSG_MD_TRACER_ORIGIN)),
+                ByteUtil.bytesToLong(msg.getHeaders().get(MSG_MD_TRACER_TS)));
 
         MDCUtils.recordTracer();
     }

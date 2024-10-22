@@ -35,6 +35,8 @@ RUN chmod a+x *.sh && mv start.sh /usr/bin
 
 EXPOSE 8081 8081
 
+ENV PROTOCOLS_LOG_LEVEL=INFO
+
 CMD ["start.sh"]
 
 
