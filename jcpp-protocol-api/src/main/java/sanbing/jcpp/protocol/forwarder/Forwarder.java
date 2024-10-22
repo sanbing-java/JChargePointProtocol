@@ -25,10 +25,7 @@ import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 
-import static sanbing.jcpp.infrastructure.queue.common.QueueConstants.MSG_MD_PREFIX;
-import static sanbing.jcpp.infrastructure.queue.common.QueueConstants.MSG_MD_TS;
-import static sanbing.jcpp.infrastructure.util.trace.TracerContextUtil.JCPP_TRACER_ID;
-import static sanbing.jcpp.infrastructure.util.trace.TracerContextUtil.JCPP_TRACER_ORIGIN;
+import static sanbing.jcpp.infrastructure.queue.common.QueueConstants.*;
 
 /**
  * @author baigod
@@ -51,7 +48,7 @@ public abstract class Forwarder {
     protected final boolean isMonolith;
     protected QueueProducer<ProtoQueueMsg<UplinkQueueMessage>> producer;
 
-    public Forwarder(String protocolName, StatsFactory statsFactory, PartitionProvider partitionProvider, ServiceInfoProvider serviceInfoProvider) {
+    protected Forwarder(String protocolName, StatsFactory statsFactory, PartitionProvider partitionProvider, ServiceInfoProvider serviceInfoProvider) {
         this.protocolName = protocolName;
         this.partitionProvider = partitionProvider;
         this.serviceInfoProvider = serviceInfoProvider;
@@ -66,12 +63,13 @@ public abstract class Forwarder {
     public abstract void destroy();
 
     protected void jcppForward(String topic, String key, UplinkQueueMessage msg, BiConsumer<Boolean, ObjectNode> consumer) {
+        forwarderMessagesStats.incrementTotal();
         QueueMsgHeaders headers = new DefaultQueueMsgHeaders();
 
         Tracer currentTracer = TracerContextUtil.getCurrentTracer();
-        headers.put(MSG_MD_PREFIX + JCPP_TRACER_ID, ByteUtil.stringToBytes(currentTracer.getTraceId()));
-        headers.put(MSG_MD_PREFIX + JCPP_TRACER_ORIGIN, ByteUtil.stringToBytes(currentTracer.getOrigin()));
-        headers.put(MSG_MD_PREFIX + MSG_MD_TS, ByteUtil.longToBytes(currentTracer.getTracerTs()));
+        headers.put(MSG_MD_TRACER_ID, ByteUtil.stringToBytes(currentTracer.getTraceId()));
+        headers.put(MSG_MD_TRACER_ORIGIN, ByteUtil.stringToBytes(currentTracer.getOrigin()));
+        headers.put(MSG_MD_TRACER_TS, ByteUtil.longToBytes(currentTracer.getTracerTs()));
 
         TopicPartitionInfo tpi = partitionProvider.resolve(ServiceType.APP, topic, key);
         producer.send(tpi, new ProtoQueueMsg<>(key, msg, headers), new QueueCallback() {
@@ -80,11 +78,13 @@ public abstract class Forwarder {
 
                 TracerContextUtil.newTracer(currentTracer.getTraceId(), currentTracer.getOrigin(), currentTracer.getTracerTs());
                 MDCUtils.recordTracer();
+
                 log.trace("单体消息转发成功 key:{}", key);
 
                 if (consumer != null) {
                     consumer.accept(true, JacksonUtil.newObjectNode());
                 }
+                forwarderMessagesStats.incrementSuccessful();
             }
 
             @Override
@@ -92,6 +92,7 @@ public abstract class Forwarder {
 
                 TracerContextUtil.newTracer(currentTracer.getTraceId(), currentTracer.getOrigin(), currentTracer.getTracerTs());
                 MDCUtils.recordTracer();
+
                 log.warn("单体消息转发异常", t);
 
                 if (consumer != null) {
@@ -99,6 +100,7 @@ public abstract class Forwarder {
                     objectNode.put(ERROR, t.getClass() + ": " + t.getMessage());
                     consumer.accept(true, objectNode);
                 }
+                forwarderMessagesStats.incrementFailed();
             }
         });
     }

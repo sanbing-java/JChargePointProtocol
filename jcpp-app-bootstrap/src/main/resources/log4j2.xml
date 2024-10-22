@@ -18,7 +18,8 @@
             <PatternLayout pattern="${LOG_PATTERN}"/>
 
             <Policies>
-                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <SizeBasedTriggeringPolicy size="1G"/>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
             </Policies>
 
             <DefaultRolloverStrategy>
@@ -41,6 +42,12 @@
         </AsyncRoot>
 
         <AsyncLogger name="sanbing.jcpp" level="INFO" additivity="false" includeLocation="false">
+            <AppenderRef ref="CONSOLE"/>
+            <AppenderRef ref="ROLLING_FILE"/>
+        </AsyncLogger>
+
+        <AsyncLogger name="sanbing.jcpp.app" level="${env:APP_LOG_LEVEL:-TRACE}"
+                     additivity="false" includeLocation="false">
             <AppenderRef ref="CONSOLE"/>
             <AppenderRef ref="ROLLING_FILE"/>
         </AsyncLogger>

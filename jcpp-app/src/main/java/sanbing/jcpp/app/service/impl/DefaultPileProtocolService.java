@@ -48,7 +48,7 @@ public class DefaultPileProtocolService implements PileProtocolService {
 
     @Override
     public void pileLogin(UplinkQueueMessage uplinkQueueMessage, Callback callback) {
-        log.info("接收到桩登录事件 {}", uplinkQueueMessage);
+        log.debug("接收到桩登录事件 {}", uplinkQueueMessage);
 
         LoginRequest loginRequest = uplinkQueueMessage.getLoginRequest();
 
@@ -56,7 +56,7 @@ public class DefaultPileProtocolService implements PileProtocolService {
 
         String pileCode = loginRequest.getPileCode();
 
-        log.info("查询到充电桩信息 {}", pile);
+        log.debug("查询到充电桩信息 {}", pile);
 
         // 构造下行回复
         DownlinkRestMessage.Builder downlinkMessageBuilder = createDownlinkMessageBuilder(uplinkQueueMessage, loginRequest.getPileCode());
@@ -108,7 +108,6 @@ public class DefaultPileProtocolService implements PileProtocolService {
         pileSession.setRemoteAddress(remoteAddress);
         pileSession.setNodeId(nodeId);
         pileSession.setNodeWebapiIpPort(nodeWebapiIpPort);
-        pileSessionCache.put(new PileSessionCacheKey(pile.getId()), pileSession);
         pileSessionCache.put(new PileSessionCacheKey(pile.getPileCode()), pileSession);
     }
 

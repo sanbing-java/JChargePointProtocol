@@ -36,10 +36,7 @@ import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 
-import static sanbing.jcpp.infrastructure.queue.common.QueueConstants.MSG_MD_PREFIX;
-import static sanbing.jcpp.infrastructure.queue.common.QueueConstants.MSG_MD_TS;
-import static sanbing.jcpp.infrastructure.util.trace.TracerContextUtil.JCPP_TRACER_ID;
-import static sanbing.jcpp.infrastructure.util.trace.TracerContextUtil.JCPP_TRACER_ORIGIN;
+import static sanbing.jcpp.infrastructure.queue.common.QueueConstants.*;
 
 /**
  * @author baigod
@@ -150,12 +147,13 @@ public class KafkaForwarder extends Forwarder {
     }
 
     private void kafkaForward(String topic, String key, UplinkQueueMessage msg, BiConsumer<Boolean, ObjectNode> consumer) throws InvalidProtocolBufferException {
+        forwarderMessagesStats.incrementTotal();
         Headers headers = new RecordHeaders();
 
         Tracer currentTracer = TracerContextUtil.getCurrentTracer();
-        headers.add(new RecordHeader(MSG_MD_PREFIX + JCPP_TRACER_ID, ByteUtil.stringToBytes(currentTracer.getTraceId())));
-        headers.add(new RecordHeader(MSG_MD_PREFIX + JCPP_TRACER_ORIGIN, ByteUtil.stringToBytes(currentTracer.getOrigin())));
-        headers.add(new RecordHeader(MSG_MD_PREFIX + MSG_MD_TS, ByteUtil.longToBytes(currentTracer.getTracerTs())));
+        headers.add(new RecordHeader(MSG_MD_TRACER_ID, ByteUtil.stringToBytes(currentTracer.getTraceId())));
+        headers.add(new RecordHeader(MSG_MD_TRACER_ORIGIN, ByteUtil.stringToBytes(currentTracer.getOrigin())));
+        headers.add(new RecordHeader(MSG_MD_TRACER_TS, ByteUtil.longToBytes(currentTracer.getTracerTs())));
 
         if (kafkaCfg.getEncoder() == KafkaCfg.EncoderType.json) {
 
@@ -177,6 +175,7 @@ public class KafkaForwarder extends Forwarder {
     private void logAndDoConsumer(BiConsumer<Boolean, ObjectNode> consumer, RecordMetadata metadata, Exception e, Tracer currentTracer) {
         TracerContextUtil.newTracer(currentTracer.getTraceId(), currentTracer.getOrigin(), currentTracer.getTracerTs());
         MDCUtils.recordTracer();
+
         log.debug("Kafka 消息转发完成, success:{}", e == null);
 
         if (consumer != null) {
@@ -196,6 +195,9 @@ public class KafkaForwarder extends Forwarder {
 
         if (e != null) {
             objectNode.put(ERROR, e.getClass() + ": " + e.getMessage());
+            forwarderMessagesStats.incrementFailed();
+        } else {
+            forwarderMessagesStats.incrementSuccessful();
         }
 
         consumer.accept(e == null, objectNode);

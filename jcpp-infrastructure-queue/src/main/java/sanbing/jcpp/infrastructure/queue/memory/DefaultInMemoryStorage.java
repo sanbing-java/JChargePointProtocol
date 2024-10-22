@@ -5,6 +5,7 @@
 package sanbing.jcpp.infrastructure.queue.memory;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import sanbing.jcpp.infrastructure.queue.QueueMsg;
 
@@ -18,15 +19,16 @@ import java.util.concurrent.LinkedBlockingQueue;
 public final class DefaultInMemoryStorage implements InMemoryStorage {
     private final ConcurrentHashMap<String, BlockingQueue<QueueMsg>> storage = new ConcurrentHashMap<>();
 
+    @Value("${queue.in-memory.queue-capacity:100000}")
+    private int queueCapacity;
+
     @Override
     public void printStats() {
-        if (log.isDebugEnabled()) {
-            storage.forEach((topic, queue) -> {
-                if (!queue.isEmpty()) {
-                    log.debug("[{}] Queue Size [{}]", topic, queue.size());
-                }
-            });
-        }
+        storage.forEach((topic, queue) -> {
+            if (!queue.isEmpty()) {
+                log.info("[{}] Queue Size [{}]", topic, queue.size());
+            }
+        });
     }
 
     @Override
@@ -41,11 +43,11 @@ public final class DefaultInMemoryStorage implements InMemoryStorage {
 
     @Override
     public boolean put(String topic, QueueMsg msg) {
-        return storage.computeIfAbsent(topic, (t) -> new LinkedBlockingQueue<>()).add(msg);
+        return storage.computeIfAbsent(topic, t -> new LinkedBlockingQueue<>(queueCapacity)).add(msg);
     }
 
     @Override
-    public  List<QueueMsg> get(String topic) throws InterruptedException {
+    public List<QueueMsg> get(String topic) throws InterruptedException {
         final BlockingQueue<QueueMsg> queue = storage.get(topic);
         if (queue != null) {
             final QueueMsg firstMsg = queue.poll();

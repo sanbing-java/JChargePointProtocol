@@ -17,7 +17,10 @@ import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
 
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static sanbing.jcpp.app.dal.mapper.StationMapperIT.NORMAL_STATION_ID;
 import static sanbing.jcpp.app.dal.mapper.UserMapperIT.NORMAL_USER_ID;
@@ -68,7 +71,36 @@ class PileMapperIT extends AbstractTestBase {
             pileMapper.insertOrUpdate(pile);
 
             log.info("{}", pileMapper.selectById(pileId));
-
         }
+    }
+
+    @Test
+    void generate100KPiles() {
+        AtomicInteger number = new AtomicInteger(1);
+        for (int i = 0; i < 100; i++) {
+            List<Pile> piles = new ArrayList<>();
+            for (int j = 0; j < 1000; j++, number.incrementAndGet()) {
+                Pile pile = Pile.builder()
+                        .id(UUID.randomUUID())
+                        .createdTime(LocalDateTime.now())
+                        .additionalInfo(JacksonUtil.newObjectNode())
+                        .pileName(String.format("三丙家的%d号充电桩", number.get()))
+                        .pileCode("20241015" + new DecimalFormat("000000").format(number.get()))
+                        .protocol("yunkuaichongV150")
+                        .stationId(NORMAL_STATION_ID)
+                        .ownerId(NORMAL_USER_ID)
+                        .ownerType(OwnerTypeEnum.C)
+                        .brand("星星")
+                        .model("10A")
+                        .manufacturer("星星")
+                        .status(PileStatusEnum.IDLE)
+                        .type(PileTypeEnum.AC)
+                        .build();
+                piles.add(pile);
+            }
+            pileMapper.insert(piles);
+        }
+
+        log.info("{}", pileMapper.selectCount(Wrappers.lambdaQuery()));
     }
 }

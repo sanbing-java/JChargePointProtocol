@@ -29,7 +29,7 @@ public class YunKuaiChongV150LoginULCmd extends YunKuaiChongUplinkCmdExe {
 
     @Override
     public void execute(TcpSession tcpSession, YunKuaiChongUplinkMessage yunKuaiChongUplinkMessage, ProtocolContext ctx) {
-        log.info("{} 云快充1.5.0登录认证请求", tcpSession);
+        log.debug("{} 云快充1.5.0登录认证请求", tcpSession);
         ByteBuf byteBuf = Unpooled.copiedBuffer(yunKuaiChongUplinkMessage.getMsgBody());
 
         ObjectNode additionalInfo = JacksonUtil.newObjectNode();

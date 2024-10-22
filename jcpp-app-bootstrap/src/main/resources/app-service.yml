@@ -27,7 +27,7 @@ spring:
     password: "${SPRING_DATASOURCE_PASSWORD:postgres}"
     hikari:
       leak-detection-threshold: "${SPRING_DATASOURCE_HIKARI_LEAK_DETECTION_THRESHOLD:0}"
-      maximum-pool-size: "${SPRING_DATASOURCE_MAXIMUM_POOL_SIZE:16}"
+      maximum-pool-size: "${SPRING_DATASOURCE_MAXIMUM_POOL_SIZE:64}"
       register-mbeans: "${SPRING_DATASOURCE_HIKARI_REGISTER_MBEANS:false}"
 
 mybatis-plus:
@@ -63,9 +63,10 @@ queue:
   type: "${QUEUE_TYPE:memory}"
   partitions:
     hash_function_name: "${QUEUE_PARTITIONS_HASH_FUNCTION_NAME:murmur3_128}" # murmur3_32, murmur3_128 or sha256
-  in_memory:
+  in-memory:
+    queue-capacity: "${QUEUE_IN_MEMORY_QUEUE_CAPACITY:100000}"
     stats:
-      print-interval-ms: "${QUEUE_IN_MEMORY_STATS_PRINT_INTERVAL_MS:60000}"
+      print-interval-ms: "${QUEUE_IN_MEMORY_STATS_PRINT_INTERVAL_MS:10000}"
   kafka:
     bootstrap-servers: "${KAFKA_SERVERS:kafka:9092}"
     ssl:
@@ -93,7 +94,7 @@ queue:
     auto-offset-reset: "${QUEUE_KAFKA_AUTO_OFFSET_RESET:earliest}"
     other-inline: "${QUEUE_KAFKA_OTHER_PROPERTIES:}"
     topic-properties:
-      app: "${QUEUE_KAFKA_APP_TOPIC_PROPERTIES:retention.ms:604800000;segment.bytes:52428800;retention.bytes:1048576000;partitions:1;min.insync.replicas:1}"
+      app: "${QUEUE_KAFKA_APP_TOPIC_PROPERTIES:retention.ms:86400000;segment.bytes:52428800;retention.bytes:1048576000;partitions:1;min.insync.replicas:1}"
     consumer-stats:
       enabled: "${QUEUE_KAFKA_CONSUMER_STATS_ENABLED:true}"
       print-interval-ms: "${QUEUE_KAFKA_CONSUMER_STATS_MIN_PRINT_INTERVAL_MS:60000}"
@@ -115,8 +116,8 @@ cache:
   type: "${CACHE_TYPE:caffeine}" # caffeine or redis
   specs:
     piles:
-      timeToLiveInMinutes: "${CACHE_SPECS_PILES_TTL:15}"
-      maxSize: "${CACHE_SPECS_PILES_MAX_SIZE:1000}"
+      timeToLiveInMinutes: "${CACHE_SPECS_PILES_TTL:1440}"
+      maxSize: "${CACHE_SPECS_PILES_MAX_SIZE:100000}"
     pileSessions:
       timeToLiveInMinutes: "${CACHE_SPECS_PILE_SESSIONS_TTL:1440}"
       maxSize: "${CACHE_SPECS_PILE_SESSIONS_MAX_SIZE:100000}"
@@ -132,7 +133,7 @@ redis:
     commandTimeout: "${REDIS_CLIENT_COMMAND_TIMEOUT:30000}"
     shutdownTimeout: "${REDIS_CLIENT_SHUTDOWN_TIMEOUT:1000}"
     readTimeout: "${REDIS_CLIENT_READ_TIMEOUT:60000}"
-    usePoolConfig: "${REDIS_CLIENT_USE_POOL_CONFIG:false}"
+    usePoolConfig: "${REDIS_CLIENT_USE_POOL_CONFIG:true}"
   cluster:
     nodes: "${REDIS_NODES:redis-node-0:6379,redis-node-1:6379,redis-node-2:6379,redis-node-3:6379,redis-node-4:6379,redis-node-5:6379}"
     max-redirects: "${REDIS_MAX_REDIRECTS:12}"
@@ -146,7 +147,7 @@ redis:
   password: "${REDIS_PASSWORD:sanbing}"
   pool_config:
     maxTotal: "${REDIS_POOL_CONFIG_MAX_TOTAL:128}"
-    maxIdle: "${REDIS_POOL_CONFIG_MAX_IDLE:128}"
+    maxIdle: "${REDIS_POOL_CONFIG_MAX_IDLE:64}"
     minIdle: "${REDIS_POOL_CONFIG_MIN_IDLE:16}"
     testOnBorrow: "${REDIS_POOL_CONFIG_TEST_ON_BORROW:false}"
     testOnReturn: "${REDIS_POOL_CONFIG_TEST_ON_RETURN:false}"

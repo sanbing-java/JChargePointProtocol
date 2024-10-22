@@ -4,6 +4,7 @@
  */
 package sanbing.jcpp.protocol.yunkuaichong.v150;
 
+import cn.hutool.core.util.RandomUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +43,7 @@ public class YunKuaiChongV150LoginAckDLCmd extends YunKuaiChongDownlinkCmdExe {
 
     @Override
     public void execute(TcpSession tcpSession, YunKuaiChongDwonlinkMessage yunKuaiChongDwonlinkMessage, ProtocolContext ctx) {
-        log.info("{} 云快充1.5.0登录认证应答", tcpSession);
+        log.debug("{} 云快充1.5.0登录认证应答", tcpSession);
 
         if (!yunKuaiChongDwonlinkMessage.getMsg().hasLoginResponse()) {
             return;
@@ -95,7 +96,7 @@ public class YunKuaiChongV150LoginAckDLCmd extends YunKuaiChongDownlinkCmdExe {
                     log.info("{} 云快充1.5.0开始注册定时对时任务", tcpSession);
                     return PROTOCOL_SESSION_SCHEDULED.scheduleAtFixedRate(() ->
                                     syncTime(tcpSession, pileCodeBytes, requestData),
-                            0, 8, TimeUnit.HOURS);
+                            0, RandomUtil.randomInt(420, 480), TimeUnit.MINUTES);
                 }
         );
     }

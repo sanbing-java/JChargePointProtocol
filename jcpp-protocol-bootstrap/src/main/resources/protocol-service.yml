@@ -135,9 +135,6 @@ queue:
   type: "${QUEUE_TYPE:kafka}"
   partitions:
     hash_function_name: "${QUEUE_PARTITIONS_HASH_FUNCTION_NAME:murmur3_128}" # murmur3_32, murmur3_128 or sha256
-  in_memory:
-    stats:
-      print-interval-ms: "${QUEUE_IN_MEMORY_STATS_PRINT_INTERVAL_MS:60000}"
   kafka:
     bootstrap-servers: "${KAFKA_SERVERS:kafka:9092}"
     ssl:
@@ -165,7 +162,7 @@ queue:
     auto-offset-reset: "${QUEUE_KAFKA_AUTO_OFFSET_RESET:earliest}"
     other-inline: "${QUEUE_KAFKA_OTHER_PROPERTIES:}"
     topic-properties:
-      app: "${QUEUE_KAFKA_APP_TOPIC_PROPERTIES:retention.ms:604800000;segment.bytes:52428800;retention.bytes:1048576000;partitions:1;min.insync.replicas:1}"
+      app: "${QUEUE_KAFKA_APP_TOPIC_PROPERTIES:retention.ms:86400000;segment.bytes:52428800;retention.bytes:1048576000;partitions:1;min.insync.replicas:1}"
     consumer-stats:
       enabled: "${QUEUE_KAFKA_CONSUMER_STATS_ENABLED:true}"
       print-interval-ms: "${QUEUE_KAFKA_CONSUMER_STATS_MIN_PRINT_INTERVAL_MS:60000}"

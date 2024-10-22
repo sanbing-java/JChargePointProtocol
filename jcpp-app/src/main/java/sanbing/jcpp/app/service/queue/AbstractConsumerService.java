@@ -31,7 +31,7 @@ public abstract class AbstractConsumerService extends JCPPApplicationEventListen
     protected ScheduledExecutorService scheduler;
 
     public void init(String prefix) {
-        this.consumersExecutor = Executors.newCachedThreadPool(JCPPThreadFactory.forName(prefix + "-consumer"));
+        this.consumersExecutor = JCPPExecutors.newVirtualThreadPool(prefix + "-consumer-virtual");
         this.mgmtExecutor = JCPPExecutors.newWorkStealingPool(getMgmtThreadPoolSize(), prefix + "-mgmt");
         this.scheduler = Executors.newSingleThreadScheduledExecutor(JCPPThreadFactory.forName(prefix + "-consumer-scheduler"));
     }
