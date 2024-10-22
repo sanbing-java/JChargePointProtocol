@@ -21,7 +21,7 @@ import sanbing.jcpp.infrastructure.cache.CacheValueWrapper;
 import sanbing.jcpp.infrastructure.cache.TransactionalCache;
 import sanbing.jcpp.infrastructure.queue.discovery.ServiceInfoProvider;
 import sanbing.jcpp.infrastructure.util.trace.TracerContextUtil;
-import sanbing.jcpp.proto.gen.ProtocolProto.DownlinkRestMessage;
+import sanbing.jcpp.proto.gen.ProtocolProto.DownlinkRequestMessage;
 import sanbing.jcpp.protocol.adapter.DownlinkController;
 
 import static sanbing.jcpp.infrastructure.util.trace.TracerContextUtil.*;
@@ -49,7 +49,7 @@ public class DefaultDownlinkCallService implements DownlinkCallService {
     private String cacheType;
 
     @Override
-    public void sendDownlinkMessage(DownlinkRestMessage.Builder downlinkMessageBuilder, String pileCode) {
+    public void sendDownlinkMessage(DownlinkRequestMessage.Builder downlinkMessageBuilder, String pileCode) {
         if (serviceInfoProvider.isMonolith() && "caffeine".equalsIgnoreCase(cacheType)) {
 
             downlinkController.onDownlink(downlinkMessageBuilder.build())
@@ -75,21 +75,21 @@ public class DefaultDownlinkCallService implements DownlinkCallService {
         }
     }
 
-    private void invokeDownlinkRestApi(DownlinkRestMessage downlinkRestMessage, String nodeWebapiIpPort) {
+    private void invokeDownlinkRestApi(DownlinkRequestMessage DownlinkRequestMessage, String nodeWebapiIpPort) {
         HttpHeaders headers = new HttpHeaders();
         headers.add(JCPP_TRACER_ID, TracerContextUtil.getCurrentTracer().getTraceId());
         headers.add(JCPP_TRACER_ORIGIN, TracerContextUtil.getCurrentTracer().getOrigin());
         headers.add(JCPP_TRACER_TS, String.valueOf(TracerContextUtil.getCurrentTracer().getTracerTs()));
         headers.setContentType(MediaType.parseMediaType("application/x-protobuf"));
 
-        HttpEntity<DownlinkRestMessage> entity = new HttpEntity<>(downlinkRestMessage, headers);
+        HttpEntity<DownlinkRequestMessage> entity = new HttpEntity<>(DownlinkRequestMessage, headers);
 
         try {
             ResponseEntity<?> response = downlinkRestTemplate.postForEntity("http://" + nodeWebapiIpPort + "/api/onDownlink",
                     entity, ResponseEntity.class);
             log.debug("下行消息发送成功 {}", response);
         } catch (RestClientException e) {
-            log.error("下行消息发送失败 {}", downlinkRestMessage, e);
+            log.error("下行消息发送失败 {}", DownlinkRequestMessage, e);
             throw new RuntimeException(e);
         }
 

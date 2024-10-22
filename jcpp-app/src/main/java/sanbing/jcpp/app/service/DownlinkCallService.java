@@ -4,12 +4,12 @@
  */
 package sanbing.jcpp.app.service;
 
-import sanbing.jcpp.proto.gen.ProtocolProto.DownlinkRestMessage;
+import sanbing.jcpp.proto.gen.ProtocolProto.DownlinkRequestMessage;
 
 /**
  * @author baigod
  */
 public interface DownlinkCallService {
 
-    void sendDownlinkMessage(DownlinkRestMessage.Builder downlinkMessageBuilder, String pileCode);
+    void sendDownlinkMessage(DownlinkRequestMessage.Builder downlinkMessageBuilder, String pileCode);
 }

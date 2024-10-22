@@ -9,6 +9,10 @@ package infrastructureProto;
 option java_package = "sanbing.jcpp.proto.gen";
 option java_outer_classname = "ProtocolProto";
 
+service ProtocolDownlinkInterface {
+  rpc onDownlink(stream DownlinkRequestMessage) returns (stream DownlinkResponseMessage) {}
+}
+
 message UplinkQueueMessage {
   int64 messageIdMSB = 1;
   int64 messageIdLSB = 2;
@@ -29,7 +33,7 @@ message UplinkQueueMessage {
   TransactionRecord transactionRecord = 30;
 }
 
-message DownlinkRestMessage {
+message DownlinkRequestMessage {
   int64 messageIdMSB = 1;
   int64 messageIdLSB = 2;
   int64 sessionIdMSB = 3;
@@ -47,6 +51,11 @@ message DownlinkRestMessage {
   RemoteStartChargingRequest remoteStartChargingRequest = 24;
   RemoteStopChargingRequest remoteStopChargingRequest = 25;
   TransactionRecordAck transactionRecordAck = 26;
+}
+
+message DownlinkResponseMessage {
+  bool success = 1;
+  optional string error = 2;
 }
 
 message LoginRequest {

@@ -19,7 +19,7 @@ import sanbing.jcpp.infrastructure.stats.MessagesStats;
 import sanbing.jcpp.infrastructure.util.exception.DownlinkException;
 import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
 import sanbing.jcpp.infrastructure.util.trace.TracerContextUtil;
-import sanbing.jcpp.proto.gen.ProtocolProto.DownlinkRestMessage;
+import sanbing.jcpp.proto.gen.ProtocolProto.DownlinkRequestMessage;
 import sanbing.jcpp.protocol.ProtocolMessageProcessor;
 import sanbing.jcpp.protocol.domain.ListenerToHandlerMsg;
 import sanbing.jcpp.protocol.domain.ProtocolUplinkMsg;
@@ -121,7 +121,7 @@ public class TcpChannelHandler<T> extends SimpleChannelInboundHandler<ProtocolUp
         }
     }
 
-    protected void onDownlink(DownlinkRestMessage downlinkMsg) throws DownlinkException {
+    protected void onDownlink(DownlinkRequestMessage downlinkMsg) throws DownlinkException {
         protocolMessageProcessor.downlinkHandle(new SessionToHandlerMsg(downlinkMsg, tcpSession), downlinkMsgStats);
     }
 

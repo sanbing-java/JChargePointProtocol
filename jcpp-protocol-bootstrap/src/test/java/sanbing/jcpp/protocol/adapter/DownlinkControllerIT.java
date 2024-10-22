@@ -21,7 +21,7 @@ import org.springframework.http.HttpStatus;
 import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
 import sanbing.jcpp.infrastructure.util.property.PropertyUtils;
 import sanbing.jcpp.proto.gen.ProtocolProto;
-import sanbing.jcpp.proto.gen.ProtocolProto.DownlinkRestMessage;
+import sanbing.jcpp.proto.gen.ProtocolProto.DownlinkRequestMessage;
 import sanbing.jcpp.protocol.AbstractProtocolTestBase;
 import sanbing.jcpp.protocol.domain.DownlinkCmdEnum;
 import sanbing.jcpp.protocol.domain.ProtocolSession;
@@ -116,9 +116,9 @@ class DownlinkControllerIT extends AbstractProtocolTestBase {
 
         UUID messageId = UUID.randomUUID();
         UUID requestId = UUID.randomUUID();
-        // 创建 DownlinkRestMessage 实例
+        // 创建 DownlinkRequestMessage 实例
         String pileCode = "20231212000010";
-        DownlinkRestMessage downlinkMsg = DownlinkRestMessage.newBuilder()
+        DownlinkRequestMessage downlinkMsg = DownlinkRequestMessage.newBuilder()
                 .setMessageIdMSB(messageId.getMostSignificantBits())
                 .setMessageIdLSB(messageId.getLeastSignificantBits())
                 .setSessionIdMSB(sessionId.getMostSignificantBits())

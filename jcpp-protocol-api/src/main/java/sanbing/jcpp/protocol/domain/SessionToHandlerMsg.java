@@ -4,10 +4,10 @@
  */
 package sanbing.jcpp.protocol.domain;
 
-import sanbing.jcpp.proto.gen.ProtocolProto.DownlinkRestMessage;
+import sanbing.jcpp.proto.gen.ProtocolProto.DownlinkRequestMessage;
 
 /**
  * @author baigod
  */
-public record SessionToHandlerMsg(DownlinkRestMessage downlinkMsg, ProtocolSession session) {
+public record SessionToHandlerMsg(DownlinkRequestMessage downlinkMsg, ProtocolSession session) {
 }

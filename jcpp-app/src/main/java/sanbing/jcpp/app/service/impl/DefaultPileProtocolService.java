@@ -59,7 +59,7 @@ public class DefaultPileProtocolService implements PileProtocolService {
         log.debug("查询到充电桩信息 {}", pile);
 
         // 构造下行回复
-        DownlinkRestMessage.Builder downlinkMessageBuilder = createDownlinkMessageBuilder(uplinkQueueMessage, loginRequest.getPileCode());
+        DownlinkRequestMessage.Builder downlinkMessageBuilder = createDownlinkMessageBuilder(uplinkQueueMessage, loginRequest.getPileCode());
         downlinkMessageBuilder.setDownlinkCmd(DownlinkCmdEnum.LOGIN_ACK.name());
 
         if (pile != null) {
@@ -122,7 +122,7 @@ public class DefaultPileProtocolService implements PileProtocolService {
         // todo 默认校验成功，后续查库校验
         assert pricingId > 0;
 
-        DownlinkRestMessage.Builder downlinkMessageBuilder = createDownlinkMessageBuilder(uplinkQueueMessage, pileCode);
+        DownlinkRequestMessage.Builder downlinkMessageBuilder = createDownlinkMessageBuilder(uplinkQueueMessage, pileCode);
         downlinkMessageBuilder.setDownlinkCmd(DownlinkCmdEnum.VERIFY_PRICING_ACK.name());
         downlinkMessageBuilder.setVerifyPricingResponse(VerifyPricingResponse.newBuilder()
                 .setSuccess(true)
@@ -167,7 +167,7 @@ public class DefaultPileProtocolService implements PileProtocolService {
         model.setPeriodsList(periods);
 
         // 构造下行计费
-        DownlinkRestMessage.Builder downlinkMessageBuilder = createDownlinkMessageBuilder(uplinkQueueMessage, pileCode);
+        DownlinkRequestMessage.Builder downlinkMessageBuilder = createDownlinkMessageBuilder(uplinkQueueMessage, pileCode);
         downlinkMessageBuilder.setDownlinkCmd(DownlinkCmdEnum.QUERY_PRICING_ACK.name());
         downlinkMessageBuilder.setQueryPricingResponse(QueryPricingResponse.newBuilder()
                 .setPileCode(pileCode)
@@ -236,7 +236,7 @@ public class DefaultPileProtocolService implements PileProtocolService {
         String pileCode = transactionRecord.getPileCode();
 
         // 构造下行计费
-        DownlinkRestMessage.Builder downlinkMessageBuilder = createDownlinkMessageBuilder(uplinkQueueMessage, pileCode);
+        DownlinkRequestMessage.Builder downlinkMessageBuilder = createDownlinkMessageBuilder(uplinkQueueMessage, pileCode);
         downlinkMessageBuilder.setDownlinkCmd(DownlinkCmdEnum.TRANSACTION_RECORD.name());
         downlinkMessageBuilder.setTransactionRecordAck(TransactionRecordAck.newBuilder()
                 .setTradeNo(tradeNo)
@@ -257,9 +257,9 @@ public class DefaultPileProtocolService implements PileProtocolService {
         return period;
     }
 
-    private DownlinkRestMessage.Builder createDownlinkMessageBuilder(UplinkQueueMessage uplinkQueueMessage, String pileCode) {
+    private DownlinkRequestMessage.Builder createDownlinkMessageBuilder(UplinkQueueMessage uplinkQueueMessage, String pileCode) {
         UUID messageId = UUID.randomUUID();
-        DownlinkRestMessage.Builder builder = DownlinkRestMessage.newBuilder();
+        DownlinkRequestMessage.Builder builder = DownlinkRequestMessage.newBuilder();
         builder.setMessageIdMSB(messageId.getLeastSignificantBits());
         builder.setMessageIdLSB(messageId.getLeastSignificantBits());
         builder.setPileCode(pileCode);
