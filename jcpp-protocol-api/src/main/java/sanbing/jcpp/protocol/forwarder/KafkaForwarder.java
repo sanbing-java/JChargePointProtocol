@@ -150,6 +150,7 @@ public class KafkaForwarder extends Forwarder {
     }
 
     private void kafkaForward(String topic, String key, UplinkQueueMessage msg, BiConsumer<Boolean, ObjectNode> consumer) throws InvalidProtocolBufferException {
+        forwarderMessagesStats.incrementTotal();
         Headers headers = new RecordHeaders();
 
         Tracer currentTracer = TracerContextUtil.getCurrentTracer();
@@ -177,6 +178,7 @@ public class KafkaForwarder extends Forwarder {
     private void logAndDoConsumer(BiConsumer<Boolean, ObjectNode> consumer, RecordMetadata metadata, Exception e, Tracer currentTracer) {
         TracerContextUtil.newTracer(currentTracer.getTraceId(), currentTracer.getOrigin(), currentTracer.getTracerTs());
         MDCUtils.recordTracer();
+
         log.debug("Kafka 消息转发完成, success:{}", e == null);
 
         if (consumer != null) {
@@ -196,6 +198,9 @@ public class KafkaForwarder extends Forwarder {
 
         if (e != null) {
             objectNode.put(ERROR, e.getClass() + ": " + e.getMessage());
+            forwarderMessagesStats.incrementFailed();
+        } else {
+            forwarderMessagesStats.incrementSuccessful();
         }
 
         consumer.accept(e == null, objectNode);
