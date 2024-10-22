@@ -199,7 +199,7 @@ service:
           # 以下配置只有在service.type为protocol时且jcpp-partition为false时才生效
           bootstrap-servers: "${PROTOCOLS_YUNKUAICHONGV150_FORWARD_KAFKA_SERVERS:kafka:9092}"
           acks: "${PROTOCOLS_YUNKUAICHONGV150_FORWARD_KAFKA_ACKS:1}"
-          # # 可选 protobuf（推荐）、json
+          # 可选 protobuf（推荐）、json
           encoder: "${PROTOCOLS_YUNKUAICHONGV150_FORWARD_KAFKA_ENCODER:protobuf}"
           retries: "${PROTOCOLS_YUNKUAICHONGV150_FORWARD_KAFKA_RETRIES:1}"
           compression-type: "${PROTOCOLS_YUNKUAICHONGV150_FORWARD_KAFKA_COMPRESSION_TYPE:lz4}" # none, gzip, snappy, lz4, zstd
@@ -238,7 +238,7 @@ service:
           # 以下配置只有在service.type为protocol时且jcpp-partition为false时才生效
           bootstrap-servers: "${PROTOCOLS_YUNKUAICHONGV160_FORWARD_KAFKA_SERVERS:kafka:9092}"
           acks: "${PROTOCOLS_YUNKUAICHONGV160_FORWARD_KAFKA_ACKS:1}"
-          # # 可选 protobuf（推荐）、json
+          # 可选 protobuf（推荐）、json
           encoder: "${PROTOCOLS_YUNKUAICHONGV160_FORWARD_KAFKA_ENCODER:protobuf}"
           retries: "${PROTOCOLS_YUNKUAICHONGV160_FORWARD_KAFKA_RETRIES:1}"
           compression-type: "${PROTOCOLS_YUNKUAICHONGV160_FORWARD_KAFKA_COMPRESSION_TYPE:lz4}" # none, gzip, snappy, lz4, zstd
