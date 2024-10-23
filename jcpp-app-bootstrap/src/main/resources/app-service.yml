@@ -146,9 +146,9 @@ redis:
   db: "${REDIS_DB:0}"
   password: "${REDIS_PASSWORD:sanbing}"
   pool_config:
-    maxTotal: "${REDIS_POOL_CONFIG_MAX_TOTAL:128}"
-    maxIdle: "${REDIS_POOL_CONFIG_MAX_IDLE:64}"
-    minIdle: "${REDIS_POOL_CONFIG_MIN_IDLE:16}"
+    maxTotal: "${REDIS_POOL_CONFIG_MAX_TOTAL:256}"
+    maxIdle: "${REDIS_POOL_CONFIG_MAX_IDLE:128}"
+    minIdle: "${REDIS_POOL_CONFIG_MIN_IDLE:64}"
     testOnBorrow: "${REDIS_POOL_CONFIG_TEST_ON_BORROW:false}"
     testOnReturn: "${REDIS_POOL_CONFIG_TEST_ON_RETURN:false}"
     testWhileIdle: "${REDIS_POOL_CONFIG_TEST_WHILE_IDLE:true}"
