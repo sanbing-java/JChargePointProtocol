@@ -13,7 +13,11 @@ import sanbing.jcpp.proto.gen.ClusterProto;
 public interface ServiceInfoProvider {
     String getServiceId();
 
-    String getServiceWebapiEndpoint();
+    String getHostAddress();
+
+    int getRestPort();
+
+    int getGrpcPort();
 
     String getServiceType();
 

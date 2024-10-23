@@ -54,7 +54,9 @@ public class YunKuaiChongV150HeartbeatULCmd extends YunKuaiChongUplinkCmdExe {
                 .setPileCode(pileCode)
                 .setRemoteAddress(tcpSession.getAddress().toString())
                 .setNodeId(ctx.getServiceInfoProvider().getServiceId())
-                .setNodeWebapiIpPort(ctx.getServiceInfoProvider().getServiceWebapiEndpoint())
+                .setNodeHostAddress(ctx.getServiceInfoProvider().getHostAddress())
+                .setNodeRestPort(ctx.getServiceInfoProvider().getRestPort())
+                .setNodeGrpcPort(ctx.getServiceInfoProvider().getGrpcPort())
                 .setAdditionalInfo(additionalInfo.toString())
                 .build();
         UplinkQueueMessage uplinkQueueMessage = uplinkMessageBuilder(heartBeatRequest.getPileCode(), tcpSession, yunKuaiChongUplinkMessage)

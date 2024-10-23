@@ -40,10 +40,10 @@
         <skip.integration.tests/>
         <os-maven-plugin.version>1.7.0</os-maven-plugin.version>
         <disruptor.version>3.4.4</disruptor.version>
-        <protobuf.version>3.21.9</protobuf.version>
         <jakarta.el.version>4.0.2</jakarta.el.version>
-        <grpc.version>1.56.1</grpc.version>
-        <protobuf-maven-plugin.version>0.5.1</protobuf-maven-plugin.version>
+        <protobuf.version>4.28.2</protobuf.version>
+        <grpc.version>1.68.0</grpc.version>
+        <protobuf-maven-plugin.version>0.6.1</protobuf-maven-plugin.version>
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
         <hutool-all.version>5.8.32</hutool-all.version>
         <mybatis-plus-boot-starter.version>3.5.7</mybatis-plus-boot-starter.version>

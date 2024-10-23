@@ -67,7 +67,9 @@ public class DefaultPileProtocolService implements PileProtocolService {
             cacheSession(uplinkQueueMessage, pile,
                     loginRequest.getRemoteAddress(),
                     loginRequest.getNodeId(),
-                    loginRequest.getNodeWebapiIpPort());
+                    loginRequest.getNodeHostAddress(),
+                    loginRequest.getNodeRestPort(),
+                    loginRequest.getNodeGrpcPort());
 
             downlinkMessageBuilder.setLoginResponse(LoginResponse.newBuilder()
                     .setSuccess(true)
@@ -98,16 +100,26 @@ public class DefaultPileProtocolService implements PileProtocolService {
             cacheSession(uplinkQueueMessage, pile,
                     heartBeatRequest.getRemoteAddress(),
                     heartBeatRequest.getNodeId(),
-                    heartBeatRequest.getNodeWebapiIpPort());
+                    heartBeatRequest.getNodeHostAddress(),
+                    heartBeatRequest.getNodeRestPort(),
+                    heartBeatRequest.getNodeGrpcPort());
         }
     }
 
-    private void cacheSession(UplinkQueueMessage uplinkQueueMessage, Pile pile, String remoteAddress, String nodeId, String nodeWebapiIpPort) {
+    private void cacheSession(UplinkQueueMessage uplinkQueueMessage,
+                              Pile pile,
+                              String remoteAddress,
+                              String nodeId,
+                              String nodeIp,
+                              int restPort,
+                              int grpcPort) {
         PileSession pileSession = new PileSession(pile.getId(), pile.getPileCode(), uplinkQueueMessage.getProtocolName());
         pileSession.setProtocolSessionId(new UUID(uplinkQueueMessage.getSessionIdMSB(), uplinkQueueMessage.getSessionIdLSB()));
         pileSession.setRemoteAddress(remoteAddress);
         pileSession.setNodeId(nodeId);
-        pileSession.setNodeWebapiIpPort(nodeWebapiIpPort);
+        pileSession.setNodeIp(nodeIp);
+        pileSession.setNodeRestPort(restPort);
+        pileSession.setNodeGrpcPort(grpcPort);
         pileSessionCache.put(new PileSessionCacheKey(pile.getPileCode()), pileSession);
     }
 

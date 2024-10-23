@@ -13,6 +13,12 @@ service ProtocolDownlinkInterface {
   rpc onDownlink(stream DownlinkRequestMessage) returns (stream DownlinkResponseMessage) {}
 }
 
+message TracerProto {
+  string id = 1;
+  string origin = 2;
+  int64 ts = 3;
+}
+
 message UplinkQueueMessage {
   int64 messageIdMSB = 1;
   int64 messageIdLSB = 2;
@@ -43,14 +49,15 @@ message DownlinkRequestMessage {
   optional int64 requestIdMSB = 8;
   optional int64 requestIdLSB = 9;
   optional bytes requestData = 10;
-  string downlinkCmd = 11;
-  LoginResponse loginResponse = 20;
-  VerifyPricingResponse verifyPricingResponse = 21;
-  QueryPricingResponse queryPricingResponse = 22;
-  SetPricingRequest setPricingRequest = 23;
-  RemoteStartChargingRequest remoteStartChargingRequest = 24;
-  RemoteStopChargingRequest remoteStopChargingRequest = 25;
-  TransactionRecordAck transactionRecordAck = 26;
+  TracerProto tracer = 12;
+  string downlinkCmd = 20;
+  LoginResponse loginResponse = 21;
+  VerifyPricingResponse verifyPricingResponse = 22;
+  QueryPricingResponse queryPricingResponse = 23;
+  SetPricingRequest setPricingRequest = 24;
+  RemoteStartChargingRequest remoteStartChargingRequest = 25;
+  RemoteStopChargingRequest remoteStopChargingRequest = 26;
+  TransactionRecordAck transactionRecordAck = 27;
 }
 
 message DownlinkResponseMessage {
@@ -63,7 +70,9 @@ message LoginRequest {
   string credential = 3;
   string remoteAddress = 4;
   string nodeId = 10;
-  string nodeWebapiIpPort = 11;
+  string nodeHostAddress = 11;
+  int32 nodeRestPort = 12;
+  int32 nodeGrpcPort = 13;
   optional string additionalInfo = 20;
 }
 
@@ -76,7 +85,9 @@ message HeartBeatRequest {
   string pileCode = 3;
   string remoteAddress = 4;
   string nodeId = 10;
-  string nodeWebapiIpPort = 11;
+  string nodeHostAddress = 11;
+  int32 nodeRestPort = 12;
+  int32 nodeGrpcPort = 13;
   optional string additionalInfo = 20;
 }
 

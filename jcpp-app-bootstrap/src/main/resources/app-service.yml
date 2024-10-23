@@ -164,10 +164,23 @@ service:
   type: "${SERVICE_TYPE:monolith}"
   # 可自定义的服务ID，如果不指定，则默认为HOSTNAME
   id: "${SERVICE_ID:}"
-  protocols:
+  protocol:
     sessions:
       default-inactivity-timeout-in-sec: "${PROTOCOLS_SESSIONS_DEFAULT_INACTIVITY_TIMEOUT_IN_SEC:600}"
       default-state-check-interval-in-sec: "${PROTOCOLS_SESSIONS_DEFAULT_STATE_CHECK_INTERVAL_IN_SEC:60}"
+    rpc:
+      enabled: "${SERVICE_PROTOCOL_RPC_ENABLED:true}"
+      port: "${SERVICE_PROTOCOL_RPC_PORT:9090}"
+      boss: "${SERVICE_PROTOCOL_RPC_BOSS:4}"
+      worker: "${SERVICE_PROTOCOL_RPC_WORKER:64}"
+      so-rcvbuf: "${SERVICE_PROTOCOL_RPC_SO_RCVBUF:65535}"
+      so-sndbuf: "${SERVICE_PROTOCOL_RPC_SO_SNDBUF:65535}"
+      no-delay: "${SERVICE_PROTOCOL_RPC_NO_DELAY:true}"
+      user-thread-pool-size: "${SERVICE_PROTOCOL_RPC_USER_THREAD_POOL_SIZE:1024}"
+      max-inbound-message-size: "${SERVICE_PROTOCOL_RPC_MAX_INBOUND_MESSAGE_SIZE:33554432}"
+      max-concurrent-calls-per-connection: "${SERVICE_PROTOCOL_MAX_CONCURRENT_CALLS_PER_CONNECTION:4}"
+      client-max-keep-alive-time-sec: "${SERVICE_PROTOCOL_RPC_CLIENT_MAX_KEEP_ALIVE_TIME_SEC:30}"
+  protocols:
     yunkuaichongV150:
       enabled: "${PROTOCOLS_YUNKUAICHONGV150_ENABLED:true}"
       listener:
@@ -252,3 +265,7 @@ thread-pool:
     hash_function_name: "${THREAD_POOL_SHARDING_HASH_FUNCTION_NAME:murmur3_128}" # murmur3_32, murmur3_128 or sha256
     parallelism: "${THREAD_POOL_SHARDING_PARALLELISM:8}"
     stats-print-interval-ms: "${THREAD_POOL_SHARDING_STATS_PRINT_INTERVAL_MS:10000}"
+
+downlink:
+  rpc:
+    type: "${DOWNLINK_RPC_TYPE:grpc}" # rest or grpc
