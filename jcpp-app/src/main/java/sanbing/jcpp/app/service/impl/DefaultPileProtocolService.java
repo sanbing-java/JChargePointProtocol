@@ -260,6 +260,31 @@ public class DefaultPileProtocolService implements PileProtocolService {
         callback.onSuccess();
     }
 
+    @Override
+    public void startCharge(String pileCode, String gunCode, BigDecimal limitYuan, String orderNo) {
+
+
+        UUID messageId = UUID.randomUUID();
+        UUID requestId = UUID.randomUUID();
+
+        DownlinkRequestMessage.Builder downlinkRequestMessageBuilder = DownlinkRequestMessage.newBuilder()
+                .setMessageIdMSB(messageId.getMostSignificantBits())
+                .setMessageIdLSB(messageId.getLeastSignificantBits())
+                .setPileCode(pileCode)
+                .setRequestIdMSB(requestId.getMostSignificantBits())
+                .setRequestIdLSB(requestId.getLeastSignificantBits())
+                .setDownlinkCmd(DownlinkCmdEnum.REMOTE_START_CHARGING.name())
+                .setRemoteStartChargingRequest(RemoteStartChargingRequest.newBuilder()
+                        .setPileCode(pileCode)
+                        .setGunCode(gunCode)
+                        .setLimitYuan(limitYuan.toPlainString())
+                        .setTradeNo(orderNo)
+                        .build());
+
+
+        downlinkCallService.sendDownlinkMessage(downlinkRequestMessageBuilder, pileCode);
+    }
+
     private static Period createPeriod(int sn, LocalTime beginTime, LocalTime endTime, PricingModelFlag flag) {
         Period period = new Period();
         period.setSn(sn);

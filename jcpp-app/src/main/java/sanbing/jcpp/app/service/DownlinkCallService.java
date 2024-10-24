@@ -12,11 +12,10 @@ import sanbing.jcpp.app.service.cache.session.PileSessionCacheKey;
 import sanbing.jcpp.infrastructure.cache.CacheValueWrapper;
 import sanbing.jcpp.infrastructure.cache.TransactionalCache;
 import sanbing.jcpp.infrastructure.queue.discovery.ServiceInfoProvider;
-import sanbing.jcpp.infrastructure.util.trace.Tracer;
-import sanbing.jcpp.infrastructure.util.trace.TracerContextUtil;
-import sanbing.jcpp.proto.gen.ProtocolProto;
 import sanbing.jcpp.proto.gen.ProtocolProto.DownlinkRequestMessage;
 import sanbing.jcpp.protocol.adapter.DownlinkController;
+
+import java.util.UUID;
 
 /**
  * @author baigod
@@ -46,6 +45,18 @@ public abstract class DownlinkCallService {
 
         PileSession pileSession = pileSessionCacheValueWrapper.get();
 
+        UUID protocolSessionId = pileSession.getProtocolSessionId();
+
+        if (downlinkMessageBuilder.getSessionIdMSB() == 0) {
+            downlinkMessageBuilder.setSessionIdMSB(protocolSessionId.getMostSignificantBits());
+        }
+        if (downlinkMessageBuilder.getSessionIdLSB() == 0) {
+            downlinkMessageBuilder.setSessionIdLSB(protocolSessionId.getLeastSignificantBits());
+        }
+        if(downlinkMessageBuilder.getProtocolName() == null){
+            downlinkMessageBuilder.setProtocolName(pileSession.getProtocolName());
+        }
+
         if (serviceInfoProvider.isMonolith() &&
                 ("caffeine".equalsIgnoreCase(cacheType)) || serviceInfoProvider.getServiceId().equalsIgnoreCase(pileSession.getNodeId())) {
 
@@ -53,14 +64,6 @@ public abstract class DownlinkCallService {
                     .setResultHandler(result -> log.debug("下行消息发送完成"));
 
         } else {
-            Tracer currentTracer = TracerContextUtil.getCurrentTracer();
-
-            downlinkMessageBuilder.setTracer(ProtocolProto.TracerProto.newBuilder()
-                    .setId(currentTracer.getTraceId())
-                    .setOrigin(currentTracer.getOrigin())
-                    .setTs(currentTracer.getTracerTs())
-                    .build());
-
 
             _sendDownlinkMessage(downlinkMessageBuilder.build(), pileSession);
         }

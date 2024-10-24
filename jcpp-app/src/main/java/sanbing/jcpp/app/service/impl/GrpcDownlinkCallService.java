@@ -13,6 +13,9 @@ import sanbing.jcpp.app.data.PileSession;
 import sanbing.jcpp.app.service.DownlinkCallService;
 import sanbing.jcpp.app.service.grpc.DownlinkGrpcClient;
 import sanbing.jcpp.proto.gen.ProtocolProto.DownlinkRequestMessage;
+import sanbing.jcpp.proto.gen.ProtocolProto.RequestMsg;
+
+import static sanbing.jcpp.infrastructure.proto.ProtoConverter.toTracerProto;
 
 /**
  * @author baigod
@@ -29,8 +32,14 @@ public class GrpcDownlinkCallService extends DownlinkCallService {
     protected void _sendDownlinkMessage(DownlinkRequestMessage downlinkMessage, PileSession pileSession) {
         try {
 
+            RequestMsg requestMsg = RequestMsg.newBuilder()
+                    .setTs(System.currentTimeMillis())
+                    .setTracer(toTracerProto())
+                    .setDownlinkRequestMessage(downlinkMessage)
+                    .build();
+
             downlinkGrpcClient.sendDownlinkRequest(HostAndPort.fromParts(pileSession.getNodeIp(), pileSession.getNodeGrpcPort()),
-                    downlinkMessage);
+                    requestMsg);
 
         } catch (Exception e) {
             log.error("下行消息发送异常", e);

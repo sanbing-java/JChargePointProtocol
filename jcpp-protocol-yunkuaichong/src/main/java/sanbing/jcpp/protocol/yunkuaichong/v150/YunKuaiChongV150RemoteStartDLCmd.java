@@ -16,6 +16,8 @@ import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDownlinkCmdExe;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDwonlinkMessage;
 import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
 
+import java.math.BigDecimal;
+
 import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEnum.REMOTE_START_CHARGING;
 
 /**
@@ -39,7 +41,7 @@ public class YunKuaiChongV150RemoteStartDLCmd extends YunKuaiChongDownlinkCmdExe
         String pileCode = remoteStartChargingRequest.getPileCode();
         String gunCode = remoteStartChargingRequest.getGunCode();
         String tradeNo = remoteStartChargingRequest.getTradeNo();
-        int limitYuan = remoteStartChargingRequest.getLimitYuan();
+        String limitYuan = remoteStartChargingRequest.getLimitYuan();
 
         byte[] cardNo = encodeCardNo(tradeNo);
 
@@ -55,7 +57,7 @@ public class YunKuaiChongV150RemoteStartDLCmd extends YunKuaiChongDownlinkCmdExe
         // 物理卡号
         msgBody.writeBytes(cardNo);
         // 账户余额
-        msgBody.writeIntLE(limitYuan);
+        msgBody.writeIntLE(new BigDecimal(limitYuan).intValue());
 
         encodeAndWriteFlush(REMOTE_START_CHARGING,
                 msgBody,

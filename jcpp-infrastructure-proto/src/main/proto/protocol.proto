@@ -9,8 +9,35 @@ package infrastructureProto;
 option java_package = "sanbing.jcpp.proto.gen";
 option java_outer_classname = "ProtocolProto";
 
-service ProtocolDownlinkInterface {
-  rpc onDownlink(stream DownlinkRequestMessage) returns (stream DownlinkResponseMessage) {}
+service ProtocolInterface {
+  rpc onDownlink(stream RequestMsg) returns (stream ResponseMsg) {}
+}
+
+message RequestMsg {
+  int64 ts = 1;
+  TracerProto tracer = 2;
+  ConnectRequestMsg connectRequestMsg = 10;
+  DownlinkRequestMessage downlinkRequestMessage = 11;
+}
+
+message ResponseMsg {
+  TracerProto tracer = 2;
+  ConnectResponseMsg connectResponseMsg = 12;
+  DownlinkResponseMessage downlinkResponseMsg = 13;
+}
+
+message ConnectResponseMsg {
+  ConnectResponseCode responseCode = 1;
+  string errorMsg = 2;
+}
+
+message ConnectRequestMsg {
+  string nodeId = 1;
+}
+
+enum ConnectResponseCode {
+  ACCEPTED = 0;
+  REFUSE = 1;
 }
 
 message TracerProto {
@@ -49,7 +76,6 @@ message DownlinkRequestMessage {
   optional int64 requestIdMSB = 8;
   optional int64 requestIdLSB = 9;
   optional bytes requestData = 10;
-  TracerProto tracer = 12;
   string downlinkCmd = 20;
   LoginResponse loginResponse = 21;
   VerifyPricingResponse verifyPricingResponse = 22;
@@ -206,7 +232,7 @@ message RemoteStartChargingRequest {
   string pileCode = 4;
   string gunCode = 5;
   string tradeNo = 6;
-  int32 limitYuan = 7;
+  string limitYuan = 7;
   optional string additionalInfo = 20;
 }
 

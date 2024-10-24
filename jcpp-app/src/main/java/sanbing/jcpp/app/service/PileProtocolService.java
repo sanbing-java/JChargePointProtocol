@@ -7,6 +7,8 @@ package sanbing.jcpp.app.service;
 import sanbing.jcpp.infrastructure.queue.Callback;
 import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
 
+import java.math.BigDecimal;
+
 /**
  * @author baigod
  */
@@ -63,4 +65,9 @@ public interface PileProtocolService {
      * 交易记录上报
      */
     void onTransactionRecord(UplinkQueueMessage uplinkQueueMessage, Callback callback);
+
+    /**
+     * 启动充电
+     */
+    void startCharge(String pileCode, String gunCode, BigDecimal limitYuan, String orderNo);
 }

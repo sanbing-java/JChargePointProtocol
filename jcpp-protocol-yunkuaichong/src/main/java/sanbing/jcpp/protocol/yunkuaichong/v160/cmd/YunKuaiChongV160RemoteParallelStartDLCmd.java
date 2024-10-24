@@ -16,6 +16,7 @@ import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDownlinkCmdExe;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDwonlinkMessage;
 import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -44,7 +45,7 @@ public class YunKuaiChongV160RemoteParallelStartDLCmd extends YunKuaiChongDownli
         String pileCode = remoteStartChargingRequest.getPileCode();
         String gunCode = remoteStartChargingRequest.getGunCode();
         String tradeNo = remoteStartChargingRequest.getTradeNo();
-        int limitYuan = remoteStartChargingRequest.getLimitYuan();
+        String limitYuan = remoteStartChargingRequest.getLimitYuan();
 
         byte[] cardNo = encodeCardNo(tradeNo);
 
@@ -60,7 +61,7 @@ public class YunKuaiChongV160RemoteParallelStartDLCmd extends YunKuaiChongDownli
         // 物理卡号
         msgBody.writeBytes(cardNo);
         // 账户余额
-        msgBody.writeIntLE(limitYuan);
+        msgBody.writeIntLE(new BigDecimal(limitYuan).intValue());
         // 并充序号
         msgBody.writeBytes(BCDUtil.toBytes(LocalDateTime.now().format(dateTimeFormatter)));
 

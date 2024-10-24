@@ -131,7 +131,7 @@ class DownlinkControllerIT extends AbstractProtocolTestBase {
                 .setRemoteStartChargingRequest(ProtocolProto.RemoteStartChargingRequest.newBuilder()
                         .setPileCode(pileCode)
                         .setGunCode("01")
-                        .setLimitYuan(100)
+                        .setLimitYuan("100")
                         .setTradeNo("12345678901234567890")
                         .build())
                 .build();

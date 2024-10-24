@@ -27,6 +27,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>sanbing</groupId>
+            <artifactId>jcpp-infrastructure-util</artifactId>
+        </dependency>
+        <dependency>
             <groupId>javax.annotation</groupId>
             <artifactId>javax.annotation-api</artifactId>
         </dependency>

@@ -21,17 +21,17 @@ import org.springframework.stereotype.Service;
 import sanbing.jcpp.infrastructure.util.mdc.MDCUtils;
 import sanbing.jcpp.infrastructure.util.trace.TracerContextUtil;
 import sanbing.jcpp.infrastructure.util.trace.TracerRunnable;
-import sanbing.jcpp.proto.gen.ProtocolDownlinkInterfaceGrpc.ProtocolDownlinkInterfaceImplBase;
-import sanbing.jcpp.proto.gen.ProtocolProto.DownlinkRequestMessage;
-import sanbing.jcpp.proto.gen.ProtocolProto.DownlinkResponseMessage;
-import sanbing.jcpp.proto.gen.ProtocolProto.TracerProto;
+import sanbing.jcpp.proto.gen.ProtocolInterfaceGrpc.ProtocolInterfaceImplBase;
+import sanbing.jcpp.proto.gen.ProtocolProto.*;
 import sanbing.jcpp.protocol.domain.ProtocolSession;
 import sanbing.jcpp.protocol.provider.ProtocolSessionRegistryProvider;
 
 import javax.annotation.PreDestroy;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
 
+import static sanbing.jcpp.infrastructure.proto.ProtoConverter.toTracerProto;
 import static sanbing.jcpp.infrastructure.util.config.ThreadPoolConfiguration.JCPP_COMMON_THREAD_POOL;
 
 /**
@@ -40,7 +40,7 @@ import static sanbing.jcpp.infrastructure.util.config.ThreadPoolConfiguration.JC
 @Service
 @Slf4j
 @ConditionalOnExpression("'${service.type:null}'=='monolith' || '${service.type:null}'=='protocol'")
-public class DownlinkGrpcService extends ProtocolDownlinkInterfaceImplBase {
+public class DownlinkGrpcService extends ProtocolInterfaceImplBase {
     @Value("${service.protocol.rpc.port}")
     private int rpcPort;
     @Value("${service.protocol.rpc.boss}")
@@ -64,6 +64,7 @@ public class DownlinkGrpcService extends ProtocolDownlinkInterfaceImplBase {
     ProtocolSessionRegistryProvider protocolSessionRegistryProvider;
 
     private Server server;
+    private static final ReentrantLock replyLock = new ReentrantLock();
 
     @PostConstruct
     public void init() throws Exception {
@@ -108,37 +109,59 @@ public class DownlinkGrpcService extends ProtocolDownlinkInterfaceImplBase {
     }
 
     @Override
-    public StreamObserver<DownlinkRequestMessage> onDownlink(StreamObserver<DownlinkResponseMessage> responseObserver) {
+    public StreamObserver<RequestMsg> onDownlink(StreamObserver<ResponseMsg> responseObserver) {
         return new StreamObserver<>() {
+
             @Override
-            public void onNext(DownlinkRequestMessage downlinkMsg) {
-                TracerProto tracerProto = downlinkMsg.getTracer();
+            public void onNext(RequestMsg requestMsg) {
+                TracerProto tracerProto = requestMsg.getTracer();
                 TracerContextUtil.newTracer(tracerProto.getId(), tracerProto.getOrigin(), tracerProto.getTs());
                 MDCUtils.recordTracer();
 
-                log.debug("收到Grpc下行请求 {}", downlinkMsg);
+                log.debug("通信层收到Grpc下行请求 {}", requestMsg);
 
-                JCPP_COMMON_THREAD_POOL.execute(new TracerRunnable(() -> {
-                    UUID protocolSessionId = new UUID(downlinkMsg.getSessionIdMSB(), downlinkMsg.getSessionIdLSB());
-
-                    ProtocolSession protocolSession = protocolSessionRegistryProvider.get(protocolSessionId);
-
+                if (requestMsg.hasConnectRequestMsg()) {
+                    replyLock.lock();
                     try {
-                        if (protocolSession != null) {
+                        responseObserver.onNext(
+                                ResponseMsg.newBuilder()
+                                        .setTracer(toTracerProto())
+                                        .setConnectResponseMsg(ConnectResponseMsg.newBuilder()
+                                                .setResponseCode(ConnectResponseCode.ACCEPTED)
+                                                .setErrorMsg("")
+                                                .build())
+                                        .build());
+                    } finally {
+                        replyLock.unlock();
+                    }
+                }
 
-                            protocolSession.onDownlink(downlinkMsg);
+                if(requestMsg.hasDownlinkRequestMessage()){
+                    DownlinkRequestMessage downlinkMsg = requestMsg.getDownlinkRequestMessage();
+                    JCPP_COMMON_THREAD_POOL.execute(new TracerRunnable(() -> {
+                        UUID protocolSessionId = new UUID(downlinkMsg.getSessionIdMSB(), downlinkMsg.getSessionIdLSB());
 
-                        } else {
+                        ProtocolSession protocolSession = protocolSessionRegistryProvider.get(protocolSessionId);
 
-                            log.info("下发报文时Session未找到 sessionId: {}", protocolSessionId);
+                        try {
+                            if (protocolSession != null) {
+
+                                protocolSession.onDownlink(downlinkMsg);
+
+                            } else {
+
+                                log.info("下发报文时Session未找到 sessionId: {}", protocolSessionId);
+
+                            }
+                        } catch (Exception e) {
+
+                            log.warn("下发报文时处理失败 sessionId: {}", protocolSessionId, e);
 
                         }
-                    } catch (Exception e) {
+                    }));
+                }
 
-                        log.warn("下发报文时处理失败 sessionId: {}", protocolSessionId, e);
 
-                    }
-                }));
             }
 
             @Override

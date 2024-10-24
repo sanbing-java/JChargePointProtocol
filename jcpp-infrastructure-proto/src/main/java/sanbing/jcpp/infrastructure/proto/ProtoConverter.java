@@ -8,6 +8,8 @@ package sanbing.jcpp.infrastructure.proto;
 import sanbing.jcpp.infrastructure.proto.model.PricingModel;
 import sanbing.jcpp.infrastructure.proto.model.PricingModel.FlagPrice;
 import sanbing.jcpp.infrastructure.proto.model.PricingModel.Period;
+import sanbing.jcpp.infrastructure.util.trace.Tracer;
+import sanbing.jcpp.infrastructure.util.trace.TracerContextUtil;
 import sanbing.jcpp.proto.gen.ProtocolProto.*;
 
 import java.util.Map;
@@ -16,6 +18,15 @@ import java.util.Map;
  * @author baigod
  */
 public class ProtoConverter {
+
+    public static TracerProto toTracerProto() {
+        Tracer currentTracer = TracerContextUtil.getCurrentTracer();
+        return TracerProto.newBuilder()
+                .setId(currentTracer.getTraceId())
+                .setOrigin(currentTracer.getOrigin())
+                .setTs(currentTracer.getTracerTs())
+                .build();
+    }
 
     public static PricingModelProto toPricingModel(PricingModel pricingModel) {
         // 创建 PricingModelProto 实例
