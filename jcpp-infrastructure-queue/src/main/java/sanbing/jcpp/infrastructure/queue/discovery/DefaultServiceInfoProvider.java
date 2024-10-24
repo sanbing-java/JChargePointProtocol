@@ -62,7 +62,7 @@ public class DefaultServiceInfoProvider implements ServiceInfoProvider {
         }
         log.info("Current Service ID: {}", serviceId);
 
-        hostAddress = InetAddress.getLocalHost().getHostAddress();
+        hostAddress = InetAddress.getLocalHost().getHostName();
 
         log.info("Current Service HostAddress: {}, RestPort:{}, GrpcPort:{}", hostAddress, restPort, grpcPort);
         if (serviceType.equalsIgnoreCase("monolith")) {
