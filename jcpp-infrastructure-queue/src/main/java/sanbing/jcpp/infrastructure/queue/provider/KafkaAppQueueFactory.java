@@ -41,7 +41,6 @@ public class KafkaAppQueueFactory implements AppQueueFactory {
         this.appAdmin = new KafkaAdmin(kafkaSettings, kafkaTopicConfigs.getAppConfigs());
     }
 
-
     @Override
     public QueueConsumer<ProtoQueueMsg<UplinkQueueMessage>> createProtocolUplinkMsgConsumer() {
         KafkaConsumerTemplate.KafkaConsumerTemplateBuilder<ProtoQueueMsg<UplinkQueueMessage>> consumerBuilder = KafkaConsumerTemplate.builder();

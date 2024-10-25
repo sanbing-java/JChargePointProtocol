@@ -9,7 +9,7 @@ import io.netty.channel.ChannelHandlerContext;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import sanbing.jcpp.proto.gen.ProtocolProto.DownlinkRestMessage;
+import sanbing.jcpp.proto.gen.ProtocolProto.DownlinkRequestMessage;
 import sanbing.jcpp.protocol.domain.ProtocolSession;
 import sanbing.jcpp.protocol.domain.SessionCloseReason;
 import sanbing.jcpp.protocol.listener.tcp.enums.SequenceNumberLength;
@@ -32,7 +32,7 @@ public class TcpSession extends ProtocolSession {
 
     private ChannelHandlerContext ctx;
 
-    private final Consumer<DownlinkRestMessage> sendDownlinkConsumer;
+    private final Consumer<DownlinkRequestMessage> sendDownlinkConsumer;
 
     private final Consumer<ByteBuf> writeAndFlushConsumer;
 
@@ -64,7 +64,7 @@ public class TcpSession extends ProtocolSession {
     }
 
     public TcpSession(String protocolName,
-                      Consumer<DownlinkRestMessage> sendDownlinkConsumer,
+                      Consumer<DownlinkRequestMessage> sendDownlinkConsumer,
                       Consumer<ByteBuf> writeAndFlushConsumer) {
         super(protocolName);
         this.sendDownlinkConsumer = sendDownlinkConsumer;
@@ -72,7 +72,7 @@ public class TcpSession extends ProtocolSession {
     }
 
     @Override
-    public void onDownlink(DownlinkRestMessage downlinkMsg) {
+    public void onDownlink(DownlinkRequestMessage downlinkMsg) {
         sendDownlinkConsumer.accept(downlinkMsg);
     }
 

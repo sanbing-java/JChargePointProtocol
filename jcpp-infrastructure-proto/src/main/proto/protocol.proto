@@ -9,6 +9,43 @@ package infrastructureProto;
 option java_package = "sanbing.jcpp.proto.gen";
 option java_outer_classname = "ProtocolProto";
 
+service ProtocolInterface {
+  rpc onDownlink(stream RequestMsg) returns (stream ResponseMsg) {}
+}
+
+message RequestMsg {
+  int64 ts = 1;
+  TracerProto tracer = 2;
+  ConnectRequestMsg connectRequestMsg = 10;
+  DownlinkRequestMessage downlinkRequestMessage = 11;
+}
+
+message ResponseMsg {
+  TracerProto tracer = 2;
+  ConnectResponseMsg connectResponseMsg = 12;
+  DownlinkResponseMessage downlinkResponseMsg = 13;
+}
+
+message ConnectResponseMsg {
+  ConnectResponseCode responseCode = 1;
+  string errorMsg = 2;
+}
+
+message ConnectRequestMsg {
+  string nodeId = 1;
+}
+
+enum ConnectResponseCode {
+  ACCEPTED = 0;
+  REFUSE = 1;
+}
+
+message TracerProto {
+  string id = 1;
+  string origin = 2;
+  int64 ts = 3;
+}
+
 message UplinkQueueMessage {
   int64 messageIdMSB = 1;
   int64 messageIdLSB = 2;
@@ -29,7 +66,7 @@ message UplinkQueueMessage {
   TransactionRecord transactionRecord = 30;
 }
 
-message DownlinkRestMessage {
+message DownlinkRequestMessage {
   int64 messageIdMSB = 1;
   int64 messageIdLSB = 2;
   int64 sessionIdMSB = 3;
@@ -39,14 +76,19 @@ message DownlinkRestMessage {
   optional int64 requestIdMSB = 8;
   optional int64 requestIdLSB = 9;
   optional bytes requestData = 10;
-  string downlinkCmd = 11;
-  LoginResponse loginResponse = 20;
-  VerifyPricingResponse verifyPricingResponse = 21;
-  QueryPricingResponse queryPricingResponse = 22;
-  SetPricingRequest setPricingRequest = 23;
-  RemoteStartChargingRequest remoteStartChargingRequest = 24;
-  RemoteStopChargingRequest remoteStopChargingRequest = 25;
-  TransactionRecordAck transactionRecordAck = 26;
+  string downlinkCmd = 20;
+  LoginResponse loginResponse = 21;
+  VerifyPricingResponse verifyPricingResponse = 22;
+  QueryPricingResponse queryPricingResponse = 23;
+  SetPricingRequest setPricingRequest = 24;
+  RemoteStartChargingRequest remoteStartChargingRequest = 25;
+  RemoteStopChargingRequest remoteStopChargingRequest = 26;
+  TransactionRecordAck transactionRecordAck = 27;
+}
+
+message DownlinkResponseMessage {
+  bool success = 1;
+  optional string error = 2;
 }
 
 message LoginRequest {
@@ -54,7 +96,9 @@ message LoginRequest {
   string credential = 3;
   string remoteAddress = 4;
   string nodeId = 10;
-  string nodeWebapiIpPort = 11;
+  string nodeHostAddress = 11;
+  int32 nodeRestPort = 12;
+  int32 nodeGrpcPort = 13;
   optional string additionalInfo = 20;
 }
 
@@ -67,7 +111,9 @@ message HeartBeatRequest {
   string pileCode = 3;
   string remoteAddress = 4;
   string nodeId = 10;
-  string nodeWebapiIpPort = 11;
+  string nodeHostAddress = 11;
+  int32 nodeRestPort = 12;
+  int32 nodeGrpcPort = 13;
   optional string additionalInfo = 20;
 }
 
@@ -186,7 +232,7 @@ message RemoteStartChargingRequest {
   string pileCode = 4;
   string gunCode = 5;
   string tradeNo = 6;
-  int32 limitYuan = 7;
+  string limitYuan = 7;
   optional string additionalInfo = 20;
 }
 

@@ -6,10 +6,14 @@ package sanbing.jcpp.infrastructure.util.trace;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Optional;
+
 /**
  * Tracer上下文工具类
  */
 public class TracerContextUtil {
+
+    public static final String DEFAULT_ORIGIN = "jcpp";
 
     public static final String JCPP_TRACER_ID = "jcpp_tracer_id";
     public static final String JCPP_TRACER_ORIGIN = "jcpp_tracer_origin";
@@ -19,6 +23,8 @@ public class TracerContextUtil {
 
     public static Tracer newTracer(String traceId, String origin) {
         Tracer tracer;
+
+        origin = Optional.ofNullable(origin).orElse(DEFAULT_ORIGIN);
 
         if (StringUtils.isEmpty(traceId)) {
             tracer = new Tracer(TraceIdGenerator.generate(), origin);
@@ -34,12 +40,13 @@ public class TracerContextUtil {
     public static Tracer newTracer(String traceId, String origin, long ts) {
         final Tracer tracer;
 
+        origin = Optional.ofNullable(origin).orElse(DEFAULT_ORIGIN);
+
         if (StringUtils.isEmpty(traceId)) {
             tracer = new Tracer(TraceIdGenerator.generate(), origin, ts);
         } else {
             tracer = new Tracer(traceId, origin, ts);
         }
-
 
         TRACE_ID_CONTAINER.set(tracer);
 

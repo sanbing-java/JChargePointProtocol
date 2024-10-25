@@ -2,7 +2,7 @@
  * 抖音关注：程序员三丙
  * 知识星球：https://t.zsxq.com/j9b21
  */
-package sanbing.jcpp.protocol.yunkuaichong.v150.cmd;
+package sanbing.jcpp.protocol.yunkuaichong.v150;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.netty.buffer.ByteBuf;
@@ -66,7 +66,9 @@ public class YunKuaiChongV150LoginULCmd extends YunKuaiChongUplinkCmdExe {
                 .setCredential(pileCode)
                 .setRemoteAddress(tcpSession.getAddress().toString())
                 .setNodeId(ctx.getServiceInfoProvider().getServiceId())
-                .setNodeWebapiIpPort(ctx.getServiceInfoProvider().getServiceWebapiEndpoint())
+                .setNodeHostAddress(ctx.getServiceInfoProvider().getHostAddress())
+                .setNodeRestPort(ctx.getServiceInfoProvider().getRestPort())
+                .setNodeGrpcPort(ctx.getServiceInfoProvider().getGrpcPort())
                 .setAdditionalInfo(additionalInfo.toString())
                 .build();
         UplinkQueueMessage uplinkQueueMessage = uplinkMessageBuilder(loginRequest.getPileCode(), tcpSession, yunKuaiChongUplinkMessage)

@@ -7,7 +7,7 @@ package sanbing.jcpp.protocol.yunkuaichong;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import sanbing.jcpp.proto.gen.ProtocolProto.DownlinkRestMessage;
+import sanbing.jcpp.proto.gen.ProtocolProto.DownlinkRequestMessage;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -32,7 +32,7 @@ public class YunKuaiChongDwonlinkMessage implements Serializable {
     private int cmd;
 
     // 消息体
-    private DownlinkRestMessage msg;
+    private DownlinkRequestMessage msg;
 
     // 上行消息
     private YunKuaiChongUplinkMessage requestData;

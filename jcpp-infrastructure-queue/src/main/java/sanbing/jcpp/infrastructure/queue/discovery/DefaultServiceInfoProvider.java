@@ -19,7 +19,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 /**
@@ -42,15 +41,18 @@ public class DefaultServiceInfoProvider implements ServiceInfoProvider {
     private ServiceInfo serviceInfo;
 
     @Getter
-    private String serviceWebapiEndpoint;
+    private String hostAddress;
 
+    @Getter
     @Value("${server.port}")
-    private String webapiPort;
+    private int restPort;
+
+    @Getter
+    @Value("${service.protocol.rpc.port:9090}")
+    private int grpcPort;
 
     @PostConstruct
     public void init() throws UnknownHostException {
-
-
         if (!StringUtils.hasText(this.serviceId)) {
             try {
                 this.serviceId = InetAddress.getLocalHost().getHostName();
@@ -58,10 +60,11 @@ public class DefaultServiceInfoProvider implements ServiceInfoProvider {
                 this.serviceId = RandomStringUtils.randomAlphabetic(10);
             }
         }
-        log.info("Current Service ID: {}", this.serviceId);
+        log.info("Current Service ID: {}", serviceId);
 
-        serviceWebapiEndpoint = InetAddress.getLocalHost().getHostAddress() + ":" + webapiPort;
-        log.info("Current Service HostAddress: {}", this.serviceWebapiEndpoint);
+        hostAddress = InetAddress.getLocalHost().getHostAddress();
+
+        log.info("Current Service HostAddress: {}, RestPort:{}, GrpcPort:{}", hostAddress, restPort, grpcPort);
         if (serviceType.equalsIgnoreCase("monolith")) {
             serviceTypes = List.of(ServiceType.values());
         } else {
@@ -86,7 +89,7 @@ public class DefaultServiceInfoProvider implements ServiceInfoProvider {
     public ServiceInfo generateNewServiceInfoWithCurrentSystemInfo() {
         ServiceInfo.Builder builder = ServiceInfo.newBuilder()
                 .setServiceId(serviceId)
-                .addAllServiceTypes(serviceTypes.stream().map(ServiceType::name).collect(Collectors.toList()))
+                .addAllServiceTypes(serviceTypes.stream().map(ServiceType::name).toList())
                 .setSystemInfo(getCurrentSystemInfoProto());
         return serviceInfo = builder.build();
     }

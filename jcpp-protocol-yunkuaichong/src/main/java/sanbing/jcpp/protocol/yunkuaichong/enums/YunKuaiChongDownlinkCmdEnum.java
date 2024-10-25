@@ -2,7 +2,7 @@
  * 抖音关注：程序员三丙
  * 知识星球：https://t.zsxq.com/j9b21
  */
-package sanbing.jcpp.protocol.yunkuaichong.v150.enums;
+package sanbing.jcpp.protocol.yunkuaichong.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +12,7 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
-public enum YunKuaiChongV150DownlinkCmdEnum {
+public enum YunKuaiChongDownlinkCmdEnum {
 
     LOGIN_ACK(0x02),
 
@@ -30,9 +30,10 @@ public enum YunKuaiChongV150DownlinkCmdEnum {
 
     REMOTE_STOP_CHARGING(0x36),
 
-    TRANSACTION_RECORD(0x40)
-    ;
+    TRANSACTION_RECORD(0x40),
 
-    private int cmd;
+    REMOTE_PARALLEL_START_CHARGING(0xA4);
+
+    private final Integer cmd;
 
 }

@@ -9,7 +9,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import sanbing.jcpp.proto.gen.ProtocolProto.DownlinkRestMessage;
+import sanbing.jcpp.proto.gen.ProtocolProto.DownlinkRequestMessage;
 import sanbing.jcpp.protocol.forwarder.Forwarder;
 
 import java.io.Closeable;
@@ -52,14 +52,14 @@ public abstract class ProtocolSession implements Closeable {
     @Setter
     private Forwarder forwarder;
 
-    public ProtocolSession(String protocolName) {
+    protected ProtocolSession(String protocolName) {
         this.protocolName = protocolName;
         this.pileCodeSet = new LinkedHashSet<>();
         this.id = UUID.randomUUID();
         this.lastActivityTime = LocalDateTime.now();
     }
 
-    public abstract void onDownlink(DownlinkRestMessage downlinkMsg);
+    public abstract void onDownlink(DownlinkRequestMessage downlinkMsg);
 
     public void close() {
         close(SessionCloseReason.DESTRUCTION);

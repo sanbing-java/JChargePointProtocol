@@ -14,6 +14,6 @@ import java.lang.annotation.*;
 @Documented
 public @interface YunKuaiChongCmd {
 
-    byte value();
+    int value();
 
 }

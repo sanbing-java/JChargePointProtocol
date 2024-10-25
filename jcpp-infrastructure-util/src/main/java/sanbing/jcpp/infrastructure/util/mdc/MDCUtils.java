@@ -34,7 +34,6 @@ public class MDCUtils {
         }
 
         return tracer.getTraceId();
-
     }
 
     public static void cleanTracer() {

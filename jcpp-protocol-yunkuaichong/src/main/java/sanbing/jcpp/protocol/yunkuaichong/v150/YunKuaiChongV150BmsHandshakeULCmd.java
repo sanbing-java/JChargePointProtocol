@@ -2,7 +2,7 @@
  * 抖音关注：程序员三丙
  * 知识星球：https://t.zsxq.com/j9b21
  */
-package sanbing.jcpp.protocol.yunkuaichong.v150.cmd;
+package sanbing.jcpp.protocol.yunkuaichong.v150;
 
 import cn.hutool.core.util.HexUtil;
 import com.fasterxml.jackson.databind.node.ObjectNode;

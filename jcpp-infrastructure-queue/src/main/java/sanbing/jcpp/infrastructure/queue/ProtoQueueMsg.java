@@ -4,10 +4,11 @@
  */
 package sanbing.jcpp.infrastructure.queue;
 
+import com.google.protobuf.GeneratedMessage;
 import lombok.Data;
 
 @Data
-public class ProtoQueueMsg<T extends com.google.protobuf.GeneratedMessageV3> implements QueueMsg {
+public class ProtoQueueMsg<T extends GeneratedMessage> implements QueueMsg {
 
     private final String key;
     protected final T value;

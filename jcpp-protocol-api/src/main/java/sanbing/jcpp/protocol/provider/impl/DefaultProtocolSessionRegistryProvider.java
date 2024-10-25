@@ -34,10 +34,10 @@ public class DefaultProtocolSessionRegistryProvider implements ProtocolSessionRe
     private static final int INIT_CACHE_LIMIT = 100_000;
     private static final int MAXIMUM_SIZE = 1_000_000;
 
-    @Value("${service.protocols.sessions.default-inactivity-timeout-in-sec}")
+    @Value("${service.protocol.sessions.default-inactivity-timeout-in-sec}")
     private int defaultInactivityTimeoutInSec;
 
-    @Value("${service.protocols.sessions.default-state-check-interval-in-sec}")
+    @Value("${service.protocol.sessions.default-state-check-interval-in-sec}")
     private int defaultStateCheckIntervalInSec;
 
     @Getter

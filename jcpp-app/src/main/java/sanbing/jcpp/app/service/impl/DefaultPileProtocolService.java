@@ -59,7 +59,7 @@ public class DefaultPileProtocolService implements PileProtocolService {
         log.debug("查询到充电桩信息 {}", pile);
 
         // 构造下行回复
-        DownlinkRestMessage.Builder downlinkMessageBuilder = createDownlinkMessageBuilder(uplinkQueueMessage, loginRequest.getPileCode());
+        DownlinkRequestMessage.Builder downlinkMessageBuilder = createDownlinkMessageBuilder(uplinkQueueMessage, loginRequest.getPileCode());
         downlinkMessageBuilder.setDownlinkCmd(DownlinkCmdEnum.LOGIN_ACK.name());
 
         if (pile != null) {
@@ -67,7 +67,9 @@ public class DefaultPileProtocolService implements PileProtocolService {
             cacheSession(uplinkQueueMessage, pile,
                     loginRequest.getRemoteAddress(),
                     loginRequest.getNodeId(),
-                    loginRequest.getNodeWebapiIpPort());
+                    loginRequest.getNodeHostAddress(),
+                    loginRequest.getNodeRestPort(),
+                    loginRequest.getNodeGrpcPort());
 
             downlinkMessageBuilder.setLoginResponse(LoginResponse.newBuilder()
                     .setSuccess(true)
@@ -98,16 +100,26 @@ public class DefaultPileProtocolService implements PileProtocolService {
             cacheSession(uplinkQueueMessage, pile,
                     heartBeatRequest.getRemoteAddress(),
                     heartBeatRequest.getNodeId(),
-                    heartBeatRequest.getNodeWebapiIpPort());
+                    heartBeatRequest.getNodeHostAddress(),
+                    heartBeatRequest.getNodeRestPort(),
+                    heartBeatRequest.getNodeGrpcPort());
         }
     }
 
-    private void cacheSession(UplinkQueueMessage uplinkQueueMessage, Pile pile, String remoteAddress, String nodeId, String nodeWebapiIpPort) {
+    private void cacheSession(UplinkQueueMessage uplinkQueueMessage,
+                              Pile pile,
+                              String remoteAddress,
+                              String nodeId,
+                              String nodeIp,
+                              int restPort,
+                              int grpcPort) {
         PileSession pileSession = new PileSession(pile.getId(), pile.getPileCode(), uplinkQueueMessage.getProtocolName());
         pileSession.setProtocolSessionId(new UUID(uplinkQueueMessage.getSessionIdMSB(), uplinkQueueMessage.getSessionIdLSB()));
         pileSession.setRemoteAddress(remoteAddress);
         pileSession.setNodeId(nodeId);
-        pileSession.setNodeWebapiIpPort(nodeWebapiIpPort);
+        pileSession.setNodeIp(nodeIp);
+        pileSession.setNodeRestPort(restPort);
+        pileSession.setNodeGrpcPort(grpcPort);
         pileSessionCache.put(new PileSessionCacheKey(pile.getPileCode()), pileSession);
     }
 
@@ -122,7 +134,7 @@ public class DefaultPileProtocolService implements PileProtocolService {
         // todo 默认校验成功，后续查库校验
         assert pricingId > 0;
 
-        DownlinkRestMessage.Builder downlinkMessageBuilder = createDownlinkMessageBuilder(uplinkQueueMessage, pileCode);
+        DownlinkRequestMessage.Builder downlinkMessageBuilder = createDownlinkMessageBuilder(uplinkQueueMessage, pileCode);
         downlinkMessageBuilder.setDownlinkCmd(DownlinkCmdEnum.VERIFY_PRICING_ACK.name());
         downlinkMessageBuilder.setVerifyPricingResponse(VerifyPricingResponse.newBuilder()
                 .setSuccess(true)
@@ -167,7 +179,7 @@ public class DefaultPileProtocolService implements PileProtocolService {
         model.setPeriodsList(periods);
 
         // 构造下行计费
-        DownlinkRestMessage.Builder downlinkMessageBuilder = createDownlinkMessageBuilder(uplinkQueueMessage, pileCode);
+        DownlinkRequestMessage.Builder downlinkMessageBuilder = createDownlinkMessageBuilder(uplinkQueueMessage, pileCode);
         downlinkMessageBuilder.setDownlinkCmd(DownlinkCmdEnum.QUERY_PRICING_ACK.name());
         downlinkMessageBuilder.setQueryPricingResponse(QueryPricingResponse.newBuilder()
                 .setPileCode(pileCode)
@@ -236,7 +248,7 @@ public class DefaultPileProtocolService implements PileProtocolService {
         String pileCode = transactionRecord.getPileCode();
 
         // 构造下行计费
-        DownlinkRestMessage.Builder downlinkMessageBuilder = createDownlinkMessageBuilder(uplinkQueueMessage, pileCode);
+        DownlinkRequestMessage.Builder downlinkMessageBuilder = createDownlinkMessageBuilder(uplinkQueueMessage, pileCode);
         downlinkMessageBuilder.setDownlinkCmd(DownlinkCmdEnum.TRANSACTION_RECORD.name());
         downlinkMessageBuilder.setTransactionRecordAck(TransactionRecordAck.newBuilder()
                 .setTradeNo(tradeNo)
@@ -248,6 +260,31 @@ public class DefaultPileProtocolService implements PileProtocolService {
         callback.onSuccess();
     }
 
+    @Override
+    public void startCharge(String pileCode, String gunCode, BigDecimal limitYuan, String orderNo) {
+
+
+        UUID messageId = UUID.randomUUID();
+        UUID requestId = UUID.randomUUID();
+
+        DownlinkRequestMessage.Builder downlinkRequestMessageBuilder = DownlinkRequestMessage.newBuilder()
+                .setMessageIdMSB(messageId.getMostSignificantBits())
+                .setMessageIdLSB(messageId.getLeastSignificantBits())
+                .setPileCode(pileCode)
+                .setRequestIdMSB(requestId.getMostSignificantBits())
+                .setRequestIdLSB(requestId.getLeastSignificantBits())
+                .setDownlinkCmd(DownlinkCmdEnum.REMOTE_START_CHARGING.name())
+                .setRemoteStartChargingRequest(RemoteStartChargingRequest.newBuilder()
+                        .setPileCode(pileCode)
+                        .setGunCode(gunCode)
+                        .setLimitYuan(limitYuan.toPlainString())
+                        .setTradeNo(orderNo)
+                        .build());
+
+
+        downlinkCallService.sendDownlinkMessage(downlinkRequestMessageBuilder, pileCode);
+    }
+
     private static Period createPeriod(int sn, LocalTime beginTime, LocalTime endTime, PricingModelFlag flag) {
         Period period = new Period();
         period.setSn(sn);
@@ -257,9 +294,9 @@ public class DefaultPileProtocolService implements PileProtocolService {
         return period;
     }
 
-    private DownlinkRestMessage.Builder createDownlinkMessageBuilder(UplinkQueueMessage uplinkQueueMessage, String pileCode) {
+    private DownlinkRequestMessage.Builder createDownlinkMessageBuilder(UplinkQueueMessage uplinkQueueMessage, String pileCode) {
         UUID messageId = UUID.randomUUID();
-        DownlinkRestMessage.Builder builder = DownlinkRestMessage.newBuilder();
+        DownlinkRequestMessage.Builder builder = DownlinkRequestMessage.newBuilder();
         builder.setMessageIdMSB(messageId.getLeastSignificantBits());
         builder.setMessageIdLSB(messageId.getLeastSignificantBits());
         builder.setPileCode(pileCode);

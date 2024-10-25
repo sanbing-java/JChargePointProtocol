@@ -2,7 +2,7 @@
  * 抖音关注：程序员三丙
  * 知识星球：https://t.zsxq.com/j9b21
  */
-package sanbing.jcpp.protocol.yunkuaichong.v150.cmd;
+package sanbing.jcpp.protocol.yunkuaichong.v150;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.netty.buffer.ByteBuf;
@@ -18,7 +18,7 @@ import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkCmdExe;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkMessage;
 import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
 
-import static sanbing.jcpp.protocol.yunkuaichong.v150.enums.YunKuaiChongV150DownlinkCmdEnum.HEARTBEAT;
+import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEnum.HEARTBEAT;
 
 /**
  * 云快充1.5.0 充电桩心跳包
@@ -54,7 +54,9 @@ public class YunKuaiChongV150HeartbeatULCmd extends YunKuaiChongUplinkCmdExe {
                 .setPileCode(pileCode)
                 .setRemoteAddress(tcpSession.getAddress().toString())
                 .setNodeId(ctx.getServiceInfoProvider().getServiceId())
-                .setNodeWebapiIpPort(ctx.getServiceInfoProvider().getServiceWebapiEndpoint())
+                .setNodeHostAddress(ctx.getServiceInfoProvider().getHostAddress())
+                .setNodeRestPort(ctx.getServiceInfoProvider().getRestPort())
+                .setNodeGrpcPort(ctx.getServiceInfoProvider().getGrpcPort())
                 .setAdditionalInfo(additionalInfo.toString())
                 .build();
         UplinkQueueMessage uplinkQueueMessage = uplinkMessageBuilder(heartBeatRequest.getPileCode(), tcpSession, yunKuaiChongUplinkMessage)

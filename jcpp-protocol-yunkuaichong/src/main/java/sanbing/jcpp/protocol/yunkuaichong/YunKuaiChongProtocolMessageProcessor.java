@@ -2,7 +2,7 @@
  * 抖音关注：程序员三丙
  * 知识星球：https://t.zsxq.com/j9b21
  */
-package sanbing.jcpp.protocol.yunkuaichong.v150;
+package sanbing.jcpp.protocol.yunkuaichong;
 
 import cn.hutool.core.util.ClassUtil;
 import io.netty.buffer.ByteBuf;
@@ -10,19 +10,15 @@ import io.netty.buffer.Unpooled;
 import lombok.extern.slf4j.Slf4j;
 import sanbing.jcpp.infrastructure.util.JCPPPair;
 import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
-import sanbing.jcpp.proto.gen.ProtocolProto.DownlinkRestMessage;
+import sanbing.jcpp.proto.gen.ProtocolProto.DownlinkRequestMessage;
 import sanbing.jcpp.protocol.ProtocolContext;
 import sanbing.jcpp.protocol.ProtocolMessageProcessor;
 import sanbing.jcpp.protocol.domain.ListenerToHandlerMsg;
 import sanbing.jcpp.protocol.domain.SessionToHandlerMsg;
 import sanbing.jcpp.protocol.forwarder.Forwarder;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
-import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDownlinkCmdExe;
-import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDwonlinkMessage;
-import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkCmdExe;
-import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkMessage;
 import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
-import sanbing.jcpp.protocol.yunkuaichong.v150.enums.YunKuaiChongV150DownlinkCmdEnum;
+import sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEnum;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
@@ -33,17 +29,17 @@ import java.util.concurrent.ConcurrentHashMap;
 import static sanbing.jcpp.infrastructure.util.codec.ByteUtil.checkCrcSum;
 
 @Slf4j
-public class YunKuaiChongV15ProtocolMessageProcessor extends ProtocolMessageProcessor {
-    private final Map<Byte, YunKuaiChongUplinkCmdExe> uplinkCmdExeMap = new ConcurrentHashMap<>();
-    private final Map<Byte, YunKuaiChongDownlinkCmdExe> downlinkCmdExeMap = new ConcurrentHashMap<>();
+public class YunKuaiChongProtocolMessageProcessor extends ProtocolMessageProcessor {
+    private final Map<Integer, YunKuaiChongUplinkCmdExe> uplinkCmdExeMap = new ConcurrentHashMap<>();
+    private final Map<Integer, YunKuaiChongDownlinkCmdExe> downlinkCmdExeMap = new ConcurrentHashMap<>();
 
-    public YunKuaiChongV15ProtocolMessageProcessor(Forwarder forwarder, ProtocolContext protocolContext) {
+    public YunKuaiChongProtocolMessageProcessor(Forwarder forwarder, ProtocolContext protocolContext) {
         super(forwarder, protocolContext);
 
         Set<Class<?>> cmdClasses = ClassUtil.scanPackageByAnnotation(ClassUtil.getPackage(this.getClass()), YunKuaiChongCmd.class);
         cmdClasses.stream().filter(YunKuaiChongUplinkCmdExe.class::isAssignableFrom)
                 .forEach(clazz -> {
-                    byte cmd = clazz.getAnnotation(YunKuaiChongCmd.class).value();
+                    int cmd = clazz.getAnnotation(YunKuaiChongCmd.class).value();
                     try {
                         YunKuaiChongUplinkCmdExe yunKuaiChongUplinkCmdExe = (YunKuaiChongUplinkCmdExe) clazz.getDeclaredConstructor().newInstance();
                         uplinkCmdExeMap.put(cmd, yunKuaiChongUplinkCmdExe);
@@ -57,7 +53,7 @@ public class YunKuaiChongV15ProtocolMessageProcessor extends ProtocolMessageProc
 
         cmdClasses.stream().filter(YunKuaiChongDownlinkCmdExe.class::isAssignableFrom)
                 .forEach(clazz -> {
-                    byte cmd = clazz.getAnnotation(YunKuaiChongCmd.class).value();
+                    int cmd = clazz.getAnnotation(YunKuaiChongCmd.class).value();
                     try {
                         YunKuaiChongDownlinkCmdExe yunKuaiChongDownlinkCmdExe = (YunKuaiChongDownlinkCmdExe) clazz.getDeclaredConstructor().newInstance();
                         downlinkCmdExeMap.put(cmd, yunKuaiChongDownlinkCmdExe);
@@ -138,15 +134,15 @@ public class YunKuaiChongV15ProtocolMessageProcessor extends ProtocolMessageProc
 
         JCPPPair<Boolean, Integer> checkResult = checkCrcSum(checkData, checkSum);
 
-        if (!checkResult.getFirst()) {
+        if (Boolean.FALSE.equals(checkResult.getFirst())) {
             csTemp.writeBytes(byCheckSum);
             checkSum = csTemp.readUnsignedShortLE();
             checkResult = checkCrcSum(checkData, checkSum);
-            log.debug("云快充V1.5检验和 第二次检查: checkResult:{}, checkSum:{}", checkResult, checkSum);
+            log.debug("云快充检验和 第二次检查: checkResult:{}, checkSum:{}", checkResult, checkSum);
         }
 
-        if (!checkResult.getFirst()) {
-            log.info("云快充V1.5检验和不一致两次不通过 不处理! CMD：{},校验域:{}，正确校验和:{}", frameType, checkSum, checkResult.getSecond());
+        if (Boolean.FALSE.equals(checkResult.getFirst())) {
+            log.info("云快充检验和不一致两次不通过 不处理! CMD：{},校验域:{}，正确校验和:{}", frameType, checkSum, checkResult.getSecond());
             return;
         }
 
@@ -167,9 +163,9 @@ public class YunKuaiChongV15ProtocolMessageProcessor extends ProtocolMessageProc
     public void downlinkHandle(SessionToHandlerMsg sessionToHandlerMsg) {
         TcpSession session = (TcpSession) sessionToHandlerMsg.session();
 
-        DownlinkRestMessage protocolDownlinkMsg = sessionToHandlerMsg.downlinkMsg();
+        DownlinkRequestMessage protocolDownlinkMsg = sessionToHandlerMsg.downlinkMsg();
 
-        int cmd = YunKuaiChongV150DownlinkCmdEnum.valueOf(protocolDownlinkMsg.getDownlinkCmd()).getCmd();
+        int cmd = YunKuaiChongDownlinkCmdEnum.valueOf(protocolDownlinkMsg.getDownlinkCmd()).getCmd();
 
         YunKuaiChongDwonlinkMessage message = new YunKuaiChongDwonlinkMessage();
         message.setId(new UUID(protocolDownlinkMsg.getMessageIdMSB(), protocolDownlinkMsg.getMessageIdLSB()));
@@ -188,11 +184,11 @@ public class YunKuaiChongV15ProtocolMessageProcessor extends ProtocolMessageProc
     }
 
     private void exeCmd(YunKuaiChongUplinkMessage message, TcpSession session) {
-        YunKuaiChongUplinkCmdExe uplinkCmdExe = uplinkCmdExeMap.get((byte) message.getCmd());
+        YunKuaiChongUplinkCmdExe uplinkCmdExe = uplinkCmdExeMap.get(message.getCmd());
 
         if (uplinkCmdExe == null) {
 
-            log.info("[{}] 云快充V1.5协议接收到未知的上行指令 {}", session, message.getCmd());
+            log.info("[{}] 云快充协议接收到未知的上行指令 {}", session, message.getCmd());
 
             return;
         }
@@ -201,11 +197,11 @@ public class YunKuaiChongV15ProtocolMessageProcessor extends ProtocolMessageProc
     }
 
     private void exeCmd(YunKuaiChongDwonlinkMessage message, TcpSession session) {
-        YunKuaiChongDownlinkCmdExe downlinkCmdExe = downlinkCmdExeMap.get((byte) message.getCmd());
+        YunKuaiChongDownlinkCmdExe downlinkCmdExe = downlinkCmdExeMap.get(message.getCmd());
 
         if (downlinkCmdExe == null) {
 
-            log.info("[{}] 云快充V1.5协议接收到未知的下行指令 {}", session, message.getCmd());
+            log.info("[{}] 云快充协议接收到未知的下行指令 {}", session, message.getCmd());
 
             return;
         }

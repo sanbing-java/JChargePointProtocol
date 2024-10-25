@@ -29,7 +29,11 @@ public class PileSession implements Serializable {
 
     private String nodeId;
 
-    private String nodeWebapiIpPort;
+    private String nodeIp;
+
+    private int nodeRestPort;
+
+    private int nodeGrpcPort;
 
     public PileSession(UUID pileId, String pileCode, String protocolName) {
         this.pileId = pileId;
@@ -45,13 +49,17 @@ public class PileSession implements Serializable {
             @JsonProperty("protocolSessionId") UUID protocolSessionId,
             @JsonProperty("remoteAddress") String remoteAddress,
             @JsonProperty("nodeId") String nodeId,
-            @JsonProperty("nodeWebapiIpPort") String nodeWebapiIpPort) {
+            @JsonProperty("nodeIp") String nodeIp,
+            @JsonProperty("nodeRestPort") int nodeRestPort,
+            @JsonProperty("nodeGrpcPort") int nodeGrpcPort) {
         this.pileId = pileId;
         this.pileCode = pileCode;
         this.protocolName = protocolName;
         this.protocolSessionId = protocolSessionId;
         this.remoteAddress = remoteAddress;
         this.nodeId = nodeId;
-        this.nodeWebapiIpPort = nodeWebapiIpPort;
+        this.nodeIp = nodeIp;
+        this.nodeRestPort = nodeRestPort;
+        this.nodeGrpcPort = nodeGrpcPort;
     }
 }
