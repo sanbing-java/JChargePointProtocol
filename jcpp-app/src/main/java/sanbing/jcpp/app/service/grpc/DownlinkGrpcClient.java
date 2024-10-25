@@ -261,7 +261,10 @@ public class DownlinkGrpcClient {
                 }
 
                 if (connectErrTimesMap.computeIfAbsent(hostAndPort, k -> new AtomicInteger()).incrementAndGet() >= maxReconnectTimes) {
-                    queueMap.remove(hostAndPort);
+                    LinkedBlockingQueue<RequestMsg> queue = queueMap.remove(hostAndPort);
+                    if (queue != null) {
+                        queue.clear();
+                    }
                     connectErrTimesMap.remove(hostAndPort);
                     log.info("[{}] Grpc 客户端重连异常超过{}次，不再重连", hostAndPort, maxReconnectTimes);
                 }
