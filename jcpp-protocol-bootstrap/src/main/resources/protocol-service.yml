@@ -159,15 +159,15 @@ queue:
       key-password: "${KAFKA_SSL_KEY_PASSWORD:}"
     acks: "${KAFKA_ACKS:1}"
     retries: "${KAFKA_RETRIES:1}"
-    compression-type: "${KAFKA_COMPRESSION_TYPE:lz4}" # none, gzip, snappy, lz4, zstd
-    batch-size: "${KAFKA_BATCH_SIZE:1048576}"
+    compression-type: "${KAFKA_COMPRESSION_TYPE:none}" # none, gzip, snappy, lz4, zstd
+    batch-size: "${KAFKA_BATCH_SIZE:16384}"
     linger-ms: "${KAFKA_LINGER_MS:1}"
     max-request-size: "${KAFKA_MAX_REQUEST_SIZE:1048576}"
     max-in-flight-requests-per-connection: "${KAFKA_MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION:5}"
     buffer-memory: "${BUFFER_MEMORY:33554432}"
     replication-factor: "${QUEUE_KAFKA_REPLICATION_FACTOR:1}"
     max-poll-interval-ms: "${QUEUE_KAFKA_MAX_POLL_INTERVAL_MS:300000}"
-    max-poll-records: "${QUEUE_KAFKA_MAX_POLL_RECORDS:10240}"
+    max-poll-records: "${QUEUE_KAFKA_MAX_POLL_RECORDS:8192}"
     max-partition-fetch-bytes: "${QUEUE_KAFKA_MAX_PARTITION_FETCH_BYTES:16777216}"
     fetch-max-bytes: "${QUEUE_KAFKA_FETCH_MAX_BYTES:134217728}"
     request-timeout-ms: "${QUEUE_KAFKA_REQUEST_TIMEOUT_MS:30000}"
