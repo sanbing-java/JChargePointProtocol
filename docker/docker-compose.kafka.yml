@@ -43,15 +43,3 @@ services:
       - "9308:9308"
     command:
       - '--kafka.server=kafka:9092'
-  # 切换示例项目的队列类型为kafka
-  example:
-    restart: always
-    image: example:latest
-    depends_on:
-      - kafka
-    networks:
-      - sanbing-network
-    ports:
-      - "8080:8080"
-    env_file:
-      - queue-kafka.env
