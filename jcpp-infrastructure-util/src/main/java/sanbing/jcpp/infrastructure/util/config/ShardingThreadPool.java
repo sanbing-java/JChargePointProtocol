@@ -30,10 +30,10 @@ import static sanbing.jcpp.infrastructure.util.JCPPHashUtil.hash;
 @Component
 @Slf4j
 public class ShardingThreadPool {
-    @Value("${thread-pool.sharding.hash_function_name:murmur3_128}")
+    @Value("${service.thread-pool.sharding.hash_function_name:murmur3_128}")
     private String hashFunctionName;
 
-    @Value("${thread-pool.sharding.parallelism:8}")
+    @Value("${service.thread-pool.sharding.parallelism:8}")
     private int parallelism;
 
     private HashFunction hashFunction;
@@ -53,7 +53,7 @@ public class ShardingThreadPool {
         }
     }
 
-    @Scheduled(fixedDelayString = "${thread-pool.sharding.stats-print-interval-ms:10000}")
+    @Scheduled(fixedDelayString = "${service.thread-pool.sharding.stats-print-interval-ms:10000}")
     public void printStats() {
         executorServiceMap.forEach((k, v) -> {
 

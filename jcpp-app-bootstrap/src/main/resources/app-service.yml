@@ -164,6 +164,14 @@ service:
   type: "${SERVICE_TYPE:monolith}"
   # 可自定义的服务ID，如果不指定，则默认为HOSTNAME
   id: "${SERVICE_ID:}"
+  thread-pool:
+    sharding:
+      hash_function_name: "${THREAD_POOL_SHARDING_HASH_FUNCTION_NAME:murmur3_128}" # murmur3_32, murmur3_128 or sha256
+      parallelism: "${THREAD_POOL_SHARDING_PARALLELISM:8}"
+      stats-print-interval-ms: "${THREAD_POOL_SHARDING_STATS_PRINT_INTERVAL_MS:10000}"
+  downlink:
+    rpc:
+      type: "${DOWNLINK_RPC_TYPE:grpc}" # rest or grpc
   protocol:
     sessions:
       default-inactivity-timeout-in-sec: "${PROTOCOLS_SESSIONS_DEFAULT_INACTIVITY_TIMEOUT_IN_SEC:600}"
@@ -260,12 +268,3 @@ service:
           buffer-memory: "${PROTOCOLS_YUNKUAICHONGV160_FORWARD_BUFFER_MEMORY:33554432}"
           other-properties: "${PROTOCOLS_YUNKUAICHONGV160_FORWARD_QUEUE_KAFKA_OTHER_PROPERTIES:}"
 
-thread-pool:
-  sharding:
-    hash_function_name: "${THREAD_POOL_SHARDING_HASH_FUNCTION_NAME:murmur3_128}" # murmur3_32, murmur3_128 or sha256
-    parallelism: "${THREAD_POOL_SHARDING_PARALLELISM:8}"
-    stats-print-interval-ms: "${THREAD_POOL_SHARDING_STATS_PRINT_INTERVAL_MS:10000}"
-
-downlink:
-  rpc:
-    type: "${DOWNLINK_RPC_TYPE:grpc}" # rest or grpc

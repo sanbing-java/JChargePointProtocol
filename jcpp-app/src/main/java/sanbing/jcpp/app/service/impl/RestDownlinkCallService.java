@@ -26,7 +26,7 @@ import static sanbing.jcpp.infrastructure.util.trace.TracerContextUtil.*;
  */
 @Service
 @Slf4j
-@ConditionalOnExpression("'${downlink.rpc.type:null}'=='rest'")
+@ConditionalOnExpression("'${service.downlink.rpc.type:null}'=='rest'")
 public class RestDownlinkCallService extends DownlinkCallService {
 
     @Resource

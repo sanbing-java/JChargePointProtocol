@@ -22,7 +22,7 @@ import static sanbing.jcpp.infrastructure.proto.ProtoConverter.toTracerProto;
  */
 @Service
 @Slf4j
-@ConditionalOnExpression("'${downlink.rpc.type:null}'=='grpc'")
+@ConditionalOnExpression("'${service.downlink.rpc.type:null}'=='grpc'")
 public class GrpcDownlinkCallService extends DownlinkCallService {
 
     @Resource
