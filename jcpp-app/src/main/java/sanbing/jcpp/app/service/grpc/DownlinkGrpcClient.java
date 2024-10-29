@@ -51,31 +51,31 @@ public class DownlinkGrpcClient {
     @Value("${downlink.rpc.grpc.netty.so_sndbuf:65535}")
     private Integer rpcNettySoSndbuf;
 
-    @Value("${downlink.rpc.grpc.netty.so_rcvbuf:65535}")
+    @Value("${service.downlink.rpc.grpc.netty.so_rcvbuf:65535}")
     private Integer rpcNettySoRcvbuf;
 
-    @Value("${downlink.rpc.grpc.netty.no_delay:true}")
+    @Value("${service.downlink.rpc.grpc.netty.no_delay:true}")
     private boolean rpcNoDelay;
 
-    @Value("${downlink.rpc.grpc.netty.max_inbound_message_size:33554432}")
+    @Value("${service.downlink.rpc.grpc.netty.max_inbound_message_size:33554432}")
     private Integer rpcMaxInboundMessageSize;
 
-    @Value("${downlink.rpc.grpc.keep_alive_time_sec:300}")
+    @Value("${service.downlink.rpc.grpc.keep_alive_time_sec:300}")
     private int keepAliveTimeSec;
 
-    @Value("${downlink.rpc.grpc.max_records_size:102400}")
+    @Value("${service.downlink.rpc.grpc.max_records_size:102400}")
     private int maxRecordsSize;
 
-    @Value("${downlink.rpc.grpc.batch_records_count:1024}")
+    @Value("${service.downlink.rpc.grpc.batch_records_count:1024}")
     private int batchRecordsCount;
 
-    @Value("${downlink.rpc.grpc.no_read_records_sleep:25}")
+    @Value("${service.downlink.rpc.grpc.no_read_records_sleep:25}")
     private long noRecordsSleepInterval;
 
-    @Value("${downlink.rpc.grpc.records_ttl:600000}")
+    @Value("${service.downlink.rpc.grpc.records_ttl:600000}")
     private long recordsTtl;
 
-    @Value("${downlink.rpc.grpc.max_reconnect_times:10}")
+    @Value("${service.downlink.rpc.grpc.max_reconnect_times:10}")
     private int maxReconnectTimes;
 
     @Resource
