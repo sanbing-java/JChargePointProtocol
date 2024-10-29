@@ -24,6 +24,8 @@
 百度网盘: https://pan.baidu.com/s/1xT8xWty1XRUHDzTZM_8aLw?pwd=jcpp
 
 #### 项目wiki
+> 如果链接过期请到微信群申请协作
+
 https://www.yuque.com/chengxuyuansanbing/jcpp/xck5fvolx3l7oqhw
 
 ------------------------------
