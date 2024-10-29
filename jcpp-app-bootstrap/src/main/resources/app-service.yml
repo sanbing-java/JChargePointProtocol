@@ -176,17 +176,17 @@ service:
     sessions:
       default-inactivity-timeout-in-sec: "${SERVICE_PROTOCOLS_SESSIONS_DEFAULT_INACTIVITY_TIMEOUT_IN_SEC:600}"
       default-state-check-interval-in-sec: "${SERVICE_PROTOCOLS_SESSIONS_DEFAULT_STATE_CHECK_INTERVAL_IN_SEC:60}"
-    rpc:
-      port: "${SERVICE_PROTOCOL_RPC_PORT:9090}"
-      boss: "${SERVICE_PROTOCOL_RPC_BOSS:4}"
-      worker: "${SERVICE_PROTOCOL_RPC_WORKER:64}"
-      so-rcvbuf: "${SERVICE_PROTOCOL_RPC_SO_RCVBUF:65535}"
-      so-sndbuf: "${SERVICE_PROTOCOL_RPC_SO_SNDBUF:65535}"
-      no-delay: "${SERVICE_PROTOCOL_RPC_NO_DELAY:true}"
-      user-thread-pool-size: "${SERVICE_PROTOCOL_RPC_USER_THREAD_POOL_SIZE:1024}"
-      max-inbound-message-size: "${SERVICE_PROTOCOL_RPC_MAX_INBOUND_MESSAGE_SIZE:33554432}"
-      max-concurrent-calls-per-connection: "${SERVICE_PROTOCOL_MAX_CONCURRENT_CALLS_PER_CONNECTION:4}"
-      client-max-keep-alive-time-sec: "${SERVICE_PROTOCOL_RPC_CLIENT_MAX_KEEP_ALIVE_TIME_SEC:30}"
+    grpc:
+      port: "${SERVICE_PROTOCOL_GRPC_PORT:9090}"
+      boss: "${SERVICE_PROTOCOL_GRPC_BOSS:4}"
+      worker: "${SERVICE_PROTOCOL_GRPC_WORKER:64}"
+      so-rcvbuf: "${SERVICE_PROTOCOL_GRPC_SO_RCVBUF:65535}"
+      so-sndbuf: "${SERVICE_PROTOCOL_GRPC_SO_SNDBUF:65535}"
+      no-delay: "${SERVICE_PROTOCOL_GRPC_NO_DELAY:true}"
+      user-thread-pool-size: "${SERVICE_PROTOCOL_GRPC_USER_THREAD_POOL_SIZE:1024}"
+      max-inbound-message-size: "${SERVICE_PROTOCOL_GRPC_MAX_INBOUND_MESSAGE_SIZE:33554432}"
+      max-concurrent-calls-per-connection: "${SERVICE_PROTOCOL_GRPC_MAX_CONCURRENT_CALLS_PER_CONNECTION:4}"
+      client-max-keep-alive-time-sec: "${SERVICE_PROTOCOL_GRPC_CLIENT_MAX_KEEP_ALIVE_TIME_SEC:30}"
   protocols:
     yunkuaichongV150:
       enabled: "${PROTOCOLS_YUNKUAICHONGV150_ENABLED:true}"

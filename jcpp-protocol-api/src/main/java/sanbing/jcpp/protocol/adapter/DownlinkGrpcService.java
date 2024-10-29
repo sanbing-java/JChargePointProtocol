@@ -41,23 +41,23 @@ import static sanbing.jcpp.infrastructure.util.config.ThreadPoolConfiguration.JC
 @Slf4j
 @ConditionalOnExpression("'${service.type:null}'=='monolith' || '${service.type:null}'=='protocol'")
 public class DownlinkGrpcService extends ProtocolInterfaceImplBase {
-    @Value("${service.protocol.rpc.port}")
-    private int rpcPort;
-    @Value("${service.protocol.rpc.boss}")
-    private int rpcBoss;
-    @Value("${service.protocol.rpc.worker}")
-    private int rpcWorker;
-    @Value("${service.protocol.rpc.so-rcvbuf}")
-    private int rpcNettySoRcvbuf;
-    @Value("${service.protocol.rpc.so-sndbuf}")
-    private int rpcNettySoSndbuf;
-    @Value("${service.protocol.rpc.no-delay}")
-    private boolean rpcNettyNoDelay;
-    @Value("${service.protocol.rpc.max-inbound-message-size}")
+    @Value("${service.protocol.grpc.port}")
+    private int grpcPort;
+    @Value("${service.protocol.grpc.boss}")
+    private int grpcBoss;
+    @Value("${service.protocol.grpc.worker}")
+    private int grpcWorker;
+    @Value("${service.protocol.grpc.so-rcvbuf}")
+    private int grpcNettySoRcvbuf;
+    @Value("${service.protocol.grpc.so-sndbuf}")
+    private int grpcNettySoSndbuf;
+    @Value("${service.protocol.grpc.no-delay}")
+    private boolean grpcNettyNoDelay;
+    @Value("${service.protocol.grpc.max-inbound-message-size}")
     private int maxInboundMessageSize;
-    @Value("${service.protocol.rpc.max-concurrent-calls-per-connection}")
+    @Value("${service.protocol.grpc.max-concurrent-calls-per-connection}")
     private int maxConcurrentCallsPerConnection;
-    @Value("${service.protocol.rpc.client-max-keep-alive-time-sec}")
+    @Value("${service.protocol.grpc.client-max-keep-alive-time-sec}")
     private int clientMaxKeepAliveTimeSec;
 
     @Resource
@@ -70,12 +70,12 @@ public class DownlinkGrpcService extends ProtocolInterfaceImplBase {
     public void init() throws Exception {
         log.info("Initializing Protocol Downlink Grpc service!");
 
-        NettyServerBuilder builder = NettyServerBuilder.forPort(this.rpcPort)
-                .bossEventLoopGroup(new NioEventLoopGroup(this.rpcBoss))
-                .workerEventLoopGroup(new NioEventLoopGroup(this.rpcWorker))
-                .withOption(ChannelOption.SO_RCVBUF, rpcNettySoRcvbuf)
-                .withChildOption(ChannelOption.SO_SNDBUF, rpcNettySoSndbuf)
-                .withChildOption(ChannelOption.TCP_NODELAY, rpcNettyNoDelay)
+        NettyServerBuilder builder = NettyServerBuilder.forPort(this.grpcPort)
+                .bossEventLoopGroup(new NioEventLoopGroup(this.grpcBoss))
+                .workerEventLoopGroup(new NioEventLoopGroup(this.grpcWorker))
+                .withOption(ChannelOption.SO_RCVBUF, grpcNettySoRcvbuf)
+                .withChildOption(ChannelOption.SO_SNDBUF, grpcNettySoSndbuf)
+                .withChildOption(ChannelOption.TCP_NODELAY, grpcNettyNoDelay)
                 .compressorRegistry(CompressorRegistry.getDefaultInstance())
                 .decompressorRegistry(DecompressorRegistry.getDefaultInstance())
                 .channelType(NioServerSocketChannel.class)
@@ -89,7 +89,7 @@ public class DownlinkGrpcService extends ProtocolInterfaceImplBase {
                 .addService(this);
 
         this.server = builder.build();
-        log.info("Going to start RPC server using port: {}", this.rpcPort);
+        log.info("Going to start RPC server using port: {}", this.grpcPort);
 
         try {
             this.server.start();

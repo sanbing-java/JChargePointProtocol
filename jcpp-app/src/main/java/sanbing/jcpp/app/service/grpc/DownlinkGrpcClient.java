@@ -45,10 +45,10 @@ import static sanbing.jcpp.infrastructure.proto.ProtoConverter.toTracerProto;
 @Slf4j
 public class DownlinkGrpcClient {
 
-    @Value("${downlink.rpc.grpc.netty.event_loop:}")
+    @Value("${service.downlink.rpc.grpc.netty.event_loop:}")
     private Integer rpcNettyEventLoop;
 
-    @Value("${downlink.rpc.grpc.netty.so_sndbuf:65535}")
+    @Value("${service.downlink.rpc.grpc.netty.so_sndbuf:65535}")
     private Integer rpcNettySoSndbuf;
 
     @Value("${service.downlink.rpc.grpc.netty.so_rcvbuf:65535}")
