@@ -23,6 +23,9 @@
 #### 充电桩协议文档
 百度网盘: https://pan.baidu.com/s/1xT8xWty1XRUHDzTZM_8aLw?pwd=jcpp
 
+#### 项目wiki
+https://www.yuque.com/chengxuyuansanbing/jcpp/xck5fvolx3l7oqhw
+
 ------------------------------
 #### 代码编写指南
 ##### 教程以视频形式在自媒体平台陆续发布，敬请关注
