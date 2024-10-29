@@ -24,19 +24,17 @@
 百度网盘: https://pan.baidu.com/s/1xT8xWty1XRUHDzTZM_8aLw?pwd=jcpp
 
 #### 项目wiki
-> 如果链接过期请到微信群申请协作
+> 如果链接过期请加作者微信申请协作
 
 https://www.yuque.com/chengxuyuansanbing/jcpp/xck5fvolx3l7oqhw
 
 ------------------------------
 #### 代码编写指南
 ##### 教程以视频形式在自媒体平台陆续发布，敬请关注
-![抖音二维码](https://foruda.gitee.com/images/1728650678915895016/b2219d50_10604541.png)
+<img src=https://foruda.gitee.com/images/1728650678915895016/b2219d50_10604541.png style="zoom:20%;" />
 
-##### 我建了个微信技术交流群
-如过期请加个人微信
-![微信交流群](https://foruda.gitee.com/images/1729683365750232573/8b2574af_10604541.png "微信交流群")
-![博主个人微信](https://foruda.gitee.com/images/1729683391329244317/bfefcca3_10604541.jpeg "博主个人微信")
+##### 作者微信
+<img src=https://foruda.gitee.com/images/1729683391329244317/bfefcca3_10604541.jpeg style="zoom:20%;" />
 
 ------------------------------
 #### 参与贡献
