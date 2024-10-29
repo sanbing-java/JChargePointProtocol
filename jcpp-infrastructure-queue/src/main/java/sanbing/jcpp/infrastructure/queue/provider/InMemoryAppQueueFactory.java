@@ -40,7 +40,7 @@ public class InMemoryAppQueueFactory implements AppQueueFactory {
         return new InMemoryQueueProducer<>(storage, topic);
     }
 
-    @Scheduled(fixedRateString = "${queue.in-memory.stats.print-interval-ms:60000}")
+    @Scheduled(fixedRateString = "${queue.memory.stats.print-interval-ms:60000}")
     private void printInMemoryStats() {
         storage.printStats();
     }

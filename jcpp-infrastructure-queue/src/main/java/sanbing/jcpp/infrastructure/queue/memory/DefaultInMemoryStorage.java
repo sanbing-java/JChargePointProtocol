@@ -19,7 +19,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public final class DefaultInMemoryStorage implements InMemoryStorage {
     private final ConcurrentHashMap<String, BlockingQueue<QueueMsg>> storage = new ConcurrentHashMap<>();
 
-    @Value("${queue.in-memory.queue-capacity:100000}")
+    @Value("${queue.memory.queue-capacity:100000}")
     private int queueCapacity;
 
     @Override
