@@ -36,10 +36,10 @@ public class JCPPJCPPRedisStandaloneConfiguration extends JCPPRedisCacheConfigur
     @Value("${redis.standalone.shutdownTimeout:5000}")
     private Long shutdownTimeout;
 
-    @Value("${redis.standalone.useDefaultClientConfig:true}")
+    @Value("${redis.standalone.useDefaultClientConfig:false}")
     private boolean useDefaultClientConfig;
 
-    @Value("${redis.standalone.usePoolConfig:false}")
+    @Value("${redis.standalone.usePoolConfig:true}")
     private boolean usePoolConfig;
 
     @Value("${redis.db:0}")

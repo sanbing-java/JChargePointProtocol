@@ -128,7 +128,7 @@ redis:
   standalone:
     host: "${REDIS_HOST:redis}"
     port: "${REDIS_PORT:6379}"
-    useDefaultClientConfig: "${REDIS_USE_DEFAULT_CLIENT_CONFIG:true}"
+    useDefaultClientConfig: "${REDIS_USE_DEFAULT_CLIENT_CONFIG:false}"
     clientName: "${REDIS_CLIENT_NAME:standalone}"
     commandTimeout: "${REDIS_CLIENT_COMMAND_TIMEOUT:30000}"
     shutdownTimeout: "${REDIS_CLIENT_SHUTDOWN_TIMEOUT:1000}"
