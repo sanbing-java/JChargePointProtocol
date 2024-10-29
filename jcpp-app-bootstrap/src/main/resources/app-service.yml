@@ -177,7 +177,6 @@ service:
       default-inactivity-timeout-in-sec: "${SERVICE_PROTOCOLS_SESSIONS_DEFAULT_INACTIVITY_TIMEOUT_IN_SEC:600}"
       default-state-check-interval-in-sec: "${SERVICE_PROTOCOLS_SESSIONS_DEFAULT_STATE_CHECK_INTERVAL_IN_SEC:60}"
     rpc:
-      enabled: "${SERVICE_PROTOCOL_RPC_ENABLED:true}"
       port: "${SERVICE_PROTOCOL_RPC_PORT:9090}"
       boss: "${SERVICE_PROTOCOL_RPC_BOSS:4}"
       worker: "${SERVICE_PROTOCOL_RPC_WORKER:64}"
