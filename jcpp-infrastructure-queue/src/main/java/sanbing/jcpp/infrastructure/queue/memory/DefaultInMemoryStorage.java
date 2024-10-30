@@ -26,7 +26,7 @@ public final class DefaultInMemoryStorage implements InMemoryStorage {
     public void printStats() {
         storage.forEach((topic, queue) -> {
             if (!queue.isEmpty()) {
-                log.info("[{}] Queue Size [{}]", topic, queue.size());
+                log.info("[{}] Memory Queue Size [{}]", topic, queue.size());
             }
         });
     }
