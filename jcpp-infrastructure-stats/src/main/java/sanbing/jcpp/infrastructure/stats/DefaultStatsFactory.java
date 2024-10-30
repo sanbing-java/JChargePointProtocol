@@ -33,7 +33,7 @@ public class DefaultStatsFactory implements StatsFactory {
     @Value("${metrics.enabled:true}")
     private Boolean metricsEnabled;
 
-    @Value("${metrics.timer.percentiles:1.0}")
+    @Value("${metrics.timer.percentiles:0.5}")
     private String timerPercentilesStr;
 
     private double[] timerPercentiles;
