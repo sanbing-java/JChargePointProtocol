@@ -141,6 +141,14 @@ public class ProtocolUplinkConsumerService extends AbstractConsumerService imple
 
                     Callback callback = new PackCallback<>(id, ctx);
 
+                    // 过期请求不处理
+                    if (TracerContextUtil.getCurrentTracer().getTracerTs() < (System.currentTimeMillis() - packProcessingTimeout)) {
+
+                        callback.onSuccess();
+
+                        return;
+                    }
+
                     try {
                         UplinkQueueMessage uplinkQueueMsg = msg.getValue();
 
