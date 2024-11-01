@@ -12,7 +12,7 @@ export JAVA_APP_OPTS="-XX:+UseContainerSupport -XX:InitialRAMPercentage=10 -XX:M
                                  -XX:HeapDumpPath=/var/log/sanbing/heapdump/ \
                                  -XX:+UseTLAB -XX:+ResizeTLAB -XX:+PerfDisableSharedMem -XX:+UseCondCardMark \
                                  -XX:+UseG1GC -XX:MaxGCPauseMillis=500 -XX:+UseStringDeduplication -XX:+ParallelRefProcEnabled -XX:MaxTenuringThreshold=10 \
-                                 -Xss512k -XX:MaxDirectMemorySize=256M -XX:G1ReservePercent=20 \
+                                 -Xss512k -XX:G1ReservePercent=20 \
                                  -XX:-OmitStackTraceInFastThrow \
                                  -Dlogging.config=/app/config/log4j2.xml"
 
