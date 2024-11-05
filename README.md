@@ -29,10 +29,6 @@
 https://www.yuque.com/chengxuyuansanbing/jcpp/xck5fvolx3l7oqhw
 
 ------------------------------
-#### 代码编写指南
-##### 教程以视频形式在自媒体平台陆续发布，敬请关注
-<img src=https://foruda.gitee.com/images/1728650678915895016/b2219d50_10604541.png style="max-width:20%;" />
-
 ##### 作者微信
 <img src=https://foruda.gitee.com/images/1729683391329244317/bfefcca3_10604541.jpeg style="max-width:20%;" />
 
