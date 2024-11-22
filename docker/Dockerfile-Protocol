@@ -16,29 +16,28 @@ RUN java -Djarmode=tools -jar application.jar extract --layers --destination ext
 
 # 执行
 FROM registry.cn-hangzhou.aliyuncs.com/sanbing/openjdk:21-jdk-slim-bullseye
-WORKDIR /app
+RUN useradd -m sanbing
+WORKDIR /home/sanbing
+
 COPY --from=builder /app/extracted/dependencies/ ./
 COPY --from=builder /app/extracted/spring-boot-loader/ ./
 COPY --from=builder /app/extracted/snapshot-dependencies/ ./
 COPY --from=builder /app/extracted/application/ ./
-COPY --from=base /app/jcpp-protocol-bootstrap/target/conf ./config
+COPY --from=base /app/jcpp-app-bootstrap/target/conf ./config
 COPY --from=base /app/docker/start.sh .
 
-RUN mkdir -p /var/log/sanbing &&  \
-    mkdir -p /var/log/sanbing/jcpp &&  \
-    mkdir -p /var/log/sanbing/accesslog &&  \
-    mkdir -p /var/log/sanbing/gc &&  \
-    mkdir -p /var/log/sanbing/heapdump &&  \
-    chown -R sanbing:sanbing /tmp \
-    chmod 700 -R /var/log/*
+RUN chmod a+x start.sh && \
+    mkdir -p /home/sanbing/logs/jcpp &&  \
+    mkdir -p /home/sanbing/logs/accesslog &&  \
+    mkdir -p /home/sanbing/logs/gc &&  \
+    mkdir -p /home/sanbing/logs/heapdump &&  \
+    chmod 700 -R /home/sanbing/logs/* &&  \
+    chown -R sanbing:sanbing /home/sanbing
 
-RUN chmod a+x *.sh && mv start.sh /usr/bin
-
-EXPOSE 8081 8081
-USER sanbing
+EXPOSE 8080 8080
 
 ENV PROTOCOLS_LOG_LEVEL=INFO
 
-CMD ["start.sh"]
-
+USER sanbing
+CMD ["/bin/bash", "start.sh"]
 

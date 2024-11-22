@@ -12,7 +12,7 @@
     accesslog:
       enabled: true
       pattern: "%t %a %r %s (%D ms)"
-      dir: /var/log/sanbing/accesslog
+      dir: logs/accesslog
     options:
       server:
         record-request-start-time: true
