@@ -1,0 +1,90 @@
+#
+# 抖音关注：程序员三丙
+# 知识星球：https://t.zsxq.com/j9b21
+#
+
+networks:
+  sanbing-network:
+    driver: bridge
+    name: sanbing-network
+    ipam:
+      config:
+        - subnet: 10.10.0.0/24
+
+services:
+# Redis cluster
+  redis-node-0:
+    image: registry.cn-hangzhou.aliyuncs.com/sanbing/redis-cluster:7.4
+    restart: always
+    networks:
+      - sanbing-network
+    environment:
+      - 'REDIS_PASSWORD=sanbing'
+      - 'REDISCLI_AUTH=sanbing'
+      - 'REDIS_NODES=redis-node-0 redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5'
+
+  redis-node-1:
+    image: registry.cn-hangzhou.aliyuncs.com/sanbing/redis-cluster:7.4
+    restart: always
+    networks:
+      - sanbing-network
+    depends_on:
+      - redis-node-0
+    environment:
+      - 'REDIS_PASSWORD=sanbing'
+      - 'REDISCLI_AUTH=sanbing'
+      - 'REDIS_NODES=redis-node-0 redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5'
+
+  redis-node-2:
+    image: registry.cn-hangzhou.aliyuncs.com/sanbing/redis-cluster:7.4
+    restart: always
+    networks:
+      - sanbing-network
+    depends_on:
+      - redis-node-1
+    environment:
+      - 'REDIS_PASSWORD=sanbing'
+      - 'REDISCLI_AUTH=sanbing'
+      - 'REDIS_NODES=redis-node-0 redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5'
+
+  redis-node-3:
+    image: registry.cn-hangzhou.aliyuncs.com/sanbing/redis-cluster:7.4
+    restart: always
+    networks:
+      - sanbing-network
+    depends_on:
+      - redis-node-2
+    environment:
+      - 'REDIS_PASSWORD=sanbing'
+      - 'REDISCLI_AUTH=sanbing'
+      - 'REDIS_NODES=redis-node-0 redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5'
+
+  redis-node-4:
+    image: registry.cn-hangzhou.aliyuncs.com/sanbing/redis-cluster:7.4
+    restart: always
+    networks:
+      - sanbing-network
+    depends_on:
+      - redis-node-3
+    environment:
+      - 'REDIS_PASSWORD=sanbing'
+      - 'REDISCLI_AUTH=sanbing'
+      - 'REDIS_NODES=redis-node-0 redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5'
+
+  redis-node-5:
+    image: registry.cn-hangzhou.aliyuncs.com/sanbing/redis-cluster:7.4
+    restart: always
+    networks:
+      - sanbing-network
+    depends_on:
+      - redis-node-0
+      - redis-node-1
+      - redis-node-2
+      - redis-node-3
+      - redis-node-4
+    environment:
+      - 'REDIS_PASSWORD=sanbing'
+      - 'REDISCLI_AUTH=sanbing'
+      - 'REDIS_NODES=redis-node-0 redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5'
+      - 'REDIS_CLUSTER_REPLICAS=1'
+      - 'REDIS_CLUSTER_CREATOR=yes'

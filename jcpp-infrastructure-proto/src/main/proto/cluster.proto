@@ -1,0 +1,25 @@
+/**
+ * 抖音关注：程序员三丙
+ * 知识星球：https://t.zsxq.com/j9b21
+ */
+syntax = "proto3";
+
+package infrastructureProto;
+
+option java_package = "sanbing.jcpp.proto.gen";
+option java_outer_classname = "ClusterProto";
+
+message ServiceInfo {
+  string serviceId = 1;
+  repeated string serviceTypes = 2;
+  SystemInfoProto systemInfo = 10;
+}
+
+message SystemInfoProto {
+  int64 cpuUsage = 1;
+  int64 cpuCount = 2;
+  int64 memoryUsage = 3;
+  int64 totalMemory = 4;
+  int64 diskUsage = 5;
+  int64 totalDiscSpace = 6;
+}

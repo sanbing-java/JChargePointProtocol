@@ -1,0 +1,49 @@
+#
+# 抖音关注：程序员三丙
+# 知识星球：https://t.zsxq.com/j9b21
+#
+
+networks:
+  sanbing-network:
+    driver: bridge
+    name: sanbing-network
+    ipam:
+      config:
+        - subnet: 10.10.0.0/24
+
+services:
+  redis-master:
+    image: registry.cn-hangzhou.aliyuncs.com/sanbing/redis:7.4
+    restart: always
+    networks:
+      - sanbing-network
+    environment:
+      - 'REDIS_REPLICATION_MODE=master'
+      - 'REDIS_PASSWORD=sanbing'
+
+  redis-slave:
+    image: registry.cn-hangzhou.aliyuncs.com/sanbing/redis:7.4
+    restart: always
+    networks:
+      - sanbing-network
+    environment:
+      - 'REDIS_REPLICATION_MODE=slave'
+      - 'REDIS_MASTER_HOST=redis-master'
+      - 'REDIS_MASTER_PASSWORD=sanbing'
+      - 'REDIS_PASSWORD=sanbing'
+    depends_on:
+      - redis-master
+
+  redis-sentinel:
+    image: registry.cn-hangzhou.aliyuncs.com/sanbing/redis-sentinel:7.4
+    restart: always
+    networks:
+      - sanbing-network
+    environment:
+      - 'REDIS_MASTER_HOST=redis-master'
+      - 'REDIS_MASTER_SET=mymaster'
+      - 'REDIS_SENTINEL_PASSWORD=sanbing'
+      - 'REDIS_MASTER_PASSWORD=sanbing'
+    depends_on:
+      - redis-master
+      - redis-slave

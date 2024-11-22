@@ -1,0 +1,24 @@
+#
+# 抖音关注：程序员三丙
+# 知识星球：https://t.zsxq.com/j9b21
+#
+
+networks:
+  sanbing-network:
+    driver: bridge
+    name: sanbing-network
+    ipam:
+      config:
+        - subnet: 10.10.0.0/24
+
+services:
+  jcpp-node-0:
+    restart: always
+    image: registry.cn-hangzhou.aliyuncs.com/sanbing/jcpp-monolith:latest
+    networks:
+      - sanbing-network
+    ports:
+      - "8080:8080"
+      - "38001:38001"
+    environment:
+      HTTP_BIND_PORT: 8080

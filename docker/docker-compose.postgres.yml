@@ -1,0 +1,33 @@
+#
+# 抖音关注：程序员三丙
+# 知识星球：https://t.zsxq.com/j9b21
+#
+
+volumes:
+  postgresql_data: {}
+
+networks:
+  sanbing-network:
+    driver: bridge
+    name: sanbing-network
+    ipam:
+      config:
+        - subnet: 10.10.0.0/24
+
+services:
+  postgres:
+    image: registry.cn-hangzhou.aliyuncs.com/sanbing/postgresql:17
+    restart: always
+    networks:
+      - sanbing-network
+    ports:
+    - "5432:5432"
+    environment:
+      - 'POSTGRES_DB=jcpp'
+      - 'POSTGRES_PASSWORD=postgres'
+      - 'POSTGRESQL_MAX_CONNECTIONS=1000'
+      - 'POSTGRESQL_DEFAULT_TRANSACTION_ISOLATION=read committed'
+      - 'TZ=Asia/Shanghai'
+    volumes:
+      - postgresql_data:/bitnami/postgresql
+      - ./schema/schema-postgres.sql:/docker-entrypoint-initdb.d/init.sql

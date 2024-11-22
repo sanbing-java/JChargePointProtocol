@@ -1,0 +1,23 @@
+#
+# 抖音关注：程序员三丙
+# 知识星球：https://t.zsxq.com/j9b21
+#
+
+networks:
+  sanbing-network:
+    driver: bridge
+    name: sanbing-network
+    ipam:
+      config:
+        - subnet: 10.10.0.0/24
+
+services:
+  redis:
+    image: registry.cn-hangzhou.aliyuncs.com/sanbing/redis:7.4
+    restart: always
+    networks:
+      - sanbing-network
+    ports:
+      - '6379:6379'
+    environment:
+      - 'REDIS_PASSWORD=sanbing'
