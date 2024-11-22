@@ -29,11 +29,13 @@ RUN mkdir -p /var/log/sanbing &&  \
     mkdir -p /var/log/sanbing/accesslog &&  \
     mkdir -p /var/log/sanbing/gc &&  \
     mkdir -p /var/log/sanbing/heapdump &&  \
+    chown -R sanbing:sanbing /tmp \
     chmod 700 -R /var/log/*
 
 RUN chmod a+x *.sh && mv start.sh /usr/bin
 
 EXPOSE 8081 8081
+USER sanbing
 
 ENV PROTOCOLS_LOG_LEVEL=INFO
 

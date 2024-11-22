@@ -47,10 +47,11 @@ public abstract class VersionedCaffeineCache<K extends VersionedCacheKey, V exte
         }
     }
 
+    @SuppressWarnings("unchecked")
     private JCPPPair<Long, V> doGet(K key) {
         Cache.ValueWrapper source = cache.get(key);
-        if (source != null && source.get() instanceof JCPPPair pair) {
-            return pair;
+        if (source != null && source.get() instanceof JCPPPair<?, ?> pair) {
+            return (JCPPPair<Long, V>) pair;
         }
         return null;
     }
