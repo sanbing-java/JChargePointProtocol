@@ -132,7 +132,7 @@ public class YunKuaiChongV150RealTimeDataULCmd extends YunKuaiChongUplinkCmdExe 
         List<String> faults = getFaultDescriptions(parseFaults(warnCodeBytes));
 
         // 抢状态
-        GunRunStatus gunRunStatus = parseGUnRunStatus(gunStatus, gunInsert, tradeNo);
+        GunRunStatus gunRunStatus = parseGunRunStatus(gunStatus, gunInsert, tradeNo);
         GunRunStatusProto.Builder gunRunStatusProtoBuilder = GunRunStatusProto.newBuilder()
                 .setTs(ts)
                 .setPileCode(pileCode)
@@ -173,9 +173,9 @@ public class YunKuaiChongV150RealTimeDataULCmd extends YunKuaiChongUplinkCmdExe 
     }
 
     /**
-     * 解释枪运行状态
+     * 解析枪运行状态
      */
-    private static GunRunStatus parseGUnRunStatus(int gunStatus, int gunInsert, String tradeNo) {
+    private static GunRunStatus parseGunRunStatus(int gunStatus, int gunInsert, String tradeNo) {
         GunRunStatus gunRunStatus = GunRunStatus.UNKNOWN;
         if (gunStatus == 0) {
             gunRunStatus = GunRunStatus.FAULT;
