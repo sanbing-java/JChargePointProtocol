@@ -14,7 +14,9 @@ networks:
 services:
   jcpp-node-0:
     restart: always
-    image: registry.cn-hangzhou.aliyuncs.com/sanbing/jcpp-monolith:latest
+    build:
+      context: ..
+      dockerfile: docker/app.Dockerfile
     networks:
       - sanbing-network
     ports:

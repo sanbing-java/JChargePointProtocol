@@ -549,9 +549,7 @@
                         <tsx>SLASHSTAR_STYLE</tsx>
                         <conf>SCRIPT_STYLE</conf>
                         <gradle>JAVADOC_STYLE</gradle>
-                        <Dockerfile-Base>SCRIPT_STYLE</Dockerfile-Base>
-                        <Dockerfile-App>SCRIPT_STYLE</Dockerfile-App>
-                        <Dockerfile-Protocol>SCRIPT_STYLE</Dockerfile-Protocol>
+                        <Dockerfile>SCRIPT_STYLE</Dockerfile>
                     </mapping>
                 </configuration>
                 <executions>
