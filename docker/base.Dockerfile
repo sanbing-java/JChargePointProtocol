@@ -6,6 +6,6 @@
 FROM registry.cn-hangzhou.aliyuncs.com/sanbing/mvn:3.9.9-jdk21 AS base
 WORKDIR /app
 COPY . .
-RUN mvn -U -B -T 0.8C clean install -DskipTests
-RUN rm -rf /app
+RUN mvn -U -B -T 0.8C clean install -DskipTests \
+    && rm -rf /app
 
