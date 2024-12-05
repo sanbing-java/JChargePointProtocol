@@ -58,7 +58,7 @@ public abstract class DownlinkCallService {
         }
 
         if (serviceInfoProvider.isMonolith() &&
-                ("caffeine".equalsIgnoreCase(cacheType)) || serviceInfoProvider.getServiceId().equalsIgnoreCase(pileSession.getNodeId())) {
+                ("caffeine".equalsIgnoreCase(cacheType) || serviceInfoProvider.getServiceId().equalsIgnoreCase(pileSession.getNodeId()))) {
 
             downlinkController.onDownlink(downlinkMessageBuilder.build())
                     .setResultHandler(result -> log.debug("下行消息发送完成"));
