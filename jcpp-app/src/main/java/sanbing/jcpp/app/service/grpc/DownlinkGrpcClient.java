@@ -202,7 +202,6 @@ public class DownlinkGrpcClient {
                 .directExecutor()
                 .keepAliveTime(keepAliveTimeSec, TimeUnit.SECONDS)
                 .usePlaintext()
-                .keepAliveTime(5, TimeUnit.MINUTES) // Change to a larger value, e.g. 5min.
                 .keepAliveTimeout(10, TimeUnit.SECONDS) // Change to a larger value, e.g. 10s.
                 .keepAliveWithoutCalls(true)// You should normally avoid enabling this.
                 .defaultLoadBalancingPolicy("round_robin")
