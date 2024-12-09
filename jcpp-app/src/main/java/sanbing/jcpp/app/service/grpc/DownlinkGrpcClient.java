@@ -245,7 +245,7 @@ public class DownlinkGrpcClient {
 
             @Override
             public void onError(Throwable t) {
-                log.warn("[{}] Grpc 客户端异常 {}", hostAndPort, t.getMessage());
+                log.warn("[{}] Grpc 客户端异常 {}", hostAndPort, t.getMessage(), t);
 
                 ExecutorService executorService = msgHandleExecutorMap.get(hostAndPort);
                 if (executorService != null) {

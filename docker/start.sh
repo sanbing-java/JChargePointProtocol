@@ -6,7 +6,7 @@
 
 echo "Starting Server ..."
 
-export JAVA_APP_OPTS="-XX:+UseContainerSupport -XX:InitialRAMPercentage=10 -XX:MaxRAMPercentage=70 \
+export JAVA_APP_OPTS="-XX:+UseContainerSupport -XX:InitialRAMPercentage=50 -XX:MaxRAMPercentage=90 \
                                  -Xlog:gc*,heap*,age*,safepoint=debug:file=/home/sanbing/logs/gc/gc.log:time,uptime,level,tags:filecount=10,filesize=10M \
                                  -XX:+HeapDumpOnOutOfMemoryError \
                                  -XX:HeapDumpPath=/home/sanbing/logs/heapdump/ \
