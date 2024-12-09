@@ -29,7 +29,7 @@
 https://www.yuque.com/chengxuyuansanbing/jcpp/xck5fvolx3l7oqhw
 
 ------------------------------
-##### 加入社群先加作者微信
+##### 加入技术讨论社群请加作者微信
 <img src=https://foruda.gitee.com/images/1729683391329244317/bfefcca3_10604541.jpeg style="max-width:20%;" />
 
 ------------------------------
