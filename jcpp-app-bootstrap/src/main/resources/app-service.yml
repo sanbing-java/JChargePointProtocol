@@ -65,6 +65,7 @@ queue:
     hash_function_name: "${QUEUE_PARTITIONS_HASH_FUNCTION_NAME:murmur3_128}" # murmur3_32, murmur3_128 or sha256
   memory:
     queue-capacity: "${QUEUE_MEMORY_QUEUE_CAPACITY:100000}"
+    max-pool-size: "${QUEUE_MEMORY_MAX_POOL_SIZE:999}"
     stats:
       print-interval-ms: "${QUEUE_MEMORY_STATS_PRINT_INTERVAL_MS:10000}"
   kafka:

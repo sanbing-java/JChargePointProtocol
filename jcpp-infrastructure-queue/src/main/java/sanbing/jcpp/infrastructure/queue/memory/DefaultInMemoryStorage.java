@@ -21,6 +21,8 @@ public final class DefaultInMemoryStorage implements InMemoryStorage {
 
     @Value("${queue.memory.queue-capacity:100000}")
     private int queueCapacity;
+    @Value("${queue.memory.max-pool-size:999}")
+    private int maxPoolSize;
 
     @Override
     public void printStats() {
@@ -54,9 +56,9 @@ public final class DefaultInMemoryStorage implements InMemoryStorage {
             if (firstMsg != null) {
                 final int queueSize = queue.size();
                 if (queueSize > 0) {
-                    final List<QueueMsg> entities = new ArrayList<>(Math.min(queueSize, 999) + 1);
+                    final List<QueueMsg> entities = new ArrayList<>(Math.min(queueSize, maxPoolSize) + 1);
                     entities.add(firstMsg);
-                    queue.drainTo(entities, 999);
+                    queue.drainTo(entities, maxPoolSize);
                     return entities;
                 }
                 return Collections.singletonList(firstMsg);
