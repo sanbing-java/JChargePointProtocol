@@ -89,7 +89,7 @@ public class DefaultPileProtocolService implements PileProtocolService {
 
     @Override
     public void heartBeat(UplinkQueueMessage uplinkQueueMessage, Callback callback) {
-        log.info("接收到桩心跳事件 {}", uplinkQueueMessage);
+        log.debug("接收到桩心跳事件 {}", uplinkQueueMessage);
 
         HeartBeatRequest heartBeatRequest = uplinkQueueMessage.getHeartBeatRequest();
 
