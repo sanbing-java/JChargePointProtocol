@@ -18,7 +18,7 @@ public abstract class VersionedCaffeineCache<K extends VersionedCacheKey, V exte
 
     @Override
     public CacheValueWrapper<V> get(K key) {
-        JCPPPair<Long, V> versionValuePair = doGet(key);
+        JCPPPair<Integer, V> versionValuePair = doGet(key);
         if (versionValuePair != null) {
             return SimpleCacheValueWrapper.wrap(versionValuePair.getSecond());
         }
@@ -37,7 +37,7 @@ public abstract class VersionedCaffeineCache<K extends VersionedCacheKey, V exte
     private void doPut(K key, V value, Integer version) {
         lock.lock();
         try {
-            JCPPPair<Long, V> versionValuePair = doGet(key);
+            JCPPPair<Integer, V> versionValuePair = doGet(key);
             if (versionValuePair == null || version > versionValuePair.getFirst()) {
                 failAllTransactionsByKey(key);
                 cache.put(key, wrapValue(value, version));
@@ -48,10 +48,10 @@ public abstract class VersionedCaffeineCache<K extends VersionedCacheKey, V exte
     }
 
     @SuppressWarnings("unchecked")
-    private JCPPPair<Long, V> doGet(K key) {
+    private JCPPPair<Integer, V> doGet(K key) {
         Cache.ValueWrapper source = cache.get(key);
         if (source != null && source.get() instanceof JCPPPair<?, ?> pair) {
-            return (JCPPPair<Long, V>) pair;
+            return (JCPPPair<Integer, V>) pair;
         }
         return null;
     }
