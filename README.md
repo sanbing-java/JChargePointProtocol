@@ -23,14 +23,10 @@
 #### 充电桩协议文档
 百度网盘: https://pan.baidu.com/s/1xT8xWty1XRUHDzTZM_8aLw?pwd=jcpp
 
-#### 项目wiki
-> 如果链接过期请加作者微信申请协作
-
-https://www.yuque.com/chengxuyuansanbing/jcpp/xck5fvolx3l7oqhw
-
 ------------------------------
-##### 加入技术讨论社群请加作者微信
-<img src=https://foruda.gitee.com/images/1729683391329244317/bfefcca3_10604541.jpeg style="max-width:20%;" />
+
+##### 文档请到联系作者加入社群
+<img src=https://foruda.gitee.com/images/1734916800586582054/b8d787bc_10604541.jpeg />
 
 ------------------------------
 #### 参与贡献
@@ -41,5 +37,7 @@ https://www.yuque.com/chengxuyuansanbing/jcpp/xck5fvolx3l7oqhw
 4. 加入社群
 5. 新建 Pull Request
 
+#### 版权
+开源部分，仅供学习和交流研究使用
 
   
