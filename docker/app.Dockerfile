@@ -3,7 +3,7 @@
 # 知识星球：https://t.zsxq.com/j9b21
 #
 
-FROM registry.cn-hangzhou.aliyuncs.com/sanbing/jcpp-base:latest AS base
+FROM registry.cn-hangzhou.aliyuncs.com/sanbing/jcpp-base:1.0 AS base
 WORKDIR /app
 COPY . .
 RUN mvn -U -B -T 0.8C clean install -DskipTests
@@ -26,13 +26,13 @@ COPY --from=builder /app/extracted/application/ ./
 COPY --from=base /app/jcpp-app-bootstrap/target/conf ./config
 COPY --from=base /app/docker/start.sh .
 
-RUN chmod a+x start.sh && \
-    mkdir -p /home/sanbing/logs/jcpp &&  \
-    mkdir -p /home/sanbing/logs/accesslog &&  \
-    mkdir -p /home/sanbing/logs/gc &&  \
-    mkdir -p /home/sanbing/logs/heapdump &&  \
-    chmod 700 -R /home/sanbing/logs/* &&  \
-    chown -R sanbing:sanbing /home/sanbing
+RUN chmod a+x start.sh \
+    && mkdir -p /home/sanbing/logs/jcpp \
+    && mkdir -p /home/sanbing/logs/accesslog \
+    && mkdir -p /home/sanbing/logs/gc \
+    && mkdir -p /home/sanbing/logs/heapdump \
+    && chmod 700 -R /home/sanbing/logs/* \
+    && chown -R sanbing:sanbing /home/sanbing
 
 EXPOSE 8080 8080
 
