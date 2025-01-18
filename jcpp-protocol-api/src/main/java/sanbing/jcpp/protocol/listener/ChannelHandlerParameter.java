@@ -5,7 +5,6 @@
 package sanbing.jcpp.protocol.listener;
 
 import io.micrometer.core.instrument.Timer;
-import sanbing.jcpp.infrastructure.stats.DefaultCounter;
 import sanbing.jcpp.infrastructure.stats.MessagesStats;
 import sanbing.jcpp.protocol.ProtocolMessageProcessor;
 
@@ -16,7 +15,5 @@ public record ChannelHandlerParameter(String protocolName,
                                       AtomicInteger connectionsGauge,
                                       MessagesStats uplinkMsgStats,
                                       MessagesStats downlinkMsgStats,
-                                      DefaultCounter uplinkTrafficCounter,
-                                      DefaultCounter downlinkTrafficCounter,
                                       Timer downlinkTimer) {
 }

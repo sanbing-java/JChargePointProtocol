@@ -7,7 +7,6 @@ package sanbing.jcpp.protocol.listener;
 import io.micrometer.core.instrument.Timer;
 import lombok.Getter;
 import org.springframework.boot.actuate.health.Health;
-import sanbing.jcpp.infrastructure.stats.DefaultCounter;
 import sanbing.jcpp.infrastructure.stats.MessagesStats;
 import sanbing.jcpp.infrastructure.stats.StatsFactory;
 import sanbing.jcpp.protocol.ProtocolMessageProcessor;
@@ -28,8 +27,6 @@ public abstract class Listener {
     protected AtomicInteger connectionsGauge = new AtomicInteger();
     protected MessagesStats uplinkMsgStats;
     protected MessagesStats downlinkMsgStats;
-    protected DefaultCounter uplinkTrafficCounter;
-    protected DefaultCounter downlinkTrafficCounter;
     protected Timer downlinkTimer;
 
     protected final ChannelHandlerParameter parameter;
@@ -41,11 +38,9 @@ public abstract class Listener {
         statsFactory.createGauge("openConnections", connectionsGauge, "protocol", protocolName);
         this.uplinkMsgStats = statsFactory.createMessagesStats("listenerUplinkMessage", "protocol", protocolName);
         this.downlinkMsgStats = statsFactory.createMessagesStats("listenerDownlinkMessage", "protocol", protocolName);
-        this.uplinkTrafficCounter = statsFactory.createDefaultCounter("listenerUplinkTraffic", "protocol", protocolName);
-        this.downlinkTrafficCounter = statsFactory.createDefaultCounter("listenerDownlinkTraffic", "protocol", protocolName);
         this.downlinkTimer = statsFactory.createTimer("listenerDownlink", "protocol", protocolName);
 
-        this.parameter = new ChannelHandlerParameter(protocolName, protocolMessageProcessor, connectionsGauge, uplinkMsgStats, downlinkMsgStats, uplinkTrafficCounter, downlinkTrafficCounter, downlinkTimer);
+        this.parameter = new ChannelHandlerParameter(protocolName, protocolMessageProcessor, connectionsGauge, uplinkMsgStats, downlinkMsgStats, downlinkTimer);
     }
 
     public abstract Health health();

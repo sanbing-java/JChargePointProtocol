@@ -14,7 +14,6 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.concurrent.Future;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import sanbing.jcpp.infrastructure.stats.DefaultCounter;
 import sanbing.jcpp.infrastructure.stats.MessagesStats;
 import sanbing.jcpp.infrastructure.util.exception.DownlinkException;
 import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
@@ -38,9 +37,7 @@ public class TcpChannelHandler<T> extends SimpleChannelInboundHandler<ProtocolUp
     private final ProtocolMessageProcessor protocolMessageProcessor;
 
     private final MessagesStats uplinkMsgStats;
-    private final DefaultCounter uplinkTrafficCounter;
     private final MessagesStats downlinkMsgStats;
-    private final DefaultCounter downlinkTrafficCounter;
     private final Timer downlinkTimer;
 
     private final TcpSession tcpSession;
@@ -51,9 +48,7 @@ public class TcpChannelHandler<T> extends SimpleChannelInboundHandler<ProtocolUp
         this.protocolMessageProcessor = parameter.protocolMessageProcessor();
 
         this.uplinkMsgStats = parameter.uplinkMsgStats();
-        this.uplinkTrafficCounter = parameter.uplinkTrafficCounter();
         this.downlinkMsgStats = parameter.downlinkMsgStats();
-        this.downlinkTrafficCounter = parameter.downlinkTrafficCounter();
         this.downlinkTimer = parameter.downlinkTimer();
 
         tcpSession = new TcpSession(protocolName, this::onDownlink, this::writeAndFlush);
@@ -68,8 +63,6 @@ public class TcpChannelHandler<T> extends SimpleChannelInboundHandler<ProtocolUp
         }
 
         uplinkMsgStats.incrementTotal();
-
-        uplinkTrafficCounter.add(msg.size());
 
         tcpSession.setLastActivityTime(LocalDateTime.now());
 
@@ -153,7 +146,7 @@ public class TcpChannelHandler<T> extends SimpleChannelInboundHandler<ProtocolUp
                     continue;
                 }
 
-                logDownlinkStart(byteBuf.readableBytes(), () -> ByteBufUtil.hexDump(byteBuf));
+                logDownlinkStart(() -> ByteBufUtil.hexDump(byteBuf));
 
                 ctx.writeAndFlush(Unpooled.wrappedBuffer(byteBuf))
                         .addListener(this::logDownlinkUnsuccessful);
@@ -171,9 +164,7 @@ public class TcpChannelHandler<T> extends SimpleChannelInboundHandler<ProtocolUp
 
     }
 
-    private void logDownlinkStart(int payloadSize, Supplier<String> logTransform) {
-
-        downlinkTrafficCounter.add(payloadSize);
+    private void logDownlinkStart(Supplier<String> logTransform) {
 
         if (log.isDebugEnabled()) {
             log.debug("[{}]{} 开始发送下行报文:{}", protocolName, tcpSession, logTransform.get());
