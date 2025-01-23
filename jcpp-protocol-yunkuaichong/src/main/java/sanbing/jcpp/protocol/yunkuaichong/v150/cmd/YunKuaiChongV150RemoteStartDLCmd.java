@@ -57,7 +57,7 @@ public class YunKuaiChongV150RemoteStartDLCmd extends YunKuaiChongDownlinkCmdExe
         // 物理卡号
         msgBody.writeBytes(cardNo);
         // 账户余额
-        msgBody.writeIntLE(new BigDecimal(limitYuan).intValue());
+        msgBody.writeIntLE(new BigDecimal(limitYuan).multiply(new BigDecimal("100")).intValue());
 
         encodeAndWriteFlush(REMOTE_START_CHARGING,
                 msgBody,
