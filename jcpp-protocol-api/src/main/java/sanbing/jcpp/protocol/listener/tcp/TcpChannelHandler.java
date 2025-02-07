@@ -59,7 +59,7 @@ public class TcpChannelHandler<T> extends SimpleChannelInboundHandler<ProtocolUp
 
         if (log.isDebugEnabled()) {
 
-            log.debug("[{}]{}{} Netty拆出到上行报文:{}", protocolName, ctx.channel(), tcpSession, msg);
+            log.debug("[{}]{}{} Netty拆出上行报文:{}", protocolName, ctx.channel(), tcpSession, msg);
         }
 
         uplinkMsgStats.incrementTotal();
