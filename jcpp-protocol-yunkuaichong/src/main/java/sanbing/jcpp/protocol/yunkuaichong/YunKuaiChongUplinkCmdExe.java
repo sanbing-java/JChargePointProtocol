@@ -19,7 +19,7 @@ public abstract class YunKuaiChongUplinkCmdExe extends AbstractYunKuaiChongCmdEx
 
     public abstract void execute(TcpSession tcpSession, YunKuaiChongUplinkMessage yunKuaiChongUplinkMessage, ProtocolContext ctx);
 
-    protected static UplinkQueueMessage.Builder uplinkMessageBuilder(String messageKey, TcpSession tcpSession, YunKuaiChongUplinkMessage yunKuaiChongUplinkMessage) {
+    protected UplinkQueueMessage.Builder uplinkMessageBuilder(String messageKey, TcpSession tcpSession, YunKuaiChongUplinkMessage yunKuaiChongUplinkMessage) {
         return UplinkQueueMessage.newBuilder()
                 .setMessageIdMSB(yunKuaiChongUplinkMessage.getId().getMostSignificantBits())
                 .setMessageIdLSB(yunKuaiChongUplinkMessage.getId().getLeastSignificantBits())
