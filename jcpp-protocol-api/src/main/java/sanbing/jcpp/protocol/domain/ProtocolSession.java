@@ -61,6 +61,7 @@ public abstract class ProtocolSession implements Closeable {
 
     public abstract void onDownlink(DownlinkRequestMessage downlinkMsg);
 
+    @Override
     public void close() {
         close(SessionCloseReason.DESTRUCTION);
     }

@@ -8,7 +8,18 @@ package sanbing.jcpp.protocol.domain;
  * @author baigod
  */
 public enum SessionCloseReason {
+    /**
+     * 自然销毁
+     */
     DESTRUCTION,
+
+    /**
+     * 失活
+     */
     INACTIVE,
+
+    /**
+     * 手动销毁
+     */
     MANUALLY
 }
