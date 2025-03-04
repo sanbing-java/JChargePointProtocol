@@ -25,7 +25,7 @@ public class StatsTimer {
         this.timer = micrometerTimer;
     }
 
-    public  void record(long timeMs) {
+    public void record(long timeMs) {
         count++;
         totalTime += timeMs;
         timer.record(timeMs, TimeUnit.MILLISECONDS);
@@ -38,7 +38,7 @@ public class StatsTimer {
         return (double) totalTime / count;
     }
 
-    public  void reset() {
+    public void reset() {
         count = 0;
         totalTime = 0;
     }
