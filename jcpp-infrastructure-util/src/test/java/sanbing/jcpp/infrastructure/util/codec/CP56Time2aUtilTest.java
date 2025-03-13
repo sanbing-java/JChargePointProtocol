@@ -6,22 +6,27 @@
  */
 package sanbing.jcpp.infrastructure.util.codec;
 
+import cn.hutool.core.util.HexUtil;
 import org.junit.jupiter.api.Test;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Arrays;
 
 class CP56Time2aUtilTest {
 
     @Test
     void encodeTest() {
-        Instant time = Instant.ofEpochMilli(1727798453000L);
+        LocalDateTime time = LocalDateTime.of(2025, 1, 22, 14, 30, 45, 123_000_000);
 
         byte[] bytes = CP56Time2aUtil.encode(time);
 
         System.out.println(Arrays.toString(bytes));
+        System.out.println(HexUtil.encodeHex(bytes));
+        System.out.println(time.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
 
-        Instant decode = CP56Time2aUtil.decode(bytes);
+        LocalDateTime decode = CP56Time2aUtil.decode(bytes);
+        System.out.println(decode.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
 
         assert time.equals(decode);
     }

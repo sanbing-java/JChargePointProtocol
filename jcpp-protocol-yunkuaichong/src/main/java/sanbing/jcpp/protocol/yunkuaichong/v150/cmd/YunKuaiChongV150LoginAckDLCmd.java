@@ -23,7 +23,7 @@ import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDwonlinkMessage;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkMessage;
 import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
@@ -109,7 +109,7 @@ public class YunKuaiChongV150LoginAckDLCmd extends YunKuaiChongDownlinkCmdExe {
         log.info("{} 云快充1.5.0开始下发对时报文", tcpSession);
         ByteBuf syncTimeMsgBody = Unpooled.buffer(14);
         syncTimeMsgBody.writeBytes(pileCodeBytes);
-        syncTimeMsgBody.writeBytes(CP56Time2aUtil.encode(Instant.now()));
+        syncTimeMsgBody.writeBytes(CP56Time2aUtil.encode(LocalDateTime.now()));
 
         encodeAndWriteFlush(SYNC_TIME,
                 tcpSession.nextSeqNo(SequenceNumberLength.SHORT),

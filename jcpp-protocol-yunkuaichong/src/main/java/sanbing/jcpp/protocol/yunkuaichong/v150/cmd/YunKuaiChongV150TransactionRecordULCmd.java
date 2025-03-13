@@ -24,6 +24,7 @@ import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.time.ZoneId;
 
 /**
  * 云快充1.5.0 交易记录
@@ -57,12 +58,12 @@ public class YunKuaiChongV150TransactionRecordULCmd extends YunKuaiChongUplinkCm
         // 4.开始时间
         byte[] startTimeBytes = new byte[7];
         byteBuf.readBytes(startTimeBytes);
-        Instant startTime = CP56Time2aUtil.decode(startTimeBytes);
+        Instant startTime = CP56Time2aUtil.decode(startTimeBytes).atZone(ZoneId.systemDefault()).toInstant();
 
         // 5.结束时间
         byte[] endTimeBytes = new byte[7];
         byteBuf.readBytes(endTimeBytes);
-        Instant endTime = CP56Time2aUtil.decode(endTimeBytes);
+        Instant endTime = CP56Time2aUtil.decode(endTimeBytes).atZone(ZoneId.systemDefault()).toInstant();
 
         // 6.尖单价
         BigDecimal topPrice = reduceMagnification(byteBuf.readUnsignedIntLE(), 100000);
@@ -141,7 +142,7 @@ public class YunKuaiChongV150TransactionRecordULCmd extends YunKuaiChongUplinkCm
         // 29.交易日期、时间
         byte[] tradeTimeBytes = new byte[7];
         byteBuf.readBytes(tradeTimeBytes);
-        Instant tradeTime = CP56Time2aUtil.decode(tradeTimeBytes);
+        Instant tradeTime = CP56Time2aUtil.decode(tradeTimeBytes).atZone(ZoneId.systemDefault()).toInstant();
 
         // 30.停止原因
         byte stopReasonByte = byteBuf.readByte();
