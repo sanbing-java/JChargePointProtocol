@@ -6,97 +6,119 @@
  */
 package sanbing.jcpp.infrastructure.util.codec;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.time.LocalDateTime;
 
 public class CP56Time2aUtil {
+
+    // 常量定义，用于字段完整性校验
+    private static final int MAX_MILLIS = 59999; // 毫秒最大值 (60 * 1000 - 1)
+    private static final int MAX_MINUTE = 59; // 分钟最大值
+    private static final int MAX_HOUR = 23; // 小时最大值
+    private static final int MAX_DAY = 31; // 天最大值
+    private static final int MIN_DAY = 1; // 天最小值
+    private static final int MAX_MONTH = 12; // 月份最大值
+    private static final int MAX_YEAR = 99; // 年份最大值（两位数年份）
+
     /**
-     * 高性能解码 CP56Time2a 字节数组为本地时间对象
+     * 编码 LocalDateTime 为 CP56Time2a 格式（使用 Netty 的 ByteBuf，小端字节序）
      *
-     * @param bytes 7字节的CP56Time2a数组
-     * @return 解码后的本地时间（系统默认时区）
-     * @throws IllegalArgumentException 当输入不符合规范时抛出异常
+     * @param dateTime 要编码的 LocalDateTime 对象
+     * @return 编码后的字节数组
      */
-    public static LocalDateTime decode(byte[] bytes) {
-        if (bytes.length != 7) {
-            throw new IllegalArgumentException("Invalid CP56Time2a format: 需要7字节");
+    public static byte[] encode(LocalDateTime dateTime) {
+        ByteBuf buffer = Unpooled.buffer(7); // 创建一个 7 字节的缓冲区
+
+        // 编码毫秒部分（16 位无符号整数，存储为小端字节序）
+        int millis = (dateTime.getSecond() * 1000) + (dateTime.getNano() / 1_000_000);
+        if (millis > MAX_MILLIS) {
+            throw new IllegalArgumentException("毫秒值超出范围: " + millis);
         }
+        buffer.writeByte(millis & 0xFF);       // 写入低字节
+        buffer.writeByte((millis >> 8) & 0xFF); // 写入高字节
 
-        // 预处理字节为 Unsigned Int（避免重复转换）
-        final int b6 = bytes[6] & 0xFF;
-        final int b5 = bytes[5] & 0xFF;
-        final int b4 = bytes[4] & 0xFF;
-        final int b3 = bytes[3] & 0xFF;
-        final int b2 = bytes[2] & 0xFF;
-        final int b1 = bytes[1] & 0xFF;
-        final int b0 = bytes[0] & 0xFF;
+        // 编码分钟（6 位有效 + 1 位有效性位 IV，假设 IV 为 0 表示时间有效）
+        byte minute = (byte) (dateTime.getMinute() & 0x3F); // 仅保留 6 位
+        buffer.writeByte(minute);
 
-        // 年份（2000~2127）: 7位无符号
-        final int year = 2000 + (b6 & 0x7F);
+        // 编码小时（5 位有效）
+        byte hour = (byte) (dateTime.getHour() & 0x1F); // 仅保留 5 位
+        buffer.writeByte(hour);
 
-        // 月份（1~12）: 低4位
-        final int month = b5 & 0x0F;
-        if (month < 1 || month > 12) { // 内联校验
-            throw new IllegalArgumentException("非法月份值：" + month);
-        }
+        // 编码天（5 位有效）
+        byte day = (byte) (dateTime.getDayOfMonth() & 0x1F); // 仅保留 5 位
+        buffer.writeByte(day);
 
-        // 日期（1~31）: 低5位
-        final int day = b4 & 0x1F;
-        if (day < 1) { // 内联校验
-            throw new IllegalArgumentException("非法日期值：" + day);
-        }
+        // 编码月份（4 位有效）
+        byte month = (byte) (dateTime.getMonthValue() & 0x0F); // 仅保留 4 位
+        buffer.writeByte(month);
 
-        // 小时（0~23）: 低5位
-        final int hour = b3 & 0x1F;
-        if (hour > 23) { // 内联校验
-            throw new IllegalArgumentException("非法小时值：" + hour);
-        }
+        // 编码年份（7 位有效，两位数年份）
+        byte year = (byte) (dateTime.getYear() % 100); // 取年份后两位
+        buffer.writeByte(year);
 
-        // 分钟（0~59）: 低6位
-        final int minute = b2 & 0x3F;
-        if (minute > 59) { // 内联校验
-            throw new IllegalArgumentException("非法分钟值：" + minute);
-        }
-
-        // 合并秒和毫秒（小端序优化）
-        final int combined = (b1 << 8) | b0;
-        final int second = combined / 1000;
-        if (second > 59) { // 内联校验
-            throw new IllegalArgumentException("非法秒数值：" + second);
-        }
-
-        return LocalDateTime.of(year, month, day, hour, minute, second, (combined % 1000) * 1_000_000);
+        // 返回字节数组
+        byte[] result = new byte[7];
+        buffer.readBytes(result);
+        return result;
     }
 
     /**
-     * 高性能编码本地时间对象为 CP56Time2a 字节数组
+     * 解码 CP56Time2a 格式字节数组为 LocalDateTime 对象（使用 Netty 的 ByteBuf，小端字节序）
      *
-     * @param dateTime 本地时间对象（需保证为系统默认时区）
-     * @return 7字节的CP56Time2a数组
+     * @param data 字节数组，长度必须为 7
+     * @return 解码后的 LocalDateTime 对象
+     * @throws IllegalArgumentException 如果字段值超出范围或数组长度不合法
      */
-    public static byte[] encode(LocalDateTime dateTime) {
-        final byte[] cp56Time2a = new byte[7];
+    public static LocalDateTime decode(byte[] data) {
+        // 校验输入字节数组长度
+        if (data == null || data.length != 7) {
+            throw new IllegalArgumentException("CP56Time2a 数据长度必须为 7 字节");
+        }
 
-        // 年份（2000~2127）
-        final int year = dateTime.getYear();
-        cp56Time2a[6] = (byte) ((year - 2000) & 0x7F); // 7位掩码优化
+        ByteBuf buffer = Unpooled.wrappedBuffer(data); // 创建 ByteBuf 包装输入数据
 
-        // 月份（1~12）
-        final int month = dateTime.getMonthValue();
-        cp56Time2a[5] = (byte) month; // 直接赋值，协议层保证低4位有效
+        // 解码毫秒部分（16 位无符号整数，小端字节序）
+        int millis = (buffer.readUnsignedByte()) | (buffer.readUnsignedByte() << 8);
+        if (millis > MAX_MILLIS) {
+            throw new IllegalArgumentException("毫秒值超出范围: " + millis);
+        }
+        int seconds = millis / 1000; // 秒
+        int nanos = (millis % 1000) * 1_000_000; // 纳秒
 
-        // 日期（1~31）
-        cp56Time2a[4] = (byte) dateTime.getDayOfMonth(); // 协议层保证低5位有效
+        // 解码分钟（校验 6 位有效值）
+        int minute = buffer.readUnsignedByte() & 0x3F;
+        if (minute > MAX_MINUTE) {
+            throw new IllegalArgumentException("分钟值超出范围: " + minute);
+        }
 
-        // 时间字段（直接赋值，协议层保证掩码）
-        cp56Time2a[3] = (byte) dateTime.getHour();
-        cp56Time2a[2] = (byte) dateTime.getMinute();
+        // 解码小时（校验 5 位有效值）
+        int hour = buffer.readUnsignedByte() & 0x1F;
+        if (hour > MAX_HOUR) {
+            throw new IllegalArgumentException("小时值超出范围: " + hour);
+        }
 
-        // 合并秒和毫秒（避免中间变量）
-        final int nano = dateTime.getNano();
-        final int combined = dateTime.getSecond() * 1000 + (nano / 1_000_000);
-        cp56Time2a[1] = (byte) (combined >>> 8);  // 小端序高字节
-        cp56Time2a[0] = (byte) combined;         // 小端序低字节
+        // 解码天（校验 5 位有效值）
+        int day = buffer.readUnsignedByte() & 0x1F;
+        if (day < MIN_DAY || day > MAX_DAY) {
+            throw new IllegalArgumentException("天值超出范围: " + day);
+        }
 
-        return cp56Time2a;
+        // 解码月份（校验 4 位有效值）
+        int month = buffer.readUnsignedByte() & 0x0F;
+        if (month < 1 || month > MAX_MONTH) {
+            throw new IllegalArgumentException("月份值超出范围: " + month);
+        }
+
+        // 解码年份（校验 7 位有效值）
+        int year = 2000 + (buffer.readUnsignedByte() & 0x7F); // 假设年份基于 2000 年
+        if ((year - 2000) > MAX_YEAR) {
+            throw new IllegalArgumentException("年份值超出范围: " + year);
+        }
+
+        // 构造 LocalDateTime 对象
+        return LocalDateTime.of(year, month, day, hour, minute, seconds, nanos);
     }
 }
