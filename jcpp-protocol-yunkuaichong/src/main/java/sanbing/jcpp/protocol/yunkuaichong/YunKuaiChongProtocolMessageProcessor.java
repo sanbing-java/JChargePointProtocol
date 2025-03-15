@@ -76,20 +76,16 @@ public class YunKuaiChongProtocolMessageProcessor extends ProtocolMessageProcess
 
         ByteBuf in = Unpooled.copiedBuffer(msg);
 
-        in.markReaderIndex();
-
-        findStartFlag(in);
-
         // 判断是否可以读取报头，8个字节
-        if (in.readableBytes() < 6) {
-            in.resetReaderIndex();
+        if (in.readableBytes() < 8) {
+            in.release();
             return;
         }
 
         // 起始标识, 固定为0x68
         int startFlag = in.readUnsignedByte();
         if (startFlag != 0x68) {
-            in.resetReaderIndex();
+            in.release();
             return;
         }
 
@@ -108,7 +104,7 @@ public class YunKuaiChongProtocolMessageProcessor extends ProtocolMessageProcess
         // 判断是否可以读取消息体，N-4个字节
         int msgBodyLength = dataLength - 4;
         if (in.readableBytes() < msgBodyLength) {
-            in.resetReaderIndex();
+            in.release();
             return;
         }
 
@@ -118,14 +114,13 @@ public class YunKuaiChongProtocolMessageProcessor extends ProtocolMessageProcess
 
         // 判断是否可以读取校验和， 2个字节
         if (in.readableBytes() < 2) {
-            in.resetReaderIndex();
+            in.release();
             return;
         }
 
         byte[] byCheckSum = new byte[2];
         in.readBytes(byCheckSum);
-        ByteBuf csTemp = Unpooled.buffer();
-        csTemp.writeBytes(byCheckSum);
+        ByteBuf csTemp = Unpooled.copiedBuffer(byCheckSum);
 
         // 校验校验和
         int checkSum = csTemp.readUnsignedShort();
@@ -209,17 +204,6 @@ public class YunKuaiChongProtocolMessageProcessor extends ProtocolMessageProcess
         }
 
         downlinkCmdExe.execute(session, message, protocolContext);
-    }
-
-    private static void findStartFlag(ByteBuf buf) {
-        int count = buf.readableBytes();
-        for (int index = buf.readerIndex(); index < count - 1; index++) {
-            if (buf.getByte(index) == (byte) 0x68) {
-                buf.readerIndex(index);
-                return;
-            }
-        }
-        buf.resetReaderIndex();
     }
 
 
