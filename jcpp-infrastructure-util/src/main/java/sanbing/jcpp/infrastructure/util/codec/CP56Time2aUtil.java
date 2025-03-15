@@ -17,7 +17,6 @@ public class CP56Time2aUtil {
     private static final int MAX_MILLIS = 59999; // 毫秒最大值 (60 * 1000 - 1)
     private static final int MAX_MINUTE = 59; // 分钟最大值
     private static final int MAX_HOUR = 23; // 小时最大值
-    private static final int MAX_DAY = 31; // 天最大值
     private static final int MIN_DAY = 1; // 天最小值
     private static final int MAX_MONTH = 12; // 月份最大值
     private static final int MAX_YEAR = 99; // 年份最大值（两位数年份）
@@ -33,9 +32,6 @@ public class CP56Time2aUtil {
 
         // 编码毫秒部分（16 位无符号整数，存储为小端字节序）
         int millis = (dateTime.getSecond() * 1000) + (dateTime.getNano() / 1_000_000);
-        if (millis > MAX_MILLIS) {
-            throw new IllegalArgumentException("毫秒值超出范围: " + millis);
-        }
         buffer.writeByte(millis & 0xFF);       // 写入低字节
         buffer.writeByte((millis >> 8) & 0xFF); // 写入高字节
 
@@ -102,7 +98,7 @@ public class CP56Time2aUtil {
 
         // 解码天（校验 5 位有效值）
         int day = buffer.readUnsignedByte() & 0x1F;
-        if (day < MIN_DAY || day > MAX_DAY) {
+        if (day < MIN_DAY) {
             throw new IllegalArgumentException("天值超出范围: " + day);
         }
 
