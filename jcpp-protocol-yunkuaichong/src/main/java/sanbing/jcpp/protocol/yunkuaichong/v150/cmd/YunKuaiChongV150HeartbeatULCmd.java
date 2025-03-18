@@ -66,16 +66,18 @@ public class YunKuaiChongV150HeartbeatULCmd extends YunKuaiChongUplinkCmdExe {
                 .build();
         tcpSession.getForwarder().sendMessage(uplinkQueueMessage);
 
-        pingAck(tcpSession, pileCodeBytes, gunCodeByte);
+        pingAck(tcpSession, yunKuaiChongUplinkMessage, pileCodeBytes, gunCodeByte);
     }
 
-    private void pingAck(TcpSession tcpSession, byte[] pileCodeBytes, byte gunCodeByte) {
+    private void pingAck(TcpSession tcpSession, YunKuaiChongUplinkMessage yunKuaiChongUplinkMessage, byte[] pileCodeBytes, byte gunCodeByte) {
         ByteBuf pingAckMsgBody = Unpooled.buffer(9);
         pingAckMsgBody.writeBytes(pileCodeBytes);
         pingAckMsgBody.writeByte(gunCodeByte);
         pingAckMsgBody.writeByte(0);
 
         encodeAndWriteFlush(HEARTBEAT,
+                yunKuaiChongUplinkMessage.getSequenceNumber(),
+                yunKuaiChongUplinkMessage.getEncryptionFlag(),
                 pingAckMsgBody,
                 tcpSession);
     }
