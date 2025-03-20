@@ -81,7 +81,7 @@ service:
             # 可选纯文本类型的拆包器 "${PROTOCOLS_YUNKUAICHONGV150_NETTY_HANDLER_BINARY_CONFIGURATION:type:TEXT;maxFrameLength:128;stripDelimiter:true;messageSeparator:null;charsetName:UTF-8}"
             configuration: "${PROTOCOLS_YUNKUAICHONGV150_NETTY_HANDLER_BINARY_CONFIGURATION:type:BINARY;decoder:sanbing.jcpp.protocol.listener.tcp.decoder.JCPPLengthFieldBasedFrameDecoder;byteOrder:LITTLE_ENDIAN;head:68;lengthFieldOffset:1;lengthFieldLength:1;lengthAdjustment:2;initialBytesToStrip:0}"
       forwarder:
-        # 作为前置服务单独启时可选：kafka、kafka-sharding，未来计划扩展RocketMQ, GRpc、REST
+        # 作为前置服务单独启时可选：kafka，未来计划扩展RocketMQ, GRpc、REST
         type: "${PROTOCOLS_YUNKUAICHONGV150_FORWARD_TYPE:kafka}"
         kafka:
           topic: "${PROTOCOLS_YUNKUAICHONGV150_FORWARD_KAFKA_TOPIC:protocol_uplink}"
@@ -118,7 +118,7 @@ service:
             # 可选纯文本类型的拆包器 "${PROTOCOLS_YUNKUAICHONGV160_NETTY_HANDLER_BINARY_CONFIGURATION:type:TEXT;maxFrameLength:128;stripDelimiter:true;messageSeparator:null;charsetName:UTF-8}"
             configuration: "${PROTOCOLS_YUNKUAICHONGV160_NETTY_HANDLER_BINARY_CONFIGURATION:type:BINARY;decoder:sanbing.jcpp.protocol.listener.tcp.decoder.JCPPLengthFieldBasedFrameDecoder;byteOrder:LITTLE_ENDIAN;head:68;lengthFieldOffset:1;lengthFieldLength:1;lengthAdjustment:2;initialBytesToStrip:0}"
       forwarder:
-        # 作为前置服务单独启时可选：kafka、kafka-sharding，未来计划扩展RocketMQ, GRpc、REST
+        # 作为前置服务单独启时可选：kafka，未来计划扩展RocketMQ, GRpc、REST
         type: "${PROTOCOLS_YUNKUAICHONGV160_FORWARD_TYPE:kafka}"
         kafka:
           topic: "${PROTOCOLS_YUNKUAICHONGV160_FORWARD_KAFKA_TOPIC:protocol_uplink}"
