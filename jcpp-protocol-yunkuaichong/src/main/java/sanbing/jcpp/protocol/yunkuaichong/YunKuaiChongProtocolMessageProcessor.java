@@ -118,12 +118,15 @@ public class YunKuaiChongProtocolMessageProcessor extends ProtocolMessageProcess
             return;
         }
 
+        // 读取两字节校验域
         byte[] byCheckSum = new byte[2];
         in.readBytes(byCheckSum);
-        ByteBuf csTemp = Unpooled.copiedBuffer(byCheckSum);
 
-        // 校验校验和
-        int checkSum = csTemp.readUnsignedShort();
+        ByteBuf csTemp = Unpooled.buffer();
+        csTemp.writeBytes(byCheckSum);
+
+        // 校验校验和，先用小端获取做短路校验
+        int checkSum = csTemp.readUnsignedShortLE();
 
         byte[] checkData = new byte[dataLength];
 
@@ -133,7 +136,7 @@ public class YunKuaiChongProtocolMessageProcessor extends ProtocolMessageProcess
 
         if (Boolean.FALSE.equals(checkResult.getFirst())) {
             csTemp.writeBytes(byCheckSum);
-            checkSum = csTemp.readUnsignedShortLE();
+            checkSum = csTemp.readUnsignedShort();
             checkResult = checkCrcSum(checkData, checkSum);
             log.debug("云快充检验和 第二次检查: checkResult:{}, checkSum:{}", checkResult, checkSum);
         }

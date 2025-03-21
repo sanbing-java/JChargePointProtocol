@@ -106,6 +106,8 @@ public class DefaultPileProtocolService implements PileProtocolService {
                     heartBeatRequest.getNodeRestPort(),
                     heartBeatRequest.getNodeGrpcPort());
         }
+
+        callback.onSuccess();
     }
 
     private void cacheSession(UplinkQueueMessage uplinkQueueMessage,
