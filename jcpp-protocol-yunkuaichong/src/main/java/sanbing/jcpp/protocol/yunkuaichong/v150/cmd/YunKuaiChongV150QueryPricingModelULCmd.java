@@ -31,7 +31,7 @@ public class YunKuaiChongV150QueryPricingModelULCmd extends YunKuaiChongUplinkCm
     @Override
     public void execute(TcpSession tcpSession, YunKuaiChongUplinkMessage yunKuaiChongUplinkMessage, ProtocolContext ctx) {
         log.info("{} 云快充1.5.0充电桩计费模型请求", tcpSession);
-        ByteBuf byteBuf = Unpooled.copiedBuffer(yunKuaiChongUplinkMessage.getMsgBody());
+        ByteBuf byteBuf = Unpooled.wrappedBuffer(yunKuaiChongUplinkMessage.getMsgBody());
 
         ObjectNode additionalInfo = JacksonUtil.newObjectNode();
 

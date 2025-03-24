@@ -32,7 +32,7 @@ public class YunKuaiChongV150BmsHandshakeULCmd extends YunKuaiChongUplinkCmdExe 
     @Override
     public void execute(TcpSession tcpSession, YunKuaiChongUplinkMessage yunKuaiChongUplinkMessage, ProtocolContext ctx) {
         log.debug("{} 云快充1.5.0充电握手", tcpSession);
-        ByteBuf byteBuf = Unpooled.copiedBuffer(yunKuaiChongUplinkMessage.getMsgBody());
+        ByteBuf byteBuf = Unpooled.wrappedBuffer(yunKuaiChongUplinkMessage.getMsgBody());
 
         ObjectNode additionalInfo = JacksonUtil.newObjectNode();
 

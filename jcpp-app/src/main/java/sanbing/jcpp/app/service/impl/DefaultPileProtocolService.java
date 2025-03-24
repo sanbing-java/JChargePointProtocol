@@ -64,27 +64,36 @@ public class DefaultPileProtocolService implements PileProtocolService {
         DownlinkRequestMessage.Builder downlinkMessageBuilder = createDownlinkMessageBuilder(uplinkQueueMessage, loginRequest.getPileCode());
         downlinkMessageBuilder.setDownlinkCmd(DownlinkCmdEnum.LOGIN_ACK.name());
 
+
         if (pile != null) {
-            // 保存到缓存
-            cacheSession(uplinkQueueMessage, pile,
+
+            PileSession pileSession = createSession(uplinkQueueMessage, pile,
                     loginRequest.getRemoteAddress(),
                     loginRequest.getNodeId(),
                     loginRequest.getNodeHostAddress(),
                     loginRequest.getNodeRestPort(),
                     loginRequest.getNodeGrpcPort());
 
+            // 保存到缓存
+            pileSessionCache.put(new PileSessionCacheKey(pile.getPileCode()), pileSession);
+
             downlinkMessageBuilder.setLoginResponse(LoginResponse.newBuilder()
                     .setSuccess(true)
                     .setPileCode(loginRequest.getPileCode())
                     .build());
+
+            downlinkCallService.sendDownlinkMessage(downlinkMessageBuilder, pileCode);
         } else {
+
             downlinkMessageBuilder.setLoginResponse(LoginResponse.newBuilder()
                     .setSuccess(false)
                     .setPileCode(loginRequest.getPileCode())
                     .build());
+
+
+            downlinkCallService.sendDownlinkMessage(downlinkMessageBuilder, uplinkQueueMessage, loginRequest);
         }
 
-        downlinkCallService.sendDownlinkMessage(downlinkMessageBuilder, pileCode);
 
         callback.onSuccess();
     }
@@ -99,7 +108,7 @@ public class DefaultPileProtocolService implements PileProtocolService {
 
         if (pile != null) {
             // 重新保存到缓存
-            cacheSession(uplinkQueueMessage, pile,
+            createSession(uplinkQueueMessage, pile,
                     heartBeatRequest.getRemoteAddress(),
                     heartBeatRequest.getNodeId(),
                     heartBeatRequest.getNodeHostAddress(),
@@ -110,13 +119,13 @@ public class DefaultPileProtocolService implements PileProtocolService {
         callback.onSuccess();
     }
 
-    private void cacheSession(UplinkQueueMessage uplinkQueueMessage,
-                              Pile pile,
-                              String remoteAddress,
-                              String nodeId,
-                              String nodeIp,
-                              int restPort,
-                              int grpcPort) {
+    private PileSession createSession(UplinkQueueMessage uplinkQueueMessage,
+                                      Pile pile,
+                                      String remoteAddress,
+                                      String nodeId,
+                                      String nodeIp,
+                                      int restPort,
+                                      int grpcPort) {
         PileSession pileSession = new PileSession(pile.getId(), pile.getPileCode(), uplinkQueueMessage.getProtocolName());
         pileSession.setProtocolSessionId(new UUID(uplinkQueueMessage.getSessionIdMSB(), uplinkQueueMessage.getSessionIdLSB()));
         pileSession.setRemoteAddress(remoteAddress);
@@ -124,7 +133,8 @@ public class DefaultPileProtocolService implements PileProtocolService {
         pileSession.setNodeIp(nodeIp);
         pileSession.setNodeRestPort(restPort);
         pileSession.setNodeGrpcPort(grpcPort);
-        pileSessionCache.put(new PileSessionCacheKey(pile.getPileCode()), pileSession);
+
+        return pileSession;
     }
 
     @Override

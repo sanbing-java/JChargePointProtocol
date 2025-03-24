@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import sanbing.jcpp.app.data.PileSession;
 import sanbing.jcpp.app.service.DownlinkCallService;
 import sanbing.jcpp.infrastructure.util.trace.TracerContextUtil;
 import sanbing.jcpp.proto.gen.ProtocolProto.DownlinkRequestMessage;
@@ -35,10 +34,10 @@ public class RestDownlinkCallService extends DownlinkCallService {
     RestTemplate downlinkRestTemplate;
 
     @Override
-    protected void _sendDownlinkMessage(DownlinkRequestMessage downlinkMessage, PileSession pileSession) {
+    protected void _sendDownlinkMessage(DownlinkRequestMessage downlinkMessage, String nodeIp, int nodeRestPort, int nodeGrpcPort) {
         try {
 
-            invokeDownlinkRestApi(downlinkMessage, pileSession.getNodeIp(), pileSession.getNodeRestPort());
+            invokeDownlinkRestApi(downlinkMessage, nodeIp, nodeGrpcPort);
 
         } catch (RestClientException e) {
             log.error("下行消息发送异常", e);

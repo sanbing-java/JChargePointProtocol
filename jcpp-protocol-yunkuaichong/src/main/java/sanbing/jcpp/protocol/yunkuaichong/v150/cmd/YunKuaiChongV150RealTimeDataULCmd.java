@@ -57,7 +57,7 @@ public class YunKuaiChongV150RealTimeDataULCmd extends YunKuaiChongUplinkCmdExe 
     @Override
     public void execute(TcpSession tcpSession, YunKuaiChongUplinkMessage yunKuaiChongUplinkMessage, ProtocolContext ctx) {
         log.info("{} 云快充1.5.0上传实时监测数据", tcpSession);
-        ByteBuf byteBuf = Unpooled.copiedBuffer(yunKuaiChongUplinkMessage.getMsgBody());
+        ByteBuf byteBuf = Unpooled.wrappedBuffer(yunKuaiChongUplinkMessage.getMsgBody());
 
         // 从Tracer总获取当前时间
         long ts = TracerContextUtil.getCurrentTracer().getTracerTs();

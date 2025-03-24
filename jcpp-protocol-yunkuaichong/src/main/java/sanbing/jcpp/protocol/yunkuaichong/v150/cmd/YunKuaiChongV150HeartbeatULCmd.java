@@ -33,7 +33,7 @@ public class YunKuaiChongV150HeartbeatULCmd extends YunKuaiChongUplinkCmdExe {
     @Override
     public void execute(TcpSession tcpSession, YunKuaiChongUplinkMessage yunKuaiChongUplinkMessage, ProtocolContext ctx) {
         log.debug("{} 云快充1.5.0充电桩心跳包", tcpSession);
-        ByteBuf byteBuf = Unpooled.copiedBuffer(yunKuaiChongUplinkMessage.getMsgBody());
+        ByteBuf byteBuf = Unpooled.wrappedBuffer(yunKuaiChongUplinkMessage.getMsgBody());
 
         ObjectNode additionalInfo = JacksonUtil.newObjectNode();
 

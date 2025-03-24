@@ -23,6 +23,7 @@ import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
 import sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEnum;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -70,93 +71,81 @@ public class YunKuaiChongProtocolMessageProcessor extends ProtocolMessageProcess
 
     @Override
     public void uplinkHandle(ListenerToHandlerMsg listenerToHandlerMsg) {
-        UUID msgId = listenerToHandlerMsg.id();
-        byte[] msg = listenerToHandlerMsg.msg();
-        TcpSession session = (TcpSession) listenerToHandlerMsg.session();
+        final UUID msgId = listenerToHandlerMsg.id();
+        final byte[] msg = listenerToHandlerMsg.msg();
+        final TcpSession session = (TcpSession) listenerToHandlerMsg.session();
 
-        ByteBuf in = Unpooled.copiedBuffer(msg);
+        // ================== 前置快速失败检查 ==================
+        if (msg.length < 8 || msg[0] != 0x68) {
+            return;
+        }
 
-        // 判断是否可以读取报头，8个字节
-        if (in.readableBytes() < 8) {
+        ByteBuf in = Unpooled.wrappedBuffer(msg);
+        try {
+            // ================== 协议头解析 ==================
+            final int dataLength = in.getUnsignedByte(1);
+            final int bodyLength = dataLength - 4;
+            final int checksumPos = 6 + bodyLength;
+
+            // ================== 组合边界检查 ==================
+            if (dataLength < 4 || in.readableBytes() < checksumPos + 2) {
+                return;
+            }
+
+            // ================== 字段快速解析 ==================
+            final int seqNo = in.getUnsignedShort(2);
+            final int encryptFlag = in.getUnsignedByte(4);
+            final int frameType = in.getUnsignedByte(5);
+
+            // ================== 校验和双模式处理 ==================
+            final int checkSumLE = in.getUnsignedShortLE(checksumPos);
+            final int checkSumBE = in.getUnsignedShort(checksumPos);
+
+            // ================== 校验数据智能拷贝 ==================
+            final byte[] checkData = Arrays.copyOfRange(msg, 2, 2 + dataLength);
+
+            // ================== 短路校验流程 ==================
+            JCPPPair<Boolean, Integer> checkResult = checkCrcSum(checkData, checkSumLE);
+            if (!checkResult.getFirst()) {
+                checkResult = checkCrcSum(checkData, checkSumBE);
+                if (log.isDebugEnabled()) { // 日志惰性计算
+                    log.debug("{} 云快充校验域一次校验失败 CMD:{} 校验和：0x{} 期望校验和:0x{}",
+                            session, frameType, Integer.toHexString(checkSumBE), Integer.toHexString(checkResult.getSecond()));
+                }
+            }
+
+            // ================== 最终校验失败处理 ==================
+            if (!checkResult.getFirst()) {
+                log.info("{} 云快充校验域二次校验失败 CMD:{} 校验和：0x{} 期望校验和:0x{}",
+                        session, frameType, Integer.toHexString(checkSumBE), Integer.toHexString(checkResult.getSecond()));
+                return;
+            }
+
+            // ================== 消息对象智能构建 ==================
+            ByteBuf slicedBuf = in.slice(6, bodyLength);
+
+            if (slicedBuf.readableBytes() != bodyLength) {
+                log.error("协议体长度异常: expected={}, actual={}",
+                        bodyLength, slicedBuf.readableBytes());
+                return;
+            }
+
+            byte[] msgBody = new byte[bodyLength];
+            slicedBuf.readBytes(msgBody);
+
+            exeCmd(new YunKuaiChongUplinkMessage(msgId)
+                            .setHead(0x68)
+                            .setDataLength(dataLength)
+                            .setSequenceNumber(seqNo)
+                            .setEncryptionFlag(encryptFlag)
+                            .setCmd(frameType)
+                            .setMsgBody(msgBody)  // 使用正确长度的数组
+                            .setCheckSum(checkResult.getSecond())
+                            .setRawFrame(msg),
+                    session);
+        } finally {
             in.release();
-            return;
         }
-
-        // 起始标识, 固定为0x68
-        int startFlag = in.readUnsignedByte();
-        if (startFlag != 0x68) {
-            in.release();
-            return;
-        }
-
-        // 数据长度 = 序列号域+加密标志+帧类型标志+消息体
-        int dataLength = in.readUnsignedByte();
-
-        // 报文的流水号
-        int seqNo = in.readUnsignedShortLE();
-
-        // 加密标志
-        int encryptFlag = in.readUnsignedByte();
-
-        // 帧类型标志
-        int frameType = in.readUnsignedByte();
-
-        // 判断是否可以读取消息体，N-4个字节
-        int msgBodyLength = dataLength - 4;
-        if (in.readableBytes() < msgBodyLength) {
-            in.release();
-            return;
-        }
-
-        // 消息体
-        byte[] msgBody = new byte[msgBodyLength];
-        in.readBytes(msgBody);
-
-        // 判断是否可以读取校验和， 2个字节
-        if (in.readableBytes() < 2) {
-            in.release();
-            return;
-        }
-
-        // 读取两字节校验域
-        byte[] byCheckSum = new byte[2];
-        in.readBytes(byCheckSum);
-
-        ByteBuf csTemp = Unpooled.buffer();
-        csTemp.writeBytes(byCheckSum);
-
-        // 校验校验和，先用小端获取做短路校验
-        int checkSum = csTemp.readUnsignedShortLE();
-
-        byte[] checkData = new byte[dataLength];
-
-        System.arraycopy(msg, 2, checkData, 0, dataLength);
-
-        JCPPPair<Boolean, Integer> checkResult = checkCrcSum(checkData, checkSum);
-
-        if (Boolean.FALSE.equals(checkResult.getFirst())) {
-            csTemp.writeBytes(byCheckSum);
-            checkSum = csTemp.readUnsignedShort();
-            checkResult = checkCrcSum(checkData, checkSum);
-            log.debug("云快充检验和 第二次检查: checkResult:{}, checkSum:{}", checkResult, checkSum);
-        }
-
-        if (Boolean.FALSE.equals(checkResult.getFirst())) {
-            log.info("云快充检验和不一致两次不通过 不处理! CMD：{},校验域:{}，正确校验和:{}", frameType, checkSum, checkResult.getSecond());
-            return;
-        }
-
-        YunKuaiChongUplinkMessage message = new YunKuaiChongUplinkMessage(msgId);
-        message.setHead(startFlag);
-        message.setDataLength(dataLength);
-        message.setSequenceNumber(seqNo);
-        message.setEncryptionFlag(encryptFlag);
-        message.setCmd(frameType);
-        message.setMsgBody(msgBody);
-        message.setCheckSum(checkSum);
-        message.setRawFrame(msg);
-
-        exeCmd(message, session);
     }
 
     @Override
@@ -188,7 +177,7 @@ public class YunKuaiChongProtocolMessageProcessor extends ProtocolMessageProcess
 
         if (uplinkCmdExe == null) {
 
-            log.info("[{}] 云快充协议接收到未知的上行指令 {}", session, message.getCmd());
+            log.info("{} 云快充协议接收到未知的上行指令 {}", session, message.getCmd());
 
             return;
         }
@@ -201,7 +190,7 @@ public class YunKuaiChongProtocolMessageProcessor extends ProtocolMessageProcess
 
         if (downlinkCmdExe == null) {
 
-            log.info("[{}] 云快充协议接收到未知的下行指令 {}", session, message.getCmd());
+            log.info("{} 云快充协议接收到未知的下行指令 {}", session, message.getCmd());
 
             return;
         }

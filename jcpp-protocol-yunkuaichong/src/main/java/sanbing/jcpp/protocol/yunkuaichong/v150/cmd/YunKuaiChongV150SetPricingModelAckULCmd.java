@@ -31,7 +31,7 @@ public class YunKuaiChongV150SetPricingModelAckULCmd extends YunKuaiChongUplinkC
     @Override
     public void execute(TcpSession tcpSession, YunKuaiChongUplinkMessage yunKuaiChongUplinkMessage, ProtocolContext ctx) {
         log.info("{} 云快充1.5.0计费模型应答", tcpSession);
-        ByteBuf byteBuf = Unpooled.copiedBuffer(yunKuaiChongUplinkMessage.getMsgBody());
+        ByteBuf byteBuf = Unpooled.wrappedBuffer(yunKuaiChongUplinkMessage.getMsgBody());
 
         // 1.桩编号
         byte[] pileCodeBytes = new byte[7];

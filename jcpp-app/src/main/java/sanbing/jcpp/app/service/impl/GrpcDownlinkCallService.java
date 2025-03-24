@@ -11,7 +11,6 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.stereotype.Service;
-import sanbing.jcpp.app.data.PileSession;
 import sanbing.jcpp.app.service.DownlinkCallService;
 import sanbing.jcpp.app.service.grpc.DownlinkGrpcClient;
 import sanbing.jcpp.proto.gen.ProtocolProto.DownlinkRequestMessage;
@@ -31,7 +30,7 @@ public class GrpcDownlinkCallService extends DownlinkCallService {
     DownlinkGrpcClient downlinkGrpcClient;
 
     @Override
-    protected void _sendDownlinkMessage(DownlinkRequestMessage downlinkMessage, PileSession pileSession) {
+    protected void _sendDownlinkMessage(DownlinkRequestMessage downlinkMessage, String nodeIp, int nodeRestPort, int nodeGrpcPort) {
         try {
 
             RequestMsg requestMsg = RequestMsg.newBuilder()
@@ -40,7 +39,7 @@ public class GrpcDownlinkCallService extends DownlinkCallService {
                     .setDownlinkRequestMessage(downlinkMessage)
                     .build();
 
-            downlinkGrpcClient.sendDownlinkRequest(HostAndPort.fromParts(pileSession.getNodeIp(), pileSession.getNodeGrpcPort()),
+            downlinkGrpcClient.sendDownlinkRequest(HostAndPort.fromParts(nodeIp, nodeGrpcPort),
                     requestMsg);
 
         } catch (Exception e) {

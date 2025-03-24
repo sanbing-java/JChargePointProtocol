@@ -32,7 +32,7 @@ public class YunKuaiChongV150RemoteStopResultULCmd extends YunKuaiChongUplinkCmd
     @Override
     public void execute(TcpSession tcpSession, YunKuaiChongUplinkMessage yunKuaiChongUplinkMessage, ProtocolContext ctx) {
         log.info("{} 云快充1.5.0远程停机命令回复", tcpSession);
-        ByteBuf byteBuf = Unpooled.copiedBuffer(yunKuaiChongUplinkMessage.getMsgBody());
+        ByteBuf byteBuf = Unpooled.wrappedBuffer(yunKuaiChongUplinkMessage.getMsgBody());
 
         // 从Tracer总获取当前时间
         long ts = TracerContextUtil.getCurrentTracer().getTracerTs();
