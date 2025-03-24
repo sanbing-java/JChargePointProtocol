@@ -78,7 +78,7 @@ class PileMapperIT extends AbstractTestBase {
 
     @Test
     void generate1MPiles() {
-        AtomicInteger number = new AtomicInteger(1);
+        AtomicInteger number = new AtomicInteger(0);
         for (int i = 0; i < 1000; i++) {
             List<Pile> piles = new ArrayList<>();
             for (int j = 0; j < 1000; j++, number.incrementAndGet()) {
