@@ -37,7 +37,7 @@ public class RestDownlinkCallService extends DownlinkCallService {
     protected void _sendDownlinkMessage(DownlinkRequestMessage downlinkMessage, String nodeIp, int nodeRestPort, int nodeGrpcPort) {
         try {
 
-            invokeDownlinkRestApi(downlinkMessage, nodeIp, nodeGrpcPort);
+            invokeDownlinkRestApi(downlinkMessage, nodeIp, nodeRestPort);
 
         } catch (RestClientException e) {
             log.error("下行消息发送异常", e);
