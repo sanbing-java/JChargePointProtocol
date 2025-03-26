@@ -39,6 +39,10 @@ public abstract class DownlinkCallService {
     @Value("${cache.type}")
     protected String cacheType;
 
+    protected abstract int determinePort(int restPort, int grpcPort);
+
+    protected abstract void _sendDownlinkMessage(DownlinkRequestMessage downlinkMessage, String nodeIp, int port);
+
     public void sendDownlinkMessage(DownlinkRequestMessage.Builder downlinkMessageBuilder, String pileCode) {
         CacheValueWrapper<PileSession> pileSessionCacheValueWrapper = pileSessionCache.get(new PileSessionCacheKey(pileCode));
 
@@ -97,10 +101,10 @@ public abstract class DownlinkCallService {
                     .setResultHandler(result -> log.debug("下行消息发送完成"));
 
         } else {
+            int port = determinePort(nodeRestPort, nodeGrpcPort);
 
-            _sendDownlinkMessage(downlinkMessageBuilder.build(), nodeIp, nodeRestPort, nodeGrpcPort);
+            _sendDownlinkMessage(downlinkMessageBuilder.build(), nodeIp, port);
         }
     }
 
-    protected abstract void _sendDownlinkMessage(DownlinkRequestMessage downlinkMessage, String nodeIp, int nodeRestPort, int nodeGrpcPort);
 }

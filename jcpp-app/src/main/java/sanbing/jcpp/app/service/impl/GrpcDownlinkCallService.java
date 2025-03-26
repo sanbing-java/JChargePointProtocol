@@ -30,18 +30,20 @@ public class GrpcDownlinkCallService extends DownlinkCallService {
     DownlinkGrpcClient downlinkGrpcClient;
 
     @Override
-    protected void _sendDownlinkMessage(DownlinkRequestMessage downlinkMessage, String nodeIp, int nodeRestPort, int nodeGrpcPort) {
-        try {
+    protected int determinePort(int restPort, int grpcPort) {
+        return grpcPort;
+    }
 
+    @Override
+    protected void _sendDownlinkMessage(DownlinkRequestMessage downlinkMessage, String nodeIp, int port) {
+        try {
             RequestMsg requestMsg = RequestMsg.newBuilder()
                     .setTs(System.currentTimeMillis())
                     .setTracer(toTracerProto())
                     .setDownlinkRequestMessage(downlinkMessage)
                     .build();
 
-            downlinkGrpcClient.sendDownlinkRequest(HostAndPort.fromParts(nodeIp, nodeGrpcPort),
-                    requestMsg);
-
+            downlinkGrpcClient.sendDownlinkRequest(HostAndPort.fromParts(nodeIp, port), requestMsg);
         } catch (Exception e) {
             log.error("下行消息发送异常", e);
         }

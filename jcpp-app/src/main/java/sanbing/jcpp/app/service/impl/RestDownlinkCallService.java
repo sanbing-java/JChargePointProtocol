@@ -34,17 +34,21 @@ public class RestDownlinkCallService extends DownlinkCallService {
     RestTemplate downlinkRestTemplate;
 
     @Override
-    protected void _sendDownlinkMessage(DownlinkRequestMessage downlinkMessage, String nodeIp, int nodeRestPort, int nodeGrpcPort) {
+    protected int determinePort(int restPort, int grpcPort) {
+        return restPort;
+    }
+
+    @Override
+    protected void _sendDownlinkMessage(DownlinkRequestMessage downlinkMessage, String nodeIp, int port) {
         try {
-
-            invokeDownlinkRestApi(downlinkMessage, nodeIp, nodeRestPort);
-
+            invokeDownlinkRestApi(downlinkMessage, nodeIp, port);
         } catch (RestClientException e) {
             log.error("下行消息发送异常", e);
         }
     }
 
-    private void invokeDownlinkRestApi(DownlinkRequestMessage downlinkRequestMessage, String nodeWebapiIpPort, int nodeRestPort) {
+    private void invokeDownlinkRestApi(DownlinkRequestMessage downlinkRequestMessage, String nodeIp, int port) {
+        // 调整参数名确保一致性
         HttpHeaders headers = new HttpHeaders();
         headers.add(JCPP_TRACER_ID, TracerContextUtil.getCurrentTracer().getTraceId());
         headers.add(JCPP_TRACER_ORIGIN, TracerContextUtil.getCurrentTracer().getOrigin());
@@ -53,13 +57,8 @@ public class RestDownlinkCallService extends DownlinkCallService {
 
         HttpEntity<DownlinkRequestMessage> entity = new HttpEntity<>(downlinkRequestMessage, headers);
 
-        try {
-            ResponseEntity<?> response = downlinkRestTemplate.postForEntity("http://" + nodeWebapiIpPort + ":" + nodeRestPort + "/api/onDownlink",
-                    entity, ResponseEntity.class);
-            log.debug("下行消息发送成功 {}", response);
-        } catch (RestClientException e) {
-            log.error("下行消息发送失败 {}", downlinkRequestMessage, e);
-            throw new RuntimeException(e);
-        }
+        String url = String.format("http://%s:%d/api/onDownlink", nodeIp, port);
+        ResponseEntity<?> response = downlinkRestTemplate.postForEntity(url, entity, ResponseEntity.class);
+        log.debug("下行消息发送成功 {}", response);
     }
 }
