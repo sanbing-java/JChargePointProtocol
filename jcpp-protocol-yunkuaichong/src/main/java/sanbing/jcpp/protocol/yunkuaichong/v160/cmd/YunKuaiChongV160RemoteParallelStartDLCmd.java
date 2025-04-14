@@ -22,7 +22,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEnum.REMOTE_START_CHARGING;
+import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEnum.REMOTE_PARALLEL_START_CHARGING;
 
 /**
  * 云快充1.6.0 运营平台远程控制并充启机
@@ -67,7 +67,7 @@ public class YunKuaiChongV160RemoteParallelStartDLCmd extends YunKuaiChongDownli
         // 并充序号
         msgBody.writeBytes(BCDUtil.toBytes(LocalDateTime.now().format(dateTimeFormatter)));
 
-        encodeAndWriteFlush(REMOTE_START_CHARGING,
+        encodeAndWriteFlush(REMOTE_PARALLEL_START_CHARGING,
                 msgBody,
                 tcpSession);
     }

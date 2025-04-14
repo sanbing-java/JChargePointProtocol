@@ -18,7 +18,7 @@ import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkCmdExe;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkMessage;
 import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
 
-import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEnum.QUERY_PRICING_ACK;
+import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEnum.SET_PRICING;
 
 /**
  * 云快充1.5.0 计费模型应答
@@ -42,7 +42,7 @@ public class YunKuaiChongV150SetPricingModelAckULCmd extends YunKuaiChongUplinkC
         boolean isSuccess = (byteBuf.readByte() == 0x01);
 
         // 从缓存取上个请求的pricingId
-        Object pricingId = tcpSession.getRequestCache().asMap().getOrDefault(pileCode + QUERY_PRICING_ACK.getCmd(), null);
+        Object pricingId = tcpSession.getRequestCache().asMap().getOrDefault(pileCode + SET_PRICING.getCmd(), null);
 
         if (pricingId instanceof Long pricingIdL) {
             // 转发到后端

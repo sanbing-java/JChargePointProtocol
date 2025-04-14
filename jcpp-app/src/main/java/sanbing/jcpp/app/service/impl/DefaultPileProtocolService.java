@@ -226,7 +226,7 @@ public class DefaultPileProtocolService implements PileProtocolService {
 
     @Override
     public void onSetPricingResponse(UplinkQueueMessage uplinkQueueMessage, Callback callback) {
-        log.info("接收到充电桩上费率下发反馈 {}", uplinkQueueMessage);
+        log.info("接收到充电桩上报费率下发反馈 {}", uplinkQueueMessage);
 
         // TODO 处理相关业务逻辑
 
@@ -277,7 +277,6 @@ public class DefaultPileProtocolService implements PileProtocolService {
     @Override
     public void startCharge(String pileCode, String gunCode, BigDecimal limitYuan, String orderNo) {
 
-
         UUID messageId = UUID.randomUUID();
         UUID requestId = UUID.randomUUID();
 
@@ -295,6 +294,22 @@ public class DefaultPileProtocolService implements PileProtocolService {
                         .setTradeNo(orderNo)
                         .build());
 
+        downlinkCallService.sendDownlinkMessage(downlinkRequestMessageBuilder, pileCode);
+    }
+
+    @Override
+    public void setPricing(String pileCode, SetPricingRequest setPricingRequest) {
+        UUID messageId = UUID.randomUUID();
+        UUID requestId = UUID.randomUUID();
+
+        DownlinkRequestMessage.Builder downlinkRequestMessageBuilder = DownlinkRequestMessage.newBuilder()
+                .setMessageIdMSB(messageId.getMostSignificantBits())
+                .setMessageIdLSB(messageId.getLeastSignificantBits())
+                .setPileCode(pileCode)
+                .setRequestIdMSB(requestId.getMostSignificantBits())
+                .setRequestIdLSB(requestId.getLeastSignificantBits())
+                .setDownlinkCmd(DownlinkCmdEnum.SET_PRICING.name())
+                .setSetPricingRequest(setPricingRequest);
 
         downlinkCallService.sendDownlinkMessage(downlinkRequestMessageBuilder, pileCode);
     }

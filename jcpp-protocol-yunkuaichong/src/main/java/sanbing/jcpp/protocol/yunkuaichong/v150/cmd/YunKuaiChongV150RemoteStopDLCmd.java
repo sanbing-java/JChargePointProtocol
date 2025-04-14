@@ -16,7 +16,7 @@ import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDownlinkCmdExe;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDwonlinkMessage;
 import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
 
-import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEnum.REMOTE_START_CHARGING;
+import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEnum.REMOTE_STOP_CHARGING;
 
 /**
  * 云快充1.5.0 运营平台远程停机
@@ -44,7 +44,7 @@ public class YunKuaiChongV150RemoteStopDLCmd extends YunKuaiChongDownlinkCmdExe 
         // 枪号
         msgBody.writeBytes(encodeGunCode(gunCode));
 
-        encodeAndWriteFlush(REMOTE_START_CHARGING,
+        encodeAndWriteFlush(REMOTE_STOP_CHARGING,
                 msgBody,
                 tcpSession);
     }

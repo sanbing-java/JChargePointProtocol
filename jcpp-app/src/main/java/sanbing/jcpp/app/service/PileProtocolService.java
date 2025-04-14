@@ -7,6 +7,7 @@
 package sanbing.jcpp.app.service;
 
 import sanbing.jcpp.infrastructure.queue.Callback;
+import sanbing.jcpp.proto.gen.ProtocolProto.SetPricingRequest;
 import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
 
 import java.math.BigDecimal;
@@ -72,4 +73,9 @@ public interface PileProtocolService {
      * 启动充电
      */
     void startCharge(String pileCode, String gunCode, BigDecimal limitYuan, String orderNo);
+
+    /**
+     * 下发计费
+     */
+    void setPricing(String pileCode, SetPricingRequest setPricingRequest);
 }

@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 
 import static sanbing.jcpp.proto.gen.ProtocolProto.PricingModelFlag.*;
-import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEnum.QUERY_PRICING_ACK;
 import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEnum.SET_PRICING;
 
 /**
@@ -84,7 +83,7 @@ public class YunKuaiChongV150SetPricingModelDLCmd extends YunKuaiChongDownlinkCm
         setPricingAckMsgBody.writeBytes(bytes);
 
         // 放进缓存后再下发
-        tcpSession.getRequestCache().put(pileCode + QUERY_PRICING_ACK.getCmd(), Long.valueOf(pricingId));
+        tcpSession.getRequestCache().put(pileCode + SET_PRICING.getCmd(), pricingId);
 
         encodeAndWriteFlush(SET_PRICING,
                 setPricingAckMsgBody,
