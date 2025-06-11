@@ -530,6 +530,7 @@
                     <excludes>
                         <exclude>**/.env</exclude>
                         <exclude>**/*.env</exclude>
+                        <exclude>**/*.sh</exclude>
                         <exclude>**/.gradle/**</exclude>
                         <exclude>**/*.md</exclude>
                         <exclude>**/LICENSE</exclude>
