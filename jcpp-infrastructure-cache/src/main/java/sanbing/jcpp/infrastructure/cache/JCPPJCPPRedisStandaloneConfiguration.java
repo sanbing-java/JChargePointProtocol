@@ -8,8 +8,7 @@ package sanbing.jcpp.infrastructure.cache;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
@@ -18,8 +17,7 @@ import org.springframework.data.redis.connection.lettuce.LettucePoolingClientCon
 import java.time.Duration;
 
 @Configuration
-@ConditionalOnMissingBean(JCPPCaffeineCacheConfiguration.class)
-@ConditionalOnProperty(prefix = "redis.connection", value = "type", havingValue = "standalone")
+@ConditionalOnExpression("'${cache.type:null}'=='redis' && '${redis.connection.type:null}'=='standalone'")
 @Slf4j
 public class JCPPJCPPRedisStandaloneConfiguration extends JCPPRedisCacheConfiguration {
 
