@@ -19,6 +19,7 @@ networks:
 
 services:
   postgres:
+    container_name: postgresql
     image: registry.cn-hangzhou.aliyuncs.com/sanbing/postgresql:17
     restart: always
     networks:
