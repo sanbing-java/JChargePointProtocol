@@ -95,7 +95,7 @@ queue:
     auto-offset-reset: "${QUEUE_KAFKA_AUTO_OFFSET_RESET:earliest}"
     other-inline: "${QUEUE_KAFKA_OTHER_PROPERTIES:}"
     topic-properties:
-      app: "${QUEUE_KAFKA_APP_TOPIC_PROPERTIES:retention.ms:86400000;segment.bytes:52428800;retention.bytes:1048576000;partitions:10;min.insync.replicas:1}"
+      app: "${QUEUE_KAFKA_APP_TOPIC_PROPERTIES:retention.ms:86400000;segment.bytes:52428800;retention.bytes:1048576000;partitions:1;min.insync.replicas:1}"
     consumer-stats:
       enabled: "${QUEUE_KAFKA_CONSUMER_STATS_ENABLED:true}"
       print-interval-ms: "${QUEUE_KAFKA_CONSUMER_STATS_MIN_PRINT_INTERVAL_MS:60000}"
