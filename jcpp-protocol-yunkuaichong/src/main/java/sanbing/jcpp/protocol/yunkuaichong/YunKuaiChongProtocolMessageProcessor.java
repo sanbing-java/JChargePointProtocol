@@ -177,7 +177,7 @@ public class YunKuaiChongProtocolMessageProcessor extends ProtocolMessageProcess
 
         if (uplinkCmdExe == null) {
 
-            log.info("{} 云快充协议接收到未知的上行指令 {}", session, message.getCmd());
+            log.info("{} 云快充协议接收到未知的上行指令 0x{}", session, Integer.toHexString(message.getCmd()));
 
             return;
         }
@@ -190,7 +190,7 @@ public class YunKuaiChongProtocolMessageProcessor extends ProtocolMessageProcess
 
         if (downlinkCmdExe == null) {
 
-            log.info("{} 云快充协议接收到未知的下行指令 {}", session, message.getCmd());
+            log.info("{} 云快充协议接收到未知的下行指令 0x{}", session, Integer.toHexString(message.getCmd()));
 
             return;
         }
