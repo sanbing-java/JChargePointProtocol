@@ -513,6 +513,19 @@
                                         <include>**/*</include>
                                     </includes>
                                 </fileset>
+                                <!-- 清理所有子模块的logs目录(通配符方式) -->
+                                <fileset>
+                                    <directory>${main.dir}</directory>
+                                    <includes>
+                                        <include>**/logs/**</include>
+                                        <include>**/logs/</include>
+                                    </includes>
+                                    <excludes>
+                                        <exclude>target/**</exclude>
+                                        <exclude>.git/**</exclude>
+                                    </excludes>
+                                    <followSymlinks>false</followSymlinks>
+                                </fileset>
                             </filesets>
                         </configuration>
                     </execution>
