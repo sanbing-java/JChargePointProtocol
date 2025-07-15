@@ -12,13 +12,13 @@ COPY . .
 RUN mvn -U -B -T 0.8C clean install -DskipTests
 
 #分层
-FROM registry.cn-hangzhou.aliyuncs.com/sanbing/openjdk:21-jdk-slim-bullseye AS builder
+FROM registry.cn-hangzhou.aliyuncs.com/sanbing/openjdk:21-bullseye AS builder
 WORKDIR /app
 COPY --from=base /app/jcpp-protocol-bootstrap/target/application.jar application.jar
 RUN java -Djarmode=tools -jar application.jar extract --layers --destination extracted
 
 # 执行
-FROM registry.cn-hangzhou.aliyuncs.com/sanbing/openjdk:21-jdk-slim-bullseye
+FROM registry.cn-hangzhou.aliyuncs.com/sanbing/openjdk:21-bullseye
 RUN useradd -m sanbing
 WORKDIR /home/sanbing
 
