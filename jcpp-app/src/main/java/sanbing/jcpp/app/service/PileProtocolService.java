@@ -78,4 +78,9 @@ public interface PileProtocolService {
      * 下发计费
      */
     void setPricing(String pileCode, SetPricingRequest setPricingRequest);
+
+    /**
+     * 充电桩与 BMS 参数配置阶段报文
+     */
+    void onBmsParamConfigReport(UplinkQueueMessage uplinkQueueMsg, Callback callback);
 }

@@ -192,6 +192,10 @@ public class ProtocolUplinkConsumerService extends AbstractConsumerService imple
 
                             pileProtocolService.onTransactionRecord(uplinkQueueMsg, callback);
 
+                        } else if (uplinkQueueMsg.hasBmsParamConfigReport()) {
+
+                            pileProtocolService.onBmsParamConfigReport(uplinkQueueMsg, callback);
+
                         } else {
 
                             callback.onSuccess();

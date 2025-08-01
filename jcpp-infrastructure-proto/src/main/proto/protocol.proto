@@ -66,6 +66,7 @@ message UplinkQueueMessage {
   RemoteStartChargingResponse remoteStartChargingResponse = 28;
   RemoteStopChargingResponse remoteStopChargingResponse = 29;
   TransactionRecord transactionRecord = 30;
+  BmsParamConfigReport bmsParamConfigReport = 33;
 }
 
 message DownlinkRequestMessage {
@@ -288,4 +289,22 @@ message TransactionRecord {
 message TransactionRecordAck {
   string tradeNo = 6;
   bool success = 7;
+}
+
+message BmsParamConfigReport {
+  int64 ts = 1;                   // 时间戳
+  string pileCode = 2;             // 桩编码
+  string gunCode = 3;              // 枪编码
+  string tradeNo = 4;              // 交易号
+  string maxSingleCellVoltage = 5;  // BMS单体最高允许充电电压 (V)
+  string maxChargeCurrent = 6;      // BMS最高允许充电电流 (A)
+  string ratedEnergy = 7;           // BMS动力蓄电池标称总能量 (kWh)
+  string maxTotalChargeVoltage = 8; // BMS最高允许充电总电压 (V)
+  string maxTemperature = 9;         // BMS最高允许温度 (℃)
+  string soc = 10;                  // BMS荷电状态SOC (%)
+  string currentBatteryVoltage = 11; // BMS当前电池电压 (V)
+  string pileMaxOutputVoltage = 12; // 电桩最高输出电压 (V)
+  string pileMinOutputVoltage = 13; // 电桩最低输出电压 (V)
+  string pileMaxOutputCurrent = 14; // 电桩最大输出电流 (A)
+  string pileMinOutputCurrent = 15; // 电桩最小输出电流 (A)
 }
