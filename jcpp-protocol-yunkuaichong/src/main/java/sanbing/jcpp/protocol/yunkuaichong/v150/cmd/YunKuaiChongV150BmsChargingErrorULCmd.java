@@ -30,7 +30,7 @@ public class YunKuaiChongV150BmsChargingErrorULCmd extends YunKuaiChongUplinkCmd
 
     @Override
     public void execute(TcpSession tcpSession, YunKuaiChongUplinkMessage yunKuaiChongUplinkMessage, ProtocolContext ctx) {
-        log.debug("{} 云快充1.5.0错误请求", tcpSession);
+        log.debug("{} 云快充1.5.0 充电桩与 BMS 充电错误报文", tcpSession);
         ByteBuf byteBuf = Unpooled.wrappedBuffer(yunKuaiChongUplinkMessage.getMsgBody());
         // 从Tracer总获取当前时间
         long ts = TracerContextUtil.getCurrentTracer().getTracerTs();

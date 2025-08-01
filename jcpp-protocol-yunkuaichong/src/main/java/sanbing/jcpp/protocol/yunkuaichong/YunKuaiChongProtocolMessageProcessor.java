@@ -107,11 +107,11 @@ public class YunKuaiChongProtocolMessageProcessor extends ProtocolMessageProcess
             // ================== 短路校验流程 ==================
             JCPPPair<Boolean, Integer> checkResult = checkCrcSum(checkData, checkSumLE);
             if (!checkResult.getFirst()) {
-                checkResult = checkCrcSum(checkData, checkSumBE);
                 if (log.isDebugEnabled()) { // 日志惰性计算
                     log.debug("{} 云快充校验域一次校验失败 CMD:{} 校验和：0x{} 期望校验和:0x{}",
-                            session, frameType, Integer.toHexString(checkSumBE), Integer.toHexString(checkResult.getSecond()));
+                            session, frameType, Integer.toHexString(checkSumBE), Integer.toHexString(checkSumLE));
                 }
+                checkResult = checkCrcSum(checkData, checkSumBE);
             }
 
             // ================== 最终校验失败处理 ==================
