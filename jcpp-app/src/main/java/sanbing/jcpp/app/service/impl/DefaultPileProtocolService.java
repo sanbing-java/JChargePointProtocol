@@ -314,6 +314,14 @@ public class DefaultPileProtocolService implements PileProtocolService {
         downlinkCallService.sendDownlinkMessage(downlinkRequestMessageBuilder, pileCode);
     }
 
+    @Override
+    public void onBmsChargingErrorProto(UplinkQueueMessage uplinkQueueMessage, Callback callback) {
+        log.info("充电桩与 BMS 充电错误上报 {}", uplinkQueueMessage);
+
+        // TODO 处理相关业务逻辑
+
+        callback.onSuccess();
+    }
 
     private static Period createPeriod(int sn, LocalTime beginTime, LocalTime endTime, PricingModelFlag flag) {
         Period period = new Period();

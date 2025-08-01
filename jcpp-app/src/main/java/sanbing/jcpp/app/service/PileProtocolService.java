@@ -80,6 +80,11 @@ public interface PileProtocolService {
     void setPricing(String pileCode, SetPricingRequest setPricingRequest);
 
     /**
+     * 充电桩与 BMS 充电错误上报
+     */
+    void onBmsChargingErrorProto(UplinkQueueMessage uplinkQueueMsg, Callback callback);
+
+    /**
      * 充电桩与 BMS 参数配置阶段报文
      */
     void onBmsParamConfigReport(UplinkQueueMessage uplinkQueueMsg, Callback callback);

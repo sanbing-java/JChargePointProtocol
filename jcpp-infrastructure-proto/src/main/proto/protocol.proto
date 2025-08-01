@@ -66,6 +66,7 @@ message UplinkQueueMessage {
   RemoteStartChargingResponse remoteStartChargingResponse = 28;
   RemoteStopChargingResponse remoteStopChargingResponse = 29;
   TransactionRecord transactionRecord = 30;
+  BmsChargingErrorProto bmsChargingErrorProto = 31;
   BmsParamConfigReport bmsParamConfigReport = 33;
 }
 
@@ -283,6 +284,14 @@ message TransactionRecord {
   string totalAmountYuan = 64;
   int64 tradeTs = 65;
   string stopReason = 66;
+  optional string additionalInfo = 20;
+}
+
+message BmsChargingErrorProto {
+  int64 ts = 1;
+  string pileCode = 4;
+  string gunCode = 5;
+  string tradeNo = 6;
   optional string additionalInfo = 20;
 }
 
