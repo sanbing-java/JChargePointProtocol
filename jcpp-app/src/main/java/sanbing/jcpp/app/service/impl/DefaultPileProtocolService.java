@@ -331,6 +331,19 @@ public class DefaultPileProtocolService implements PileProtocolService {
     }
 
 
+    @Override
+    public void onBmsCharingInfo(UplinkQueueMessage uplinkQueueMessage, Callback callback) {
+        log.info("接收到充电桩上报BMS充电信息 {}", uplinkQueueMessage);
+        BmsChargingInfoProto bmsCharingInfoProto = uplinkQueueMessage.getBmsChargingInfoProto();
+        String tradeNo = bmsCharingInfoProto.getTradeNo();
+        String pileCode = bmsCharingInfoProto.getPileCode();
+        String gunCode = bmsCharingInfoProto.getGunCode();
+        String additionalInfo = bmsCharingInfoProto.getAdditionalInfo();
+        log.info("BMS充电信息: 交易流水号: {}, 桩编码: {}, 枪号: {}, 附加信息: {}", tradeNo, pileCode, gunCode, additionalInfo);
+        // TODO 处理相关业务逻辑
+        callback.onSuccess();
+    }
+
     private static Period createPeriod(int sn, LocalTime beginTime, LocalTime endTime, PricingModelFlag flag) {
         Period period = new Period();
         period.setSn(sn);

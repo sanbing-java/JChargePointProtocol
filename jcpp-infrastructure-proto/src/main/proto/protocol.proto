@@ -68,6 +68,7 @@ message UplinkQueueMessage {
   TransactionRecord transactionRecord = 30;
   BmsChargingErrorProto bmsChargingErrorProto = 31;
   BmsParamConfigReport bmsParamConfigReport = 33;
+  BmsChargingInfoProto bmsChargingInfoProto = 34;
 }
 
 message DownlinkRequestMessage {
@@ -316,4 +317,11 @@ message BmsParamConfigReport {
   string pileMinOutputVoltage = 13; // 电桩最低输出电压 (V)
   string pileMaxOutputCurrent = 14; // 电桩最大输出电流 (A)
   string pileMinOutputCurrent = 15; // 电桩最小输出电流 (A)
+}
+
+message BmsChargingInfoProto {
+  string pileCode = 1;
+  string gunCode = 2;
+  string tradeNo = 3;
+  optional string additionalInfo = 4;
 }

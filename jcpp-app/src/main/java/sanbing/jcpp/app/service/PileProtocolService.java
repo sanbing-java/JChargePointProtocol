@@ -88,4 +88,9 @@ public interface PileProtocolService {
      * 充电桩与 BMS 参数配置阶段报文
      */
     void onBmsParamConfigReport(UplinkQueueMessage uplinkQueueMsg, Callback callback);
+
+    /**
+     * 充电过程BMS信息
+     */
+    void onBmsCharingInfo(UplinkQueueMessage uplinkQueueMessage, Callback callback);
 }
