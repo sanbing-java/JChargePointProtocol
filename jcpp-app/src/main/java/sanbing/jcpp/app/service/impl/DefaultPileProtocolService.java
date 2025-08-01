@@ -314,6 +314,13 @@ public class DefaultPileProtocolService implements PileProtocolService {
         downlinkCallService.sendDownlinkMessage(downlinkRequestMessageBuilder, pileCode);
     }
 
+    @Override
+    public void onBmsParamConfigReport(UplinkQueueMessage uplinkQueueMsg, Callback callback) {
+        log.info("充电桩与 BMS 参数配置阶段报文 {}", uplinkQueueMsg);
+
+        callback.onSuccess();
+    }
+
 
     private static Period createPeriod(int sn, LocalTime beginTime, LocalTime endTime, PricingModelFlag flag) {
         Period period = new Period();
@@ -337,10 +344,5 @@ public class DefaultPileProtocolService implements PileProtocolService {
         builder.setRequestIdLSB(uplinkQueueMessage.getMessageIdLSB());
         builder.setRequestData(uplinkQueueMessage.getRequestData());
         return builder;
-    }
-
-    @Override
-    public void onBmsParamConfigReport(UplinkQueueMessage uplinkQueueMsg, Callback callback) {
-        log.info("充电桩与 BMS 参数配置阶段报文 {}", uplinkQueueMsg);
     }
 }

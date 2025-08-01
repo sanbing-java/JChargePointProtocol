@@ -6,20 +6,18 @@
  */
 package sanbing.jcpp.protocol.yunkuaichong.v150.cmd;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import lombok.extern.slf4j.Slf4j;
+import sanbing.jcpp.infrastructure.util.codec.BCDUtil;
+import sanbing.jcpp.infrastructure.util.trace.TracerContextUtil;
+import sanbing.jcpp.proto.gen.ProtocolProto.BmsParamConfigReport;
+import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
 import sanbing.jcpp.protocol.ProtocolContext;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkCmdExe;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkMessage;
 import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
-import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
-import sanbing.jcpp.infrastructure.util.trace.TracerContextUtil;
-import sanbing.jcpp.proto.gen.ProtocolProto.BmsParamConfigReport;
-
-
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import sanbing.jcpp.infrastructure.util.codec.BCDUtil;
 
 import java.math.BigDecimal;
 
@@ -29,7 +27,7 @@ import java.math.BigDecimal;
  */
 @Slf4j
 @YunKuaiChongCmd(0x17)
-public class YunKuaiChongV150BmsParamConfigULCmd extends YunKuaiChongUplinkCmdExe {
+public class YunKuaiChongV150BmsParamConfigReportULCmd extends YunKuaiChongUplinkCmdExe {
     // 电流值偏移量常量（单位：安培）
     private static final BigDecimal CURRENT_OFFSET = new BigDecimal("-400.0");
     // 温度值偏移量常量（单位：摄氏度）
