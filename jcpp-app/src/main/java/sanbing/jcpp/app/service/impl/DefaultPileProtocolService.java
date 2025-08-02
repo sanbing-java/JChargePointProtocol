@@ -263,7 +263,7 @@ public class DefaultPileProtocolService implements PileProtocolService {
 
         // 构造下行计费
         DownlinkRequestMessage.Builder downlinkMessageBuilder = createDownlinkMessageBuilder(uplinkQueueMessage, pileCode);
-        downlinkMessageBuilder.setDownlinkCmd(DownlinkCmdEnum.TRANSACTION_RECORD.name());
+        downlinkMessageBuilder.setDownlinkCmd(DownlinkCmdEnum.TRANSACTION_RECORD_ACK.name());
         downlinkMessageBuilder.setTransactionRecordAck(TransactionRecordAck.newBuilder()
                 .setTradeNo(tradeNo)
                 .setSuccess(true)
