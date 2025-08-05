@@ -6,6 +6,8 @@
  */
 package sanbing.jcpp.app.service.impl;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -315,11 +317,14 @@ public class DefaultPileProtocolService implements PileProtocolService {
     }
 
     @Override
+
     public void onBmsChargingErrorProto(UplinkQueueMessage uplinkQueueMessage, Callback callback) {
         log.info("充电桩与 BMS 充电错误上报 {}", uplinkQueueMessage);
+    }
 
+    public void bmsAbortDuringCharging(UplinkQueueMessage uplinkQueueMessage, Callback callback) {
+        log.info("接收到充电阶段BMS中止报文 {}", uplinkQueueMessage);
         // TODO 处理相关业务逻辑
-
         callback.onSuccess();
     }
 

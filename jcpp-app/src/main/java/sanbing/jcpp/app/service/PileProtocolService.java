@@ -93,4 +93,10 @@ public interface PileProtocolService {
      * 充电过程BMS信息
      */
     void onBmsCharingInfo(UplinkQueueMessage uplinkQueueMessage, Callback callback);
+
+    /**
+     * 充电阶段BMS中止
+     */
+    void bmsAbortDuringCharging(UplinkQueueMessage uplinkQueueMessage, Callback callback);
+
 }
