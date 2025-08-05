@@ -74,6 +74,12 @@ public interface PileProtocolService {
      */
     void startCharge(String pileCode, String gunCode, BigDecimal limitYuan, String orderNo);
 
+
+    /**
+     * 重启充电
+     */
+    void restartPile(String pileCode, Integer type);
+
     /**
      * 下发计费
      */
@@ -93,6 +99,12 @@ public interface PileProtocolService {
      * 充电过程BMS信息
      */
     void onBmsCharingInfo(UplinkQueueMessage uplinkQueueMessage, Callback callback);
+
+    /**
+     * 远程重启反馈
+     */
+    void onRestartPileResponse(UplinkQueueMessage uplinkQueueMessage, Callback callback);
+
 
     /**
      * 充电阶段BMS中止

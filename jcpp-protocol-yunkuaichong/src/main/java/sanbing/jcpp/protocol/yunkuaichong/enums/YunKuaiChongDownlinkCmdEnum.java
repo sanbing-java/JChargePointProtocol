@@ -34,7 +34,9 @@ public enum YunKuaiChongDownlinkCmdEnum {
 
     TRANSACTION_RECORD(0x40),
 
-    REMOTE_PARALLEL_START_CHARGING(0xA4);
+    REMOTE_PARALLEL_START_CHARGING(0xA4),
+
+    REMOTE_RE_START_CHARGING(0x92);
 
     private final Integer cmd;
 

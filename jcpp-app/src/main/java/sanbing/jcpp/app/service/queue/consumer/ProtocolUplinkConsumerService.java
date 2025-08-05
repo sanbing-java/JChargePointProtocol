@@ -208,6 +208,10 @@ public class ProtocolUplinkConsumerService extends AbstractConsumerService imple
 
                             pileProtocolService.onBmsAbort(uplinkQueueMsg, callback);
 
+                        } else if (uplinkQueueMsg.hasRestartPileResponse()) {
+
+                            pileProtocolService.onRestartPileResponse(uplinkQueueMsg, callback);
+
                         } else {
 
                             callback.onSuccess();

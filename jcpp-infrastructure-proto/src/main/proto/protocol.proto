@@ -70,6 +70,8 @@ message UplinkQueueMessage {
   BmsParamConfigReport bmsParamConfigReport = 33;
   BmsChargingInfoProto bmsChargingInfoProto = 34;
   BmsAbortProto bmsAbortProto = 35;
+  RestartPileResponse restartPileResponse = 36;
+
 }
 
 message DownlinkRequestMessage {
@@ -90,6 +92,7 @@ message DownlinkRequestMessage {
   RemoteStartChargingRequest remoteStartChargingRequest = 25;
   RemoteStopChargingRequest remoteStopChargingRequest = 26;
   TransactionRecordAck transactionRecordAck = 27;
+  RestartPileRequest restartPileRequest = 28;
 }
 
 message DownlinkResponseMessage {
@@ -242,6 +245,12 @@ message RemoteStartChargingRequest {
   optional string additionalInfo = 20;
 }
 
+message RestartPileRequest {
+  string pileCode = 4;
+  int32 type = 7;
+
+}
+
 message RemoteStartChargingResponse {
   int64 ts = 1;
   string pileCode = 4;
@@ -250,6 +259,11 @@ message RemoteStartChargingResponse {
   bool success = 7;
   string failReason = 8;
   optional string additionalInfo = 20;
+}
+message RestartPileResponse {
+  int64 ts = 1;
+  string pileCode = 4;
+  bool success = 7;
 }
 
 message RemoteStopChargingRequest {

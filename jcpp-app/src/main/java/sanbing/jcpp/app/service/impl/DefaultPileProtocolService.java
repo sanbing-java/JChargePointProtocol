@@ -298,6 +298,28 @@ public class DefaultPileProtocolService implements PileProtocolService {
     }
 
     @Override
+    public void restartPile(String pileCode, Integer type) {
+
+        UUID messageId = UUID.randomUUID();
+        UUID requestId = UUID.randomUUID();
+
+
+        DownlinkRequestMessage.Builder downlinkRequestMessageBuilder = DownlinkRequestMessage.newBuilder()
+                .setMessageIdMSB(messageId.getMostSignificantBits())
+                .setMessageIdLSB(messageId.getLeastSignificantBits())
+                .setPileCode(pileCode)
+                .setRequestIdMSB(requestId.getMostSignificantBits())
+                .setRequestIdLSB(requestId.getLeastSignificantBits())
+                .setDownlinkCmd(DownlinkCmdEnum.REMOTE_RE_START_CHARGING.name())
+                .setRestartPileRequest(RestartPileRequest.newBuilder()
+                        .setPileCode(pileCode)
+                        .setType(type)
+                        .build());
+
+        downlinkCallService.sendDownlinkMessage(downlinkRequestMessageBuilder, pileCode);
+    }
+
+    @Override
     public void setPricing(String pileCode, SetPricingRequest setPricingRequest) {
         UUID messageId = UUID.randomUUID();
         UUID requestId = UUID.randomUUID();
@@ -344,6 +366,15 @@ public class DefaultPileProtocolService implements PileProtocolService {
         String additionalInfo = bmsCharingInfoProto.getAdditionalInfo();
         log.info("BMS充电信息: 交易流水号: {}, 桩编码: {}, 枪号: {}, 附加信息: {}", tradeNo, pileCode, gunCode, additionalInfo);
         // TODO 处理相关业务逻辑
+        callback.onSuccess();
+    }
+
+    @Override
+    public void onRestartPileResponse(UplinkQueueMessage uplinkQueueMessage, Callback callback) {
+        log.info("接收到充电桩重启结果反馈 {}", uplinkQueueMessage);
+
+        // TODO 处理相关业务逻辑
+
         callback.onSuccess();
     }
 
