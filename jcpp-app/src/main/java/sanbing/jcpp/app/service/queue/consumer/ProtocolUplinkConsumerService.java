@@ -204,9 +204,9 @@ public class ProtocolUplinkConsumerService extends AbstractConsumerService imple
 
                             pileProtocolService.onBmsCharingInfo(uplinkQueueMsg, callback);
 
-                        } else if (uplinkQueueMsg.hasBmsAbortDuringChargingRequest()) {
+                        } else if (uplinkQueueMsg.hasBmsAbortProto()) {
 
-                            pileProtocolService.bmsAbortDuringCharging(uplinkQueueMsg, callback);
+                            pileProtocolService.onBmsAbort(uplinkQueueMsg, callback);
 
                         } else {
 

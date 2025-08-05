@@ -10,10 +10,11 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Joiner;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import sanbing.jcpp.infrastructure.util.codec.BCDUtil;
 import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
-import sanbing.jcpp.proto.gen.ProtocolProto.BmsAbortDuringChargingRequest;
+import sanbing.jcpp.proto.gen.ProtocolProto.BmsAbortProto;
 import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
 import sanbing.jcpp.protocol.ProtocolContext;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
@@ -29,7 +30,7 @@ import java.util.List;
  */
 @Slf4j
 @YunKuaiChongCmd(0x1D)
-public class YunKuaiChongV150BmsAbortDuringChargingULCmd extends YunKuaiChongUplinkCmdExe {
+public class YunKuaiChongV150BmsAbortULCmd extends YunKuaiChongUplinkCmdExe {
 
     @Override
     public void execute(TcpSession tcpSession, YunKuaiChongUplinkMessage yunKuaiChongUplinkMessage, ProtocolContext ctx) {
@@ -66,7 +67,7 @@ public class YunKuaiChongV150BmsAbortDuringChargingULCmd extends YunKuaiChongUpl
         byte errorReasonByte = byteBuf.readByte();
         additionalInfo.put("BMS中止充电错误原因", parseErrorReasons(errorReasonByte));
 
-        BmsAbortDuringChargingRequest request = BmsAbortDuringChargingRequest.newBuilder()
+        BmsAbortProto proto = BmsAbortProto.newBuilder()
                 .setPileCode(pileCode)
                 .setGunCode(gunCode)
                 .setTradeNo(tradeNo)
@@ -75,7 +76,7 @@ public class YunKuaiChongV150BmsAbortDuringChargingULCmd extends YunKuaiChongUpl
 
         // 转发到后端
         UplinkQueueMessage uplinkQueueMessage = uplinkMessageBuilder(pileCode, tcpSession, yunKuaiChongUplinkMessage)
-                .setBmsAbortDuringChargingRequest(request)
+                .setBmsAbortProto(proto)
                 .build();
 
         tcpSession.getForwarder().sendMessage(uplinkQueueMessage);
@@ -181,6 +182,7 @@ public class YunKuaiChongV150BmsAbortDuringChargingULCmd extends YunKuaiChongUpl
     /**
      * BMS中止充电错误原因枚举
      */
+    @Getter
     public enum ErrorReasonsEnum {
         CURRENT_OVERFLOW("电流过大"),
         VOLTAGE_ABNORMAL("电压异常");
@@ -191,9 +193,6 @@ public class YunKuaiChongV150BmsAbortDuringChargingULCmd extends YunKuaiChongUpl
             this.description = description;
         }
 
-        public String getDescription() {
-            return description;
-        }
     }
 
     /**

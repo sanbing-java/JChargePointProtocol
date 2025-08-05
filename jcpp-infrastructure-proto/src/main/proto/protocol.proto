@@ -69,7 +69,7 @@ message UplinkQueueMessage {
   BmsChargingErrorProto bmsChargingErrorProto = 31;
   BmsParamConfigReport bmsParamConfigReport = 33;
   BmsChargingInfoProto bmsChargingInfoProto = 34;
-  BmsAbortDuringChargingRequest bmsAbortDuringChargingRequest = 35;
+  BmsAbortProto bmsAbortProto = 35;
 }
 
 message DownlinkRequestMessage {
@@ -327,7 +327,7 @@ message BmsChargingInfoProto {
   optional string additionalInfo = 4;
 }
 
-message BmsAbortDuringChargingRequest {
+message BmsAbortProto {
   string pileCode = 4;
   string gunCode = 5;
   string tradeNo = 6;
