@@ -16,7 +16,7 @@ import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDownlinkCmdExe;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDwonlinkMessage;
 import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
 
-import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEnum.REMOTE_RE_START_CHARGING;
+import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEnum.REMOTE_RESTART_PILE;
 
 /**
  * 云快充1.5.0 运营平台远程重启充电桩
@@ -41,7 +41,7 @@ public class YunKuaiChongV150RestartPileDLCmd extends YunKuaiChongDownlinkCmdExe
         msgBody.writeBytes(encodePileCode(pileCode));
         // 0x01：立即执行 0x02：空闲执行
         msgBody.writeInt(type);
-        encodeAndWriteFlush(REMOTE_RE_START_CHARGING,
+        encodeAndWriteFlush(REMOTE_RESTART_PILE,
                 msgBody,
                 tcpSession);
     }

@@ -33,8 +33,8 @@ public class TestController {
         return ResponseEntity.ok("success");
     }
 
-    @GetMapping("/api/reStartCharge")
-    public ResponseEntity<String> reStartCharge() {
+    @GetMapping("/api/restartPile")
+    public ResponseEntity<String> restartPile() {
 
         pileProtocolService.restartPile("20231212000010", 1);
 

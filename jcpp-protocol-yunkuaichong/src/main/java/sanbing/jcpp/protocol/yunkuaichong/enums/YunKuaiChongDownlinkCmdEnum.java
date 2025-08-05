@@ -36,7 +36,7 @@ public enum YunKuaiChongDownlinkCmdEnum {
 
     REMOTE_PARALLEL_START_CHARGING(0xA4),
 
-    REMOTE_RE_START_CHARGING(0x92);
+    REMOTE_RESTART_PILE(0x92);
 
     private final Integer cmd;
 

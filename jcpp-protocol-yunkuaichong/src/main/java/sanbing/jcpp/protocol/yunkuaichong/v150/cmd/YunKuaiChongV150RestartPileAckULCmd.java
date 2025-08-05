@@ -24,7 +24,7 @@ import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
  */
 @Slf4j
 @YunKuaiChongCmd(0x91)
-public class YunKuaiChongV150RestartPileResultULCmd extends YunKuaiChongUplinkCmdExe {
+public class YunKuaiChongV150RestartPileAckULCmd extends YunKuaiChongUplinkCmdExe {
 
     @Override
     public void execute(TcpSession tcpSession, YunKuaiChongUplinkMessage yunKuaiChongUplinkMessage, ProtocolContext ctx) {

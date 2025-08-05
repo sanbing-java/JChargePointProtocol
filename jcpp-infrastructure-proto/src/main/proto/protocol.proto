@@ -248,7 +248,7 @@ message RemoteStartChargingRequest {
 message RestartPileRequest {
   string pileCode = 4;
   int32 type = 7;
-
+  optional string additionalInfo = 20;
 }
 
 message RemoteStartChargingResponse {

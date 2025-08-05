@@ -310,7 +310,7 @@ public class DefaultPileProtocolService implements PileProtocolService {
                 .setPileCode(pileCode)
                 .setRequestIdMSB(requestId.getMostSignificantBits())
                 .setRequestIdLSB(requestId.getLeastSignificantBits())
-                .setDownlinkCmd(DownlinkCmdEnum.REMOTE_RE_START_CHARGING.name())
+                .setDownlinkCmd(DownlinkCmdEnum.REMOTE_RESTART_PILE.name())
                 .setRestartPileRequest(RestartPileRequest.newBuilder()
                         .setPileCode(pileCode)
                         .setType(type)
