@@ -109,7 +109,7 @@ public class YunKuaiChongProtocolMessageProcessor extends ProtocolMessageProcess
             if (!checkResult.getFirst()) {
                 if (log.isDebugEnabled()) { // 日志惰性计算
                     log.debug("{} 云快充校验域一次校验失败 CMD:{} 校验和：0x{} 期望校验和:0x{}",
-                            session, frameType, Integer.toHexString(checkSumBE), Integer.toHexString(checkSumLE));
+                            session, frameType, Integer.toHexString(checkSumLE), Integer.toHexString(checkResult.getSecond()));
                 }
                 checkResult = checkCrcSum(checkData, checkSumBE);
             }

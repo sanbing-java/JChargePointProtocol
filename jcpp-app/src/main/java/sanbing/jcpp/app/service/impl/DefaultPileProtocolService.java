@@ -378,6 +378,29 @@ public class DefaultPileProtocolService implements PileProtocolService {
         callback.onSuccess();
     }
 
+    @Override
+    public void onBmsHandshake(UplinkQueueMessage uplinkQueueMessage, Callback callback) {
+        log.info("接收到BMS充电握手信息 {}", uplinkQueueMessage);
+        BmsHandshakeProto bmsHandshakeProto = uplinkQueueMessage.getBmsHandshakeProto();
+        String tradeNo = bmsHandshakeProto.getTradeNo();
+        String pileCode = bmsHandshakeProto.getPileCode();
+        String gunCode = bmsHandshakeProto.getGunCode();
+        String carVinCode = bmsHandshakeProto.getCarVinCode();
+        String bmsProtocolVersion = bmsHandshakeProto.getBmsProtocolVersion();
+        int bmsBatteryType = bmsHandshakeProto.getBmsBatteryType();
+        int bmsPowerCapacity = bmsHandshakeProto.getBmsPowerCapacity();
+        String additionalInfo = bmsHandshakeProto.getAdditionalInfo();
+        
+        log.info("BMS充电握手信息: 交易流水号: {}, 桩编码: {}, 枪号: {}, 车辆VIN: {}, BMS协议版本: {}, " +
+                "电池类型: {}, 电池容量: {}Ah, 附加信息: {}", 
+                tradeNo, pileCode, gunCode, carVinCode, bmsProtocolVersion, 
+                bmsBatteryType, bmsPowerCapacity, additionalInfo);
+        
+        // TODO 处理相关业务逻辑，比如保存握手信息到数据库
+        
+        callback.onSuccess();
+    }
+
     private static Period createPeriod(int sn, LocalTime beginTime, LocalTime endTime, PricingModelFlag flag) {
         Period period = new Period();
         period.setSn(sn);

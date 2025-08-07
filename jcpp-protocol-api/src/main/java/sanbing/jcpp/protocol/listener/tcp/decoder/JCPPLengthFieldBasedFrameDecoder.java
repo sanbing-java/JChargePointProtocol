@@ -134,7 +134,7 @@ public class JCPPLengthFieldBasedFrameDecoder extends ByteToMessageDecoder {
 
         // frameLengthInt exist , just check buf
         if (in.readableBytes() < frameLengthInt) {
-            log.debug("{} 可读长度小于帧长，因此跳过 {}", ctx.channel(), frameLengthInt);
+            log.debug("{} 可读长度小于帧长 {}，因此跳过", ctx.channel(), frameLengthInt);
             return BREAK;
         }
 

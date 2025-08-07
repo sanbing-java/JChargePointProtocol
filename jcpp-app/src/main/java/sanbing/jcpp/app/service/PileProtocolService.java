@@ -111,4 +111,9 @@ public interface PileProtocolService {
      */
     void onBmsAbort(UplinkQueueMessage uplinkQueueMessage, Callback callback);
 
+    /**
+     * BMS充电握手
+     */
+    void onBmsHandshake(UplinkQueueMessage uplinkQueueMessage, Callback callback);
+
 }

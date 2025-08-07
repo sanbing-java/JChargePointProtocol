@@ -71,6 +71,7 @@ message UplinkQueueMessage {
   BmsChargingInfoProto bmsChargingInfoProto = 34;
   BmsAbortProto bmsAbortProto = 35;
   RestartPileResponse restartPileResponse = 36;
+  BmsHandshakeProto bmsHandshakeProto = 37;
 
 }
 
@@ -335,15 +336,38 @@ message BmsParamConfigReport {
 }
 
 message BmsChargingInfoProto {
-  string pileCode = 1;
-  string gunCode = 2;
-  string tradeNo = 3;
-  optional string additionalInfo = 4;
-}
-
-message BmsAbortProto {
+  int64 ts = 1;                   // 时间戳
   string pileCode = 4;
   string gunCode = 5;
   string tradeNo = 6;
   optional string additionalInfo = 20;
+}
+
+message BmsAbortProto {
+  int64 ts = 1;                   // 时间戳
+  string pileCode = 4;
+  string gunCode = 5;
+  string tradeNo = 6;
+  optional string additionalInfo = 20;
+}
+
+message BmsHandshakeProto {
+  int64 ts = 1;                          // 时间戳
+  string pileCode = 2;                   // 桩编码
+  string gunCode = 3;                    // 枪编码
+  string tradeNo = 4;                    // 交易流水号
+  string bmsProtocolVersion = 5;         // BMS通信协议版本号
+  int32 bmsBatteryType = 6;              // BMS电池类型
+  int32 bmsPowerCapacity = 7;            // BMS整车动力蓄电池系统额定容量
+  int32 bmsPowerMaxVoltage = 8;          // BMS整车动力蓄电池系统额定总电压
+  string bmsFactory = 9;                 // BMS电池生产厂商名称
+  int32 bmsSerialNo = 10;                // BMS电池组序号
+  int32 bmsCreateYear = 11;              // BMS电池组生产日期年
+  int32 bmsCreateMonth = 12;             // BMS电池组生产日期月
+  int32 bmsCreateDay = 13;               // BMS电池组生产日期日
+  int32 bmsChargeCount = 14;             // BMS电池组充电次数
+  int32 bmsPropertyRightLabel = 15;      // BMS电池组产权标识
+  string carVinCode = 16;                // 车辆识别码(VIN)
+  string bmsSoftwareVersion = 17;        // BMS软件版本号
+  optional string additionalInfo = 20;   // 附加信息
 }
