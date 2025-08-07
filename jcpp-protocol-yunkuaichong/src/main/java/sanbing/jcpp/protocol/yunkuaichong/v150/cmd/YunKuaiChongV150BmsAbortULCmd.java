@@ -42,18 +42,15 @@ public class YunKuaiChongV150BmsAbortULCmd extends YunKuaiChongUplinkCmdExe {
         byte[] tradeNoBytes = new byte[16];
         byteBuf.readBytes(tradeNoBytes);
         String tradeNo = BCDUtil.toString(tradeNoBytes);
-        additionalInfo.put("交易流水号", tradeNo);
 
         // 2.桩编号
         byte[] pileCodeBytes = new byte[7];
         byteBuf.readBytes(pileCodeBytes);
         String pileCode = BCDUtil.toString(pileCodeBytes);
-        additionalInfo.put("桩编号", pileCode);
 
         // 3.枪号
         byte gunCodeByte = byteBuf.readByte();
         String gunCode = BCDUtil.toString(gunCodeByte);
-        additionalInfo.put("枪号", gunCode);
 
         // 4.BMS中止充电原因
         byte reasonByte = byteBuf.readByte();
@@ -85,49 +82,50 @@ public class YunKuaiChongV150BmsAbortULCmd extends YunKuaiChongUplinkCmdExe {
     /**
      * BMS中止充电原因枚举
      */
+    @Getter
     public enum AbortReasonEnum {
         SOC_TARGET("需求SOC目标值") {
             @Override
             public String getStateDescription(int state) {
-                switch (state) {
-                    case 0: return "未达到所需SOC目标值";
-                    case 1: return "达到所需SOC目标值";
-                    case 2: return "不可信状态";
-                    default: return "未知状态";
-                }
+                return switch (state) {
+                    case 0 -> "未达到所需SOC目标值";
+                    case 1 -> "达到所需SOC目标值";
+                    case 2 -> "不可信状态";
+                    default -> "未知状态";
+                };
             }
         },
         TOTAL_VOLTAGE("达到总电压设定值") {
             @Override
             public String getStateDescription(int state) {
-                switch (state) {
-                    case 0: return "未达到总电压设定值";
-                    case 1: return "达到总电压设定值";
-                    case 2: return "不可信状态";
-                    default: return "未知状态";
-                }
+                return switch (state) {
+                    case 0 -> "未达到总电压设定值";
+                    case 1 -> "达到总电压设定值";
+                    case 2 -> "不可信状态";
+                    default -> "未知状态";
+                };
             }
         },
         CELL_VOLTAGE("达到单体电压设定值") {
             @Override
             public String getStateDescription(int state) {
-                switch (state) {
-                    case 0: return "未达到单体电压设定值";
-                    case 1: return "达到单体电压设定值";
-                    case 2: return "不可信状态";
-                    default: return "未知状态";
-                }
+                return switch (state) {
+                    case 0 -> "未达到单体电压设定值";
+                    case 1 -> "达到单体电压设定值";
+                    case 2 -> "不可信状态";
+                    default -> "未知状态";
+                };
             }
         },
         CHARGER_INITIATED("充电机主动中止") {
             @Override
             public String getStateDescription(int state) {
-                switch (state) {
-                    case 0: return "充电机主动中止正常";
-                    case 1: return "充电机中止(收到CST帧)";
-                    case 2: return "不可信状态";
-                    default: return "未知状态";
-                }
+                return switch (state) {
+                    case 0 -> "充电机主动中止正常";
+                    case 1 -> "充电机中止(收到CST帧)";
+                    case 2 -> "不可信状态";
+                    default -> "未知状态";
+                };
             }
         };
 
@@ -135,10 +133,6 @@ public class YunKuaiChongV150BmsAbortULCmd extends YunKuaiChongUplinkCmdExe {
 
         AbortReasonEnum(String description) {
             this.description = description;
-        }
-
-        public String getDescription() {
-            return description;
         }
 
         public abstract String getStateDescription(int state);
@@ -169,93 +163,94 @@ public class YunKuaiChongV150BmsAbortULCmd extends YunKuaiChongUplinkCmdExe {
     /**
      * BMS中止充电故障原因枚举
      */
+    @Getter
     public enum FaultReasonsEnum {
         INSULATION_FAULT("绝缘故障"){
             @Override
             public String getStateDescription(int state) {
-                switch (state) {
-                    case 0: return "绝缘正常";
-                    case 1: return "绝缘故障";
-                    case 2: return "不可信状态";
-                    default: return "未知状态";
-                }
+                return switch (state) {
+                    case 0 -> "绝缘正常";
+                    case 1 -> "绝缘故障";
+                    case 2 -> "不可信状态";
+                    default -> "未知状态";
+                };
             }
         },
         CONNECTOR_OVERHEAT("输出连接器过温故障"){
             @Override
             public String getStateDescription(int state) {
-                switch (state) {
-                    case 0: return "输出连接器正常";
-                    case 1: return "输出连接器过温故障";
-                    case 2: return "不可信状态";
-                    default: return "未知状态";
-                }
+                return switch (state) {
+                    case 0 -> "输出连接器正常";
+                    case 1 -> "输出连接器过温故障";
+                    case 2 -> "不可信状态";
+                    default -> "未知状态";
+                };
             }
         },
         BMS_COMPONENT_OVERHEAT("BMS元件过温故障") {
             @Override
             public String getStateDescription(int state) {
-                switch (state) {
-                    case 0: return "BMS元件正常";
-                    case 1: return "BMS元件过温故障";
-                    case 2: return "不可信状态";
-                    default: return "未知状态";
-                }
+                return switch (state) {
+                    case 0 -> "BMS元件正常";
+                    case 1 -> "BMS元件过温故障";
+                    case 2 -> "不可信状态";
+                    default -> "未知状态";
+                };
             }
         },
         CHARGING_CONNECTOR_FAULT("充电连接器故障") {
             @Override
             public String getStateDescription(int state) {
-                switch (state) {
-                    case 0: return "充电连接器正常";
-                    case 1: return "充电连接器故障";
-                    case 2: return "不可信状态";
-                    default: return "未知状态";
-                }
+                return switch (state) {
+                    case 0 -> "充电连接器正常";
+                    case 1 -> "充电连接器故障";
+                    case 2 -> "不可信状态";
+                    default -> "未知状态";
+                };
             }
         },
         BATTERY_OVERHEAT("电池组温度过高故障") {
             @Override
             public String getStateDescription(int state) {
-                switch (state) {
-                    case 0: return "电池组温度正常";
-                    case 1: return "电池组温度过高故障";
-                    case 2: return "不可信状态";
-                    default: return "未知状态";
-                }
+                return switch (state) {
+                    case 0 -> "电池组温度正常";
+                    case 1 -> "电池组温度过高故障";
+                    case 2 -> "不可信状态";
+                    default -> "未知状态";
+                };
             }
         },
         HIGH_VOLTAGE_RELAY_FAULT("高压继电器故障") {
             @Override
             public String getStateDescription(int state) {
-                switch (state) {
-                    case 0: return "高压继电器正常";
-                    case 1: return "高压继电器故障";
-                    case 2: return "不可信状态";
-                    default: return "未知状态";
-                }
+                return switch (state) {
+                    case 0 -> "高压继电器正常";
+                    case 1 -> "高压继电器故障";
+                    case 2 -> "不可信状态";
+                    default -> "未知状态";
+                };
             }
         },
         VOLTAGE_DETECTION_FAULT("检测点2电压检测故障") {
             @Override
             public String getStateDescription(int state) {
-                switch (state) {
-                    case 0: return "检测点2电压检测正常";
-                    case 1: return "检测点2电压检测故障";
-                    case 2: return "不可信状态";
-                    default: return "未知状态";
-                }
+                return switch (state) {
+                    case 0 -> "检测点2电压检测正常";
+                    case 1 -> "检测点2电压检测故障";
+                    case 2 -> "不可信状态";
+                    default -> "未知状态";
+                };
             }
         },
         OTHER_FAULT("其他故障") {
             @Override
             public String getStateDescription(int state) {
-                switch (state) {
-                    case 0: return "其他正常";
-                    case 1: return "其他故障";
-                    case 2: return "不可信状态";
-                    default: return "未知状态";
-                }
+                return switch (state) {
+                    case 0 -> "其他正常";
+                    case 1 -> "其他故障";
+                    case 2 -> "不可信状态";
+                    default -> "未知状态";
+                };
             }
         };
 
@@ -263,10 +258,6 @@ public class YunKuaiChongV150BmsAbortULCmd extends YunKuaiChongUplinkCmdExe {
 
         FaultReasonsEnum(String description) {
             this.description = description;
-        }
-
-        public String getDescription() {
-            return description;
         }
 
         public abstract String getStateDescription(int state);
@@ -306,23 +297,23 @@ public class YunKuaiChongV150BmsAbortULCmd extends YunKuaiChongUplinkCmdExe {
         CURRENT_OVERFLOW("电流过大") {
             @Override
             public String getStateDescription(int state) {
-                switch (state) {
-                    case 0: return "电流正常";
-                    case 1: return "电流超过需求值";
-                    case 2: return "不可信状态";
-                    default: return "未知状态";
-                }
+                return switch (state) {
+                    case 0 -> "电流正常";
+                    case 1 -> "电流超过需求值";
+                    case 2 -> "不可信状态";
+                    default -> "未知状态";
+                };
             }
         },
         VOLTAGE_ABNORMAL("电压异常") {
             @Override
             public String getStateDescription(int state) {
-                switch (state) {
-                    case 0: return "电压正常";
-                    case 1: return "电压异常";
-                    case 2: return "不可信状态";
-                    default: return "未知状态";
-                }
+                return switch (state) {
+                    case 0 -> "电压正常";
+                    case 1 -> "电压异常";
+                    case 2 -> "不可信状态";
+                    default -> "未知状态";
+                };
             }
         };
 
