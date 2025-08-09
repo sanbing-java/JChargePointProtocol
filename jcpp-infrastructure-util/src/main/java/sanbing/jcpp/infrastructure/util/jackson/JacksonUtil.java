@@ -190,28 +190,4 @@ public class JacksonUtil {
         return node;
     }
 
-    /**
-     * 合并两个ObjectNode.
-     * 如果存在相同的字段，优先保留第二个ObjectNode中的值。
-     *
-     * @param node1 the first ObjectNode
-     * @param node2 the second ObjectNode
-     * @return 合并后的结果
-     */
-    public static ObjectNode merge(ObjectNode node1, ObjectNode node2) {
-        ObjectNode mergedNode = OBJECT_MAPPER.createObjectNode();
-
-        // 把第一个节点的所有字段添加到mergedNode中
-        node1.fields().forEachRemaining(entry -> {
-            mergedNode.set(entry.getKey(), entry.getValue());
-        });
-
-        // 把第二个节点的所有字段添加到mergedNode中，覆盖相同字段
-        node2.fields().forEachRemaining(entry -> {
-            mergedNode.set(entry.getKey(), entry.getValue());
-        });
-
-        return mergedNode;
-    }
-
 }

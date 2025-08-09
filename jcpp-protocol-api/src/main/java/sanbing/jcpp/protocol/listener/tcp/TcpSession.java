@@ -30,6 +30,8 @@ import java.util.function.Consumer;
 @Setter
 public class TcpSession extends ProtocolSession {
 
+    public static final String SCHEDULE_KEY_AUTO_SYNC_TIME =  "auto-sync-time";
+
     private SocketAddress address;
 
     private ChannelHandlerContext ctx;

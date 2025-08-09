@@ -59,7 +59,7 @@ public class DefaultServiceInfoProvider implements ServiceInfoProvider {
             try {
                 this.serviceId = InetAddress.getLocalHost().getHostName();
             } catch (UnknownHostException e) {
-                this.serviceId = RandomStringUtils.randomAlphabetic(10);
+                this.serviceId = RandomStringUtils.secure().nextAlphabetic(10);
             }
         }
         log.info("Current Service ID: {}", serviceId);

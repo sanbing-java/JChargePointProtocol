@@ -18,10 +18,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>jcpp-protocol-yunkuaichong</artifactId>
+    <artifactId>jcpp-protocol-lvneng</artifactId>
     <packaging>jar</packaging>
-    <name>JChargePointProtocol Yunkuaichong Protocol Module</name>
-    <description>云快充全版本协议模块</description>
+    <name>JChargePointProtocol LvNeng Protocol Module</name>
+    <description>绿能全版本协议模块</description>
 
     <properties>
         <main.dir>${basedir}/..</main.dir>

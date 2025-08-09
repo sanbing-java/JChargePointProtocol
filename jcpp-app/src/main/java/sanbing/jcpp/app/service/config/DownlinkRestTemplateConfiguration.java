@@ -25,8 +25,8 @@ public class DownlinkRestTemplateConfiguration {
     @Bean("downlinkRestTemplate")
     public RestTemplate downlinkRestTemplate() {
         RestTemplate restTemplate = new RestTemplateBuilder()
-                .setConnectTimeout(Duration.of(3, ChronoUnit.SECONDS))
-                .setReadTimeout(Duration.of(3, ChronoUnit.SECONDS))
+                .connectTimeout(Duration.of(3, ChronoUnit.SECONDS))
+                .readTimeout(Duration.of(3, ChronoUnit.SECONDS))
                 .build();
         restTemplate.setMessageConverters(Collections.singletonList(new ProtobufHttpMessageConverter()));
         return restTemplate;

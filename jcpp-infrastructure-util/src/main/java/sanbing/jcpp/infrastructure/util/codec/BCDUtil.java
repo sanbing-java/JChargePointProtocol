@@ -6,6 +6,8 @@
  */
 package sanbing.jcpp.infrastructure.util.codec;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class BCDUtil {
     private static final String HEX = "0123456789ABCDEF";
@@ -169,6 +171,126 @@ public class BCDUtil {
             sb.append(Integer.toHexString(lowNibble));
         }
         return sb.toString().toUpperCase();
+    }
+
+    private static final int HOUR_24 = 0x24;
+    private static final int ZERO_TIME = 0x00;
+    private static final int BCD_DATE_LENGTH = 8;
+    private static final char[] DIGITS = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+    private static final DateTimeFormatter DATETIME_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+
+    /**
+     * BCD编码的时间转换为LocalDateTime对象
+     * 格式: YYYYMMDDHHmmss (8字节BCD)
+     * 示例: 20240315235959
+     *
+     * @param bcdBytes BCD编码的时间字节数组，必须是8字节
+     * @return 转换后的LocalDateTime对象，如果输入无效则返回null
+     * @throws IllegalArgumentException 如果输入字节数组长度不是8
+     */
+    public static LocalDateTime bcdToDate(byte[] bcdBytes) {
+        if (bcdBytes == null || bcdBytes.length != BCD_DATE_LENGTH) {
+            throw new IllegalArgumentException("BCD date bytes must be 8 bytes long");
+        }
+
+        // 检查是否全为0
+        boolean allZero = true;
+        for (int i = 0; i < 7; i++) {
+            if (bcdBytes[i] != ZERO_TIME) {
+                allZero = false;
+                break;
+            }
+        }
+        if (allZero) {
+            return null;
+        }
+
+        // 使用StringBuilder预分配容量，避免扩容
+        StringBuilder timeStr = new StringBuilder(14);
+
+        // 年月日
+        for (int i = 0; i < 4; i++) {
+            appendBcdByte(timeStr, bcdBytes[i]);
+        }
+
+        // 小时特殊处理
+        byte hour = bcdBytes[4];
+        if ((hour & 0xff) == HOUR_24) {
+            timeStr.append("00");
+        } else {
+            appendBcdByte(timeStr, hour);
+        }
+
+        // 分秒
+        appendBcdByte(timeStr, bcdBytes[5]);
+        appendBcdByte(timeStr, bcdBytes[6]);
+
+        try {
+            return LocalDateTime.parse(timeStr.toString(), DATETIME_FORMATTER);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * 将单个BCD字节追加到StringBuilder
+     * 性能优化: 直接计算BCD值并追加，避免字符串转换
+     */
+    private static void appendBcdByte(StringBuilder sb, byte bcd) {
+        // 高4位
+        sb.append(DIGITS[(bcd >> 4) & 0x0F]);
+        // 低4位
+        sb.append(DIGITS[bcd & 0x0F]);
+    }
+    /**
+     * LocalDateTime转换为8字节BCD编码
+     * 格式: YYYYMMDDHHmmss + 0xFF (8字节BCD)
+     * 示例: 20240315235959FF
+     *
+     * @param dateTime 要转换的LocalDateTime对象
+     * @return 8字节BCD编码的字节数组，最后一个字节固定为0xFF；如果输入为null则返回null
+     */
+    public static byte[] dateToBcd8(LocalDateTime dateTime) {
+        if (dateTime == null) {
+            return null;
+        }
+
+        byte[] bytes = new byte[8];
+        
+        // 年 (2字节)
+        int year = dateTime.getYear();
+        bytes[0] = (byte) ((year / 100) << 4 | (year / 10 % 10));
+        bytes[1] = (byte) ((year % 10) << 4);
+
+        // 月 (与年的最后4位共用一个字节)
+        int month = dateTime.getMonthValue();
+        bytes[1] |= (byte) (month / 10);
+        bytes[2] = (byte) ((month % 10) << 4);
+
+        // 日 (与月的最后4位共用一个字节)
+        int day = dateTime.getDayOfMonth();
+        bytes[2] |= (byte) (day / 10);
+        bytes[3] = (byte) ((day % 10) << 4);
+
+        // 时 (与日的最后4位共用一个字节)
+        int hour = dateTime.getHour();
+        bytes[3] |= (byte) (hour / 10);
+        bytes[4] = (byte) ((hour % 10) << 4);
+
+        // 分 (与时的最后4位共用一个字节)
+        int minute = dateTime.getMinute();
+        bytes[4] |= (byte) (minute / 10);
+        bytes[5] = (byte) ((minute % 10) << 4);
+
+        // 秒 (与分的最后4位共用一个字节)
+        int second = dateTime.getSecond();
+        bytes[5] |= (byte) (second / 10);
+        bytes[6] = (byte) ((second % 10) << 4);
+
+        // 最后一个字节固定为0xFF
+        bytes[7] = (byte) 0xFF;
+
+        return bytes;
     }
 
 }

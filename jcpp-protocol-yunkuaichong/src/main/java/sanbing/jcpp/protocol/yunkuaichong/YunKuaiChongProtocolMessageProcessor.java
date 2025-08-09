@@ -8,6 +8,7 @@ package sanbing.jcpp.protocol.yunkuaichong;
 
 import cn.hutool.core.util.ClassUtil;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import lombok.extern.slf4j.Slf4j;
 import sanbing.jcpp.infrastructure.util.JCPPPair;
@@ -100,6 +101,8 @@ public class YunKuaiChongProtocolMessageProcessor extends ProtocolMessageProcess
             // ================== 校验和双模式处理 ==================
             final int checkSumLE = in.getUnsignedShortLE(checksumPos);
             final int checkSumBE = in.getUnsignedShort(checksumPos);
+            byte[] checkSumBytes = new byte[2];
+            in.getBytes(checksumPos, checkSumBytes);
 
             // ================== 校验数据智能拷贝 ==================
             final byte[] checkData = Arrays.copyOfRange(msg, 2, 2 + dataLength);
@@ -108,16 +111,16 @@ public class YunKuaiChongProtocolMessageProcessor extends ProtocolMessageProcess
             JCPPPair<Boolean, Integer> checkResult = checkCrcSum(checkData, checkSumLE);
             if (!checkResult.getFirst()) {
                 if (log.isDebugEnabled()) { // 日志惰性计算
-                    log.debug("{} 云快充校验域一次校验失败 CMD:{} 校验和：0x{} 期望校验和:0x{}",
-                            session, frameType, Integer.toHexString(checkSumLE), Integer.toHexString(checkResult.getSecond()));
+                    log.debug("{} 云快充校验域一次校验失败 CMD:{} 校验和：0x{} 期望校验和:{}",
+                            session, Integer.toHexString(frameType), ByteBufUtil.hexDump(checkSumBytes), checkResult.getSecond());
                 }
                 checkResult = checkCrcSum(checkData, checkSumBE);
             }
 
             // ================== 最终校验失败处理 ==================
             if (!checkResult.getFirst()) {
-                log.info("{} 云快充校验域二次校验失败 CMD:{} 校验和：0x{} 期望校验和:0x{}",
-                        session, frameType, Integer.toHexString(checkSumBE), Integer.toHexString(checkResult.getSecond()));
+                log.info("{} 云快充校验域二次校验失败 CMD:{} 校验和：0x{} 期望校验和:{}",
+                        session, Integer.toHexString(frameType), ByteBufUtil.hexDump(checkSumBytes), checkResult.getSecond());
                 return;
             }
 

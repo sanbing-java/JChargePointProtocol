@@ -6,7 +6,7 @@
  */
 package sanbing.jcpp.infrastructure.cache;
 
-import io.lettuce.core.api.StatefulRedisConnection;
+import io.lettuce.core.api.StatefulConnection;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
@@ -135,8 +135,8 @@ public abstract class JCPPRedisCacheConfiguration {
         registry.addConverter(UUID.class, String.class, UUID::toString);
     }
 
-    protected GenericObjectPoolConfig<StatefulRedisConnection<String, String>> buildPoolConfig() {
-        GenericObjectPoolConfig<StatefulRedisConnection<String, String>> poolConfig = new GenericObjectPoolConfig<>();
+    protected GenericObjectPoolConfig<StatefulConnection<?, ?>> buildPoolConfig() {
+        GenericObjectPoolConfig<StatefulConnection<?, ?>> poolConfig = new GenericObjectPoolConfig<>();
         poolConfig.setMaxTotal(maxTotal);
         poolConfig.setMaxIdle(maxIdle);
         poolConfig.setMinIdle(minIdle);

@@ -71,7 +71,7 @@ public class AbstractYunKuaiChongCmdExe {
 
     protected static byte[] encodePileCode(String pileCode) {
         if (StringUtils.length(pileCode) > 32) {
-            throw new IllegalArgumentException("云快充1.5可接受最大桩编号为14位");
+            throw new IllegalArgumentException("云快充可接受最大桩编号为14位");
         }
 
         String pileCodeStr = StringUtils.leftPad(pileCode, 14, '0');
@@ -81,7 +81,7 @@ public class AbstractYunKuaiChongCmdExe {
 
     protected static byte[] encodeGunCode(String gunCode) {
         if (StringUtils.length(gunCode) > 2) {
-            throw new IllegalArgumentException("云快充1.5可接受最大枪编号为2位");
+            throw new IllegalArgumentException("云快充可接受最大枪编号为2位");
         }
 
         String gunCodeStr = StringUtils.leftPad(gunCode, 2, '0');

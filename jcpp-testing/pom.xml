@@ -60,6 +60,10 @@
             <groupId>sanbing</groupId>
             <artifactId>jcpp-protocol-yunkuaichong</artifactId>
         </dependency>
+        <dependency>
+            <groupId>sanbing</groupId>
+            <artifactId>jcpp-protocol-lvneng</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

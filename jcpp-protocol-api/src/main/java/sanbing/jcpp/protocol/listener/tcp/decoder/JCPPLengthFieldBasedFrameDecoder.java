@@ -82,7 +82,7 @@ public class JCPPLengthFieldBasedFrameDecoder extends ByteToMessageDecoder {
     protected Object decode(ChannelHandlerContext ctx, ByteBuf in) {
         if (log.isDebugEnabled()) {
             String hexDump = ByteBufUtil.hexDump(in);
-            log.debug("{} 开始解析16进制报文：{}", ctx.channel(), hexDump);
+            log.debug("{} 开始拆解16进制报文：{}", ctx.channel(), hexDump);
         }
         // 帧长
         long frameLength = 0;
