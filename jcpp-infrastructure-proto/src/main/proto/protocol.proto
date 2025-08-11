@@ -281,27 +281,54 @@ message RemoteStopChargingResponse {
   optional string additionalInfo = 20;
 }
 
+enum DetailType {
+  PEAK_VALLEY = 0;  // 峰谷电量明细
+  TIME_PERIOD = 1;  // 时段电量明细
+}
+
+message PeakValleyDetail {
+  string topEnergyKWh = 1;      // 尖峰电量
+  string topAmountYuan = 2;     // 尖峰电费
+  string peakEnergyKWh = 3;     // 峰时电量
+  string peakAmountYuan = 4;    // 峰时电费
+  string flatEnergyKWh = 5;     // 平时电量
+  string flatAmountYuan = 6;    // 平时电费
+  string valleyEnergyKWh = 7;   // 谷时电量
+  string valleyAmountYuan = 8;  // 谷时电费
+  string deepEnergyKWh = 9;     // 深谷电量
+  string deepAmountYuan = 10;   // 深谷电费
+}
+
+message TimePeriodDetail {
+  message PeriodItem {
+    int32 periodNo = 1;           // 时段序号，从1开始
+    string startTime = 2;         // 开始时间，格式 HH:mm:ss
+    string endTime = 3;           // 结束时间，格式 HH:mm:ss
+    string energyKWh = 4;         // 该时段电量
+    optional string amountYuan = 5; // 该时段电费，可选
+  }
+  repeated PeriodItem periods = 1; // 时段列表
+}
+
+message TransactionDetail {
+  DetailType type = 1;                        // 明细类型
+  optional PeakValleyDetail peakValley = 2;   // 峰谷电量明细
+  optional TimePeriodDetail timePeriod = 3;   // 时段电量明细
+}
+
 message TransactionRecord {
-  string pileCode = 4;
-  string gunCode = 5;
-  string tradeNo = 6;
-  int64 startTs = 51;
-  int64 endTs = 52;
-  string topEnergyKWh = 53;
-  string topAmountYuan = 54;
-  string peakEnergyKWh = 55;
-  string peakAmountYuan = 56;
-  string flatEnergyKWh = 57;
-  string flatAmountYuan = 58;
-  string valleyEnergyKWh = 59;
-  string valleyAmountYuan = 60;
-  string deepEnergyKWh = 61;
-  string deepAmountYuan = 62;
-  string totalEnergyKWh = 63;
-  string totalAmountYuan = 64;
-  int64 tradeTs = 65;
-  string stopReason = 66;
-  optional string additionalInfo = 20;
+  string pileCode = 4;                    // 充电桩编码
+  string gunCode = 5;                     // 枪编号
+  string tradeNo = 6;                     // 交易流水号
+  int64 startTs = 51;                     // 开始时间戳
+  int64 endTs = 52;                       // 结束时间戳
+  string totalEnergyKWh = 53;             // 总电量(必填)
+  optional string totalAmountYuan = 54;   // 总电费(可选)
+  int64 tradeTs = 55;                     // 交易时间戳
+  string stopReason = 56;                 // 停止原因
+  int64 pricingId = 57;                   // 计费ID
+  optional TransactionDetail detail = 58;  // 电量电费明细
+  optional string additionalInfo = 20;     // 附加信息
 }
 
 message BmsChargingErrorProto {

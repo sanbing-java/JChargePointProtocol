@@ -13,8 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import sanbing.jcpp.infrastructure.util.codec.BCDUtil;
 import sanbing.jcpp.infrastructure.util.codec.CP56Time2aUtil;
 import sanbing.jcpp.infrastructure.util.jackson.JacksonUtil;
-import sanbing.jcpp.proto.gen.ProtocolProto.TransactionRecord;
-import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
+import sanbing.jcpp.proto.gen.ProtocolProto.*;
 import sanbing.jcpp.protocol.ProtocolContext;
 import sanbing.jcpp.protocol.listener.tcp.TcpSession;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkCmdExe;
@@ -154,12 +153,8 @@ public class YunKuaiChongV150TransactionRecordULCmd extends YunKuaiChongUplinkCm
         String cardNo = BCDUtil.toString(cardNoBytes);
         additionalInfo.put("物理卡号", cardNo);
 
-        TransactionRecord transactionRecord = TransactionRecord.newBuilder()
-                .setPileCode(pileCode)
-                .setGunCode(gunCode)
-                .setTradeNo(tradeNo)
-                .setStartTs(startTime.toEpochMilli())
-                .setEndTs(endTime.toEpochMilli())
+        // 构建峰谷电量明细
+        PeakValleyDetail peakValleyDetail = PeakValleyDetail.newBuilder()
                 .setTopEnergyKWh(topEnergy.toPlainString())
                 .setTopAmountYuan(topAmount.toPlainString())
                 .setPeakEnergyKWh(peakEnergy.toPlainString())
@@ -168,10 +163,26 @@ public class YunKuaiChongV150TransactionRecordULCmd extends YunKuaiChongUplinkCm
                 .setFlatAmountYuan(flatAmount.toPlainString())
                 .setValleyEnergyKWh(valleyEnergy.toPlainString())
                 .setValleyAmountYuan(valleyAmount.toPlainString())
+                .build();
+
+        // 构建交易明细
+        TransactionDetail transactionDetail = TransactionDetail.newBuilder()
+                .setType(DetailType.PEAK_VALLEY)
+                .setPeakValley(peakValleyDetail)
+                .build();
+
+        // 构建交易记录
+        TransactionRecord transactionRecord = TransactionRecord.newBuilder()
+                .setPileCode(pileCode)
+                .setGunCode(gunCode)
+                .setTradeNo(tradeNo)
+                .setStartTs(startTime.toEpochMilli())
+                .setEndTs(endTime.toEpochMilli())
                 .setTotalEnergyKWh(totalEnergy.toPlainString())
                 .setTotalAmountYuan(totalAmount.toPlainString())
                 .setTradeTs(tradeTime.toEpochMilli())
                 .setStopReason(stopReason)
+                .setDetail(transactionDetail)
                 .setAdditionalInfo(additionalInfo.toString())
                 .build();
 

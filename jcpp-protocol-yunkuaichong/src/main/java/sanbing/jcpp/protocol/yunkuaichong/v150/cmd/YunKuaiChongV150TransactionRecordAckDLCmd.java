@@ -20,7 +20,7 @@ import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
 
 import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDwonlinkMessage.FAILURE_BYTE;
 import static sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongDwonlinkMessage.SUCCESS_BYTE;
-import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEnum.TRANSACTION_RECORD;
+import static sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEnum.TRANSACTION_RECORD_ACK;
 
 /**
  * 云快充1.5.0 交易记录确认
@@ -46,7 +46,7 @@ public class YunKuaiChongV150TransactionRecordAckDLCmd extends YunKuaiChongDownl
         msgBody.writeBytes(encodeTradeNo(transactionRecordAck.getTradeNo()));
         msgBody.writeByte(transactionRecordAck.getSuccess() ? SUCCESS_BYTE : FAILURE_BYTE);
 
-        encodeAndWriteFlush(TRANSACTION_RECORD,
+        encodeAndWriteFlush(TRANSACTION_RECORD_ACK,
                 requestData.getSequenceNumber(),
                 requestData.getEncryptionFlag(),
                 msgBody,
