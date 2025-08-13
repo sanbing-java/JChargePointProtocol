@@ -7,6 +7,7 @@
 package sanbing.jcpp.app.service;
 
 import sanbing.jcpp.infrastructure.queue.Callback;
+import sanbing.jcpp.proto.gen.ProtocolProto;
 import sanbing.jcpp.proto.gen.ProtocolProto.SetPricingRequest;
 import sanbing.jcpp.proto.gen.ProtocolProto.UplinkQueueMessage;
 
@@ -112,6 +113,16 @@ public interface PileProtocolService {
     void onBmsAbort(UplinkQueueMessage uplinkQueueMessage, Callback callback);
 
     /**
+     *  远程更新
+     */
+    void remoteUpdate(ProtocolProto.OtaRequest request);
+
+    /**
+     * 远程更新应答
+     */
+    void onRemoteUpdate(UplinkQueueMessage uplinkQueueMessage, Callback callback);
+
+    /*
      * BMS充电握手
      */
     void onBmsHandshake(UplinkQueueMessage uplinkQueueMessage, Callback callback);

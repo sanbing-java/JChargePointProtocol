@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import sanbing.jcpp.app.service.PileProtocolService;
+import sanbing.jcpp.proto.gen.ProtocolProto;
 import sanbing.jcpp.proto.gen.ProtocolProto.*;
 
 import java.math.BigDecimal;
@@ -152,4 +153,25 @@ public class TestController {
 
         return ResponseEntity.ok("success");
     }
+
+
+    @GetMapping("/api/remoteUpdate")
+    public ResponseEntity<String> remoteUpdate() {
+
+        pileProtocolService.remoteUpdate(ProtocolProto.OtaRequest.newBuilder()
+                    .setAddress("http://127.0.0.1")
+                    .setExecutionControl(1)
+                    .setDownloadTimeout(1)
+                    .setPassword("123123")
+                    .setFilePath("/user/data")
+                    .setPileCode("20231212000010")
+                    .setPileModel(1)
+                    .setPilePower(200)
+                    .setPort(8080)
+                    .setUsername("bawan")
+                    .build());
+
+        return ResponseEntity.ok("success");
+    }
+
 }

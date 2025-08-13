@@ -379,6 +379,35 @@ public class DefaultPileProtocolService implements PileProtocolService {
     }
 
     @Override
+    public void remoteUpdate(OtaRequest request) {
+
+        UUID messageId = UUID.randomUUID();
+        UUID requestId = UUID.randomUUID();
+
+        DownlinkRequestMessage.Builder downlinkRequestMessageBuilder = DownlinkRequestMessage.newBuilder()
+                .setMessageIdMSB(messageId.getMostSignificantBits())
+                .setMessageIdLSB(messageId.getLeastSignificantBits())
+                .setPileCode(request.getPileCode())
+                .setRequestIdMSB(requestId.getMostSignificantBits())
+                .setRequestIdLSB(requestId.getLeastSignificantBits())
+                .setDownlinkCmd(DownlinkCmdEnum.REMOTE_UPDATE.name())
+                .setOtaRequest(request);
+        downlinkCallService.sendDownlinkMessage(downlinkRequestMessageBuilder,request.getPileCode());
+
+    }
+
+    @Override
+    public void onRemoteUpdate(UplinkQueueMessage uplinkQueueMessage, Callback callback) {
+
+        log.info("接收到充电桩更新应答 {}", uplinkQueueMessage);
+
+        // TODO 处理相关业务逻辑
+
+        callback.onSuccess();
+
+    }
+
+    @Override
     public void onBmsHandshake(UplinkQueueMessage uplinkQueueMessage, Callback callback) {
         log.info("接收到BMS充电握手信息 {}", uplinkQueueMessage);
         BmsHandshakeProto bmsHandshakeProto = uplinkQueueMessage.getBmsHandshakeProto();
@@ -424,4 +453,8 @@ public class DefaultPileProtocolService implements PileProtocolService {
         builder.setRequestData(uplinkQueueMessage.getRequestData());
         return builder;
     }
+
+
+
+
 }

@@ -28,4 +28,6 @@ public enum DownlinkCmdEnum {
     REMOTE_PARALLEL_START_CHARGING,
 
     REMOTE_RESTART_PILE,
+
+    REMOTE_UPDATE,
 }

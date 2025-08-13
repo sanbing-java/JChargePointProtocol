@@ -153,4 +153,22 @@ public class AbstractYunKuaiChongCmdExe {
         return new BigDecimal(value).divide(new BigDecimal(magnification), scale, RoundingMode.HALF_UP);
     }
 
+    protected static ByteBuf writeParamFillZero(String param,int maxLength) {
+        if (param.length() > maxLength) {
+            throw new IllegalArgumentException(String.format("云快充1.5.0 param: %s too large",param));
+        }
+        ByteBuf msgBody = Unpooled.buffer(maxLength);
+        msgBody.writeBytes(param.getBytes());
+        msgBody.writeZero(maxLength-param.length());
+        return msgBody;
+    }
+
+    protected static ByteBuf writeParamFillZero(int param,int maxLength) {
+        ByteBuf msgBody = Unpooled.buffer(maxLength);
+        msgBody.writeByte(param);
+        int index = msgBody.writerIndex();
+        msgBody.writeZero(maxLength-index);
+        return msgBody;
+    }
+
 }

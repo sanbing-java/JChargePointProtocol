@@ -216,6 +216,10 @@ public class ProtocolUplinkConsumerService extends AbstractConsumerService imple
 
                             pileProtocolService.onBmsHandshake(uplinkQueueMsg, callback);
 
+                        } else if (uplinkQueueMsg.hasOtaResponse()) {
+
+                            pileProtocolService.onRemoteUpdate(uplinkQueueMsg, callback);
+
                         } else {
 
                             callback.onSuccess();

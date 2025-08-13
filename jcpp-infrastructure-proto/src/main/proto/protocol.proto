@@ -72,6 +72,7 @@ message UplinkQueueMessage {
   BmsAbortProto bmsAbortProto = 35;
   RestartPileResponse restartPileResponse = 36;
   BmsHandshakeProto bmsHandshakeProto = 37;
+  OtaResponse otaResponse = 38;
 
 }
 
@@ -94,6 +95,7 @@ message DownlinkRequestMessage {
   RemoteStopChargingRequest remoteStopChargingRequest = 26;
   TransactionRecordAck transactionRecordAck = 27;
   RestartPileRequest restartPileRequest = 28;
+  OtaRequest otaRequest = 29;
 }
 
 message DownlinkResponseMessage {
@@ -369,6 +371,26 @@ message BmsChargingInfoProto {
   string tradeNo = 6;
   optional string additionalInfo = 20;
 }
+
+message OtaRequest {
+  string pileCode = 1;         // 桩编号
+  int32 pileModel = 2;         // 桩型号
+  int32 pilePower = 3;         // 桩功率
+  string address = 4;          // 升级服务器地址
+  int32 port = 5;              // 升级服务器端口
+  string username = 6;         // 用户名
+  string password = 7;         // 密码
+  string filePath = 8;         // 文件路径
+  int32 executionControl = 9;  // 执行控制
+  int32 downloadTimeout = 10;  // 下载超时时间
+
+}
+
+message OtaResponse {
+  string pileCode = 1;         // 桩编号
+  bool success = 2;
+  optional string errorMsg = 3;
+} 
 
 message BmsAbortProto {
   int64 ts = 1;                   // 时间戳
