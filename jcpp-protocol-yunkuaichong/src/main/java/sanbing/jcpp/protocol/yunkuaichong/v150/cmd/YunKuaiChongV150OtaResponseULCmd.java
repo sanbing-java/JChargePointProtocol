@@ -1,6 +1,10 @@
+/**
+ * 开源代码，仅供学习和交流研究使用，商用请联系三丙
+ * 微信：mohan_88888
+ * 抖音：程序员三丙
+ * 付费课程知识星球：https://t.zsxq.com/aKtXo
+ */
 package sanbing.jcpp.protocol.yunkuaichong.v150.cmd;
-
-import java.util.Map;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -13,6 +17,8 @@ import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkCmdExe;
 import sanbing.jcpp.protocol.yunkuaichong.YunKuaiChongUplinkMessage;
 import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
 
+import java.util.Map;
+
 
 /**
  * 云快充1.5.0  远程更新应答
@@ -21,7 +27,7 @@ import sanbing.jcpp.protocol.yunkuaichong.annotation.YunKuaiChongCmd;
  */
 @Slf4j
 @YunKuaiChongCmd(0x93)
-public class YunKuaiChongV150RemoteUpdateAckULCmd extends YunKuaiChongUplinkCmdExe {
+public class YunKuaiChongV150OtaResponseULCmd extends YunKuaiChongUplinkCmdExe {
 
     private static final Map<Byte, String> UPGRADE_STATUS;
 

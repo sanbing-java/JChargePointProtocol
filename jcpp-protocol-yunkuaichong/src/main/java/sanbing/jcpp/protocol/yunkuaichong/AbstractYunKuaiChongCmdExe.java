@@ -18,6 +18,7 @@ import sanbing.jcpp.protocol.yunkuaichong.enums.YunKuaiChongDownlinkCmdEnum;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.time.LocalTime;
 import java.util.List;
@@ -153,22 +154,71 @@ public class AbstractYunKuaiChongCmdExe {
         return new BigDecimal(value).divide(new BigDecimal(magnification), scale, RoundingMode.HALF_UP);
     }
 
-    protected static ByteBuf writeParamFillZero(String param,int maxLength) {
-        if (param.length() > maxLength) {
-            throw new IllegalArgumentException(String.format("云快充1.5.0 param: %s too large",param));
+    /**
+     * 高性能版本：直接写入目标ByteBuf，避免创建中间ByteBuf对象
+     * 将字符串参数写入ByteBuf，不足指定长度用0填充（右侧填充）
+     * 使用ASCII编码，适用于协议中的字符串字段
+     * 
+     * @param target 目标ByteBuf
+     * @param param 要写入的字符串参数，可以为null
+     * @param maxLength 目标长度（字节数）
+     * @throws IllegalArgumentException 如果参数字节长度超过maxLength
+     */
+    protected static void writeParamFillZero(ByteBuf target, String param, int maxLength) {
+        if (maxLength <= 0) {
+            throw new IllegalArgumentException("maxLength must be positive");
         }
-        ByteBuf msgBody = Unpooled.buffer(maxLength);
-        msgBody.writeBytes(param.getBytes());
-        msgBody.writeZero(maxLength-param.length());
-        return msgBody;
+        
+        if (param == null) {
+            param = "";
+        }
+        
+        // 使用ASCII编码，适用于协议字段
+        byte[] paramBytes = param.getBytes(StandardCharsets.US_ASCII);
+        
+        // 检查长度
+        if (paramBytes.length > maxLength) {
+            throw new IllegalArgumentException(
+                String.format("云快充1.5.0 参数: %s 字节长度 %d 超过最大长度 %d",
+                    param, paramBytes.length, maxLength));
+        }
+        
+        // 确保目标ByteBuf有足够的写入空间
+        target.ensureWritable(maxLength);
+        
+        // 写入数据
+        target.writeBytes(paramBytes);
+        
+        // 填充剩余空间
+        int remainingBytes = maxLength - paramBytes.length;
+        if (remainingBytes > 0) {
+            target.writeZero(remainingBytes);
+        }
     }
 
-    protected static ByteBuf writeParamFillZero(int param,int maxLength) {
-        ByteBuf msgBody = Unpooled.buffer(maxLength);
-        msgBody.writeByte(param);
-        int index = msgBody.writerIndex();
-        msgBody.writeZero(maxLength-index);
-        return msgBody;
+    /**
+     * 高性能版本：将整数参数作为字节值直接写入ByteBuf，不足指定长度用0填充（右侧填充）
+     * 
+     * @param target 目标ByteBuf
+     * @param param 要写入的整数参数（将作为字节值写入，只使用低8位）
+     * @param maxLength 目标长度（字节数）
+     */
+    protected static void writeParamFillZero(ByteBuf target, int param, int maxLength) {
+        if (maxLength <= 0) {
+            throw new IllegalArgumentException("maxLength must be positive");
+        }
+        
+        // 确保目标ByteBuf有足够的写入空间
+        target.ensureWritable(maxLength);
+        
+        // 将整数作为字节值写入（只使用低8位）
+        target.writeByte(param & 0xFF);
+        
+        // 计算剩余空间并填充0
+        int remainingBytes = maxLength - 1; // 已经写入了1个字节
+        if (remainingBytes > 0) {
+            target.writeZero(remainingBytes);
+        }
     }
 
 }

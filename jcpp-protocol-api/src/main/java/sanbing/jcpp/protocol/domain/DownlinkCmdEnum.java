@@ -29,5 +29,5 @@ public enum DownlinkCmdEnum {
 
     REMOTE_RESTART_PILE,
 
-    REMOTE_UPDATE,
+    OTA_REQUEST,
 }

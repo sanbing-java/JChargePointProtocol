@@ -38,7 +38,7 @@ public enum YunKuaiChongDownlinkCmdEnum {
 
     REMOTE_RESTART_PILE(0x92),
 
-    REMOTE_UPDATE(0x94),
+    OTA_REQUEST(0x94),
 
     ;
     private final Integer cmd;

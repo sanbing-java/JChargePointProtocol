@@ -115,12 +115,12 @@ public interface PileProtocolService {
     /**
      *  远程更新
      */
-    void remoteUpdate(ProtocolProto.OtaRequest request);
+    void otaRequest(ProtocolProto.OtaRequest request);
 
     /**
      * 远程更新应答
      */
-    void onRemoteUpdate(UplinkQueueMessage uplinkQueueMessage, Callback callback);
+    void onOtaResponse(UplinkQueueMessage uplinkQueueMessage, Callback callback);
 
     /*
      * BMS充电握手

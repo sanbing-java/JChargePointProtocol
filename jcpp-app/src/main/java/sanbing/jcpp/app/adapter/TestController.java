@@ -155,11 +155,11 @@ public class TestController {
     }
 
 
-    @GetMapping("/api/remoteUpdate")
-    public ResponseEntity<String> remoteUpdate() {
+    @GetMapping("/api/otaRequest")
+    public ResponseEntity<String> otaRequest() {
 
-        pileProtocolService.remoteUpdate(ProtocolProto.OtaRequest.newBuilder()
-                    .setAddress("http://127.0.0.1")
+        pileProtocolService.otaRequest(ProtocolProto.OtaRequest.newBuilder()
+                    .setAddress("127.0.0.1")
                     .setExecutionControl(1)
                     .setDownloadTimeout(1)
                     .setPassword("123123")

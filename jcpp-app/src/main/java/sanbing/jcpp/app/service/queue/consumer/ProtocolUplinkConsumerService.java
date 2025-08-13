@@ -218,7 +218,7 @@ public class ProtocolUplinkConsumerService extends AbstractConsumerService imple
 
                         } else if (uplinkQueueMsg.hasOtaResponse()) {
 
-                            pileProtocolService.onRemoteUpdate(uplinkQueueMsg, callback);
+                            pileProtocolService.onOtaResponse(uplinkQueueMsg, callback);
 
                         } else {
 

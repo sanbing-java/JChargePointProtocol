@@ -379,7 +379,7 @@ public class DefaultPileProtocolService implements PileProtocolService {
     }
 
     @Override
-    public void remoteUpdate(OtaRequest request) {
+    public void otaRequest(OtaRequest request) {
 
         UUID messageId = UUID.randomUUID();
         UUID requestId = UUID.randomUUID();
@@ -390,14 +390,14 @@ public class DefaultPileProtocolService implements PileProtocolService {
                 .setPileCode(request.getPileCode())
                 .setRequestIdMSB(requestId.getMostSignificantBits())
                 .setRequestIdLSB(requestId.getLeastSignificantBits())
-                .setDownlinkCmd(DownlinkCmdEnum.REMOTE_UPDATE.name())
+                .setDownlinkCmd(DownlinkCmdEnum.OTA_REQUEST.name())
                 .setOtaRequest(request);
         downlinkCallService.sendDownlinkMessage(downlinkRequestMessageBuilder,request.getPileCode());
 
     }
 
     @Override
-    public void onRemoteUpdate(UplinkQueueMessage uplinkQueueMessage, Callback callback) {
+    public void onOtaResponse(UplinkQueueMessage uplinkQueueMessage, Callback callback) {
 
         log.info("接收到充电桩更新应答 {}", uplinkQueueMessage);
 
